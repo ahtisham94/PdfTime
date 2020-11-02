@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">PdfTime</string>
+    <string name="loading">loading</string>
+    <string name="pdf_reader">pdf <b>reader</b></string>
+    <string name="home">Home</string>
+    <string name="files">Files</string>
+    <string name="shared">Shared</string>
+    <string name="tools">Tools</string>
+    <string name="folders">Folders</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pdf_ext" translatable="false">.pdf</string>
+    <string name="rename">Rename</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
+    <string name="convert_to_pdf">Convert to PDF</string>
+    <string name="move_to_folder">Move To Folder</string>
+    <string name="create_the_folder_so_you_can_save_your_n_important_documents_in_them">Create the folder so you can save your \n important documents in them</string>
+    <string name="create_now">Create Now</string>
+    <string name="enter_folder_name">Enter Name</string>
+    <string name="get_premium">Get Premium</string>
+    <string name="share_by_me">Share by me</string>
+    <string name="share_with_me">Share with me</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_40sdp"
+    android:layout_marginTop="@dimen/_5sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/itemDrawbale"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_shared_ic"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/_30sdp"/>
+
+    <TextView
+        android:id="@+id/drawerItemTv"
+        app:layout_constraintStart_toEndOf="@+id/itemDrawbale"
+        app:layout_constraintTop_toTopOf="@+id/itemDrawbale"
+        app:layout_constraintBottom_toBottomOf="@+id/itemDrawbale"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_width="0dp"
+        android:text="@string/app_name"
+        android:gravity="center_vertical"
+        android:textColor="@color/colorBlack"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="match_parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

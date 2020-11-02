@@ -1,0 +1,36 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="BottomNavigation">
+        <item name="android:background">@color/colorWhite</item>
+        <item name="itemIconTint">@color/nav_color</item>
+    </style>
+
+    <style name="MyPopupMenu" parent="@style/Widget.AppCompat.Light.PopupMenu">
+        <item name="android:dropDownHorizontalOffset">12dp</item>
+        <item name="android:dropDownVerticalOffset">4dp</item>
+    </style>
+
+    <style name="PopupMenuOverlapAnchor" parent="@style/Theme.AppCompat.Light">
+        <item name="android:overlapAnchor">true</item>
+        <item name="android:dropDownVerticalOffset">0dp</item>
+        <item name="android:dropDownHorizontalOffset">-12dp</item>
+    </style>
+
+    <style name="popupMenuStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:itemBackground">@color/colorWhite</item>
+        <item name="android:dropDownVerticalOffset">0dp</item>
+        <item name="android:dropDownHorizontalOffset">-12dp</item>
+
+        <!--<item name="android:popupBackground">@android:color/white</item>-->
+    </style>
+
+
+</resources>

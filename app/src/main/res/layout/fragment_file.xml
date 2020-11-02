@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".fragments.dashboardFragments.FileFragment">
+
+
+    <com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup
+        android:id="@+id/singleSelectedToggleGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:itemSpacing="@dimen/_10sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tbgChildSpacing="auto">
+
+        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+            android:id="@+id/pdfLabel"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/_5sdp"
+            android:text="PDF"
+            android:textSize="12sp" />
+
+        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+            android:id="@+id/wordLabel"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/_5sdp"
+            android:text="Word"
+            android:textSize="12sp" />
+
+        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+            android:id="@+id/excelLabel"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/_5sdp"
+            android:text="Excel"
+            android:textSize="12sp" />
+
+        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+            android:id="@+id/textLabel"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/_5sdp"
+            android:text="Text"
+            android:textSize="12sp" />
+
+    </com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/filesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bannderLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/singleSelectedToggleGroup" />
+
+    <include
+        android:id="@+id/bannderLayout"
+        layout="@layout/banner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <include
+        android:id="@+id/noFileLayout"
+        layout="@layout/no_file_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

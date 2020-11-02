@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".SplashActivity">
+
+    <include
+        layout="@layout/banner_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/logoIv"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_150sdp"
+        android:src="@drawable/splash_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/titleTv"
+        android:text="@string/pdf_reader"
+        android:textAllCaps="true"
+        app:layout_constraintTop_toBottomOf="@+id/logoIv"
+        app:layout_constraintStart_toStartOf="@+id/logoIv"
+        app:layout_constraintEnd_toEndOf="@+id/logoIv"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:textSize="20sp"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/loadingTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:text="@string/loading"
+        android:textAllCaps="true"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/loadingPro"
+        app:layout_constraintEnd_toEndOf="@+id/loadingPro"
+        app:layout_constraintStart_toStartOf="@+id/loadingPro" />
+
+    <com.agrawalsuneet.dotsloader.loaders.TashieLoader
+        android:id="@+id/loadingPro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_20sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tashieloader_animDelay="400"
+        app:tashieloader_animDur="500"
+        app:tashieloader_dotsColor="@color/colorBlue"
+        app:tashieloader_dotsDist="3dp"
+        app:tashieloader_dotsRadius="8dp"
+        app:tashieloader_interpolator="@android:anim/accelerate_interpolator"
+        app:tashieloader_noOfDots="10" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

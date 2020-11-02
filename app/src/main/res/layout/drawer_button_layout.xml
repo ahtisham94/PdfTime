@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="@dimen/_30sdp"
+        android:background="@color/colorGray" />
+
+    <RelativeLayout
+        android:id="@+id/premiumButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:elevation="@dimen/_5sdp"
+        android:layout_marginStart="@dimen/_30sdp"
+        android:layout_marginEnd="@dimen/_30sdp"
+        android:layout_marginBottom="@dimen/_30sdp"
+        android:background="@drawable/blue_color_btn"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/premiumTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/get_premium"
+            android:textAllCaps="true"
+            android:drawablePadding="@dimen/_5sdp"
+            android:textColor="@color/colorWhite"
+            app:drawableStartCompat="@drawable/ic_baseline_star_24" />
+    </RelativeLayout>
+
+</LinearLayout>

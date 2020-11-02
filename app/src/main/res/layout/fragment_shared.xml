@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@color/colorWhite"
+    tools:context=".fragments.dashboardFragments.SharedFragment">
+
+    <com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup
+        android:id="@+id/singleSelectedToggleGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:checkedButton="@id/shareByme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tbgChildSpacing="@dimen/_5sdp">
+
+        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+            android:id="@+id/shareByme"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:elevation="@dimen/_5sdp"
+            android:text="@string/share_by_me"
+            android:textSize="12sp" />
+
+        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+            android:id="@+id/shareWithMe"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:elevation="@dimen/_5sdp"
+            android:text="@string/share_with_me"
+            android:textSize="12sp" />
+
+    </com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sharedFilesRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/singleSelectedToggleGroup" />
+
+
+    <include
+        android:id="@+id/noFileLayout"
+        layout="@layout/no_file_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <include
+        android:id="@+id/bannderLayout"
+        layout="@layout/banner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

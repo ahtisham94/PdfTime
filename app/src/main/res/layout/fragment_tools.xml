@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bannerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+
+            tools:context=".fragments.dashboardFragments.ToolsFragment">
+
+            <RelativeLayout
+                android:id="@+id/createPDFRl"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_120sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/blue_bg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/headingTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="Create PDF"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/headingTv"
+                    android:padding="@dimen/_30sdp"
+                    android:src="@drawable/ic_word_file" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/wordPdfRl"
+                android:layout_width="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_height="@dimen/_90sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/word_bt_selector"
+                app:layout_constraintEnd_toStartOf="@+id/imagePdfRl"
+                app:layout_constraintStart_toStartOf="@+id/createPDFRl"
+                app:layout_constraintTop_toBottomOf="@+id/createPDFRl">
+
+                <ImageView
+                    android:id="@+id/wordImg"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:src="@drawable/ic_word_file" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/wordImg"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Word to PDF"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/imagePdfRl"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_90sdp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+
+                android:background="@drawable/image_pdf_bg"
+                app:layout_constraintEnd_toStartOf="@+id/mergePdfRl"
+                app:layout_constraintStart_toEndOf="@+id/wordPdfRl"
+                app:layout_constraintTop_toTopOf="@+id/wordPdfRl">
+
+                <ImageView
+                    android:id="@+id/ImageImg"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:src="@drawable/ic_word_file" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ImageImg"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Image to PDF"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/mergePdfRl"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_90sdp"
+                android:clickable="true"
+                android:focusable="true"
+
+                android:background="@drawable/merge_pdf_bg"
+                app:layout_constraintEnd_toEndOf="@+id/createPDFRl"
+                app:layout_constraintStart_toEndOf="@+id/imagePdfRl"
+                app:layout_constraintTop_toTopOf="@+id/imagePdfRl">
+
+                <ImageView
+                    android:id="@+id/mergeImg"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:src="@drawable/ic_word_file" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/mergeImg"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Merge PDF"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/scanPdfRl"
+                android:layout_width="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_height="@dimen/_90sdp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/scan_pdf_bg"
+                app:layout_constraintEnd_toStartOf="@+id/securePdfRl"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/wordPdfRl"
+                app:layout_constraintTop_toBottomOf="@+id/wordPdfRl">
+
+                <ImageView
+                    android:id="@+id/scanImg"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:src="@drawable/ic_word_file" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/scanImg"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Scan PDF"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/securePdfRl"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_90sdp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+
+                android:background="@drawable/secue_files_bg"
+                app:layout_constraintEnd_toStartOf="@+id/fileReducerPdfRl"
+                app:layout_constraintStart_toEndOf="@+id/scanPdfRl"
+                app:layout_constraintTop_toTopOf="@+id/scanPdfRl">
+
+                <ImageView
+                    android:id="@+id/secureImg"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:src="@drawable/ic_word_file" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/secureImg"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Secure File"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/fileReducerPdfRl"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_90sdp"
+
+                android:background="@drawable/files_reducer_bg"
+                app:layout_constraintEnd_toEndOf="@+id/mergePdfRl"
+                app:layout_constraintStart_toEndOf="@+id/securePdfRl"
+                app:layout_constraintTop_toTopOf="@+id/scanPdfRl">
+
+                <ImageView
+                    android:id="@+id/reduceImg"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:src="@drawable/ic_word_file" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/reduceImg"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Reduce File"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <include
+        android:id="@+id/bannerLayout"
+        layout="@layout/banner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/rename"
+        android:enabled="true"
+        android:icon="@drawable/home_icon_seletor"
+        android:title="@string/rename" />
+    <item
+        android:id="@+id/share"
+        android:enabled="true"
+        android:icon="@drawable/file_icon_seletor"
+        android:title="@string/share" />
+    <item
+        android:id="@+id/delete"
+        android:enabled="true"
+        android:icon="@drawable/folder_icon_seletor"
+        android:title="@string/delete" />
+    <item
+        android:id="@+id/moveToFolder"
+        android:enabled="true"
+        android:icon="@drawable/tools_icon_seletor"
+        android:title="@string/move_to_folder" />
+    <item
+        android:id="@+id/convertPdf"
+        android:enabled="true"
+        android:icon="@drawable/share_icon_seletor"
+        android:title="@string/convert_to_pdf" />
+</menu>

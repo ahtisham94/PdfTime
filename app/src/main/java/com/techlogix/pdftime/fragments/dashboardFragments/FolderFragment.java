@@ -1,6 +1,7 @@
 package com.techlogix.pdftime.fragments.dashboardFragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.techlogix.pdftime.AllFilesInFolderActivity;
 import com.techlogix.pdftime.BaseActivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.adapters.AllFolderAdapter;
@@ -31,7 +33,8 @@ import java.util.Objects;
 import static com.techlogix.pdftime.utilis.Constants.READ_EXTERNAL_STORAGE;
 import static com.techlogix.pdftime.utilis.Constants.WRITE_EXTERNAL_STORAGE;
 
-public class FolderFragment extends Fragment implements View.OnClickListener, PermissionCallback {
+public class FolderFragment extends Fragment implements View.OnClickListener, PermissionCallback,
+        GenericCallback {
     RecyclerView foldersRecycler;
     RelativeLayout noFolderLayout;
     Button createFolderBtn;
@@ -67,6 +70,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
         createFolderBtn = view.findViewById(R.id.createFolderBtn);
         createFolderBtn.setOnClickListener(this);
         adapter = new AllFolderAdapter(foldersArray, getContext());
+        adapter.setCallback(this);
         foldersRecycler.setAdapter(adapter);
 
         if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE})) {
@@ -116,5 +120,12 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
 
     public void onClick() {
         createFolder();
+    }
+
+    @Override
+    public void callback(Object o) {
+        Intent intent=new Intent(getContext(), AllFilesInFolderActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("path",((File)o).getAbsolutePath());
+        Objects.requireNonNull(getContext()).startActivity(intent);
     }
 }

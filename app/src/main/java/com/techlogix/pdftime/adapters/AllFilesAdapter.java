@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.techlogix.pdftime.R;
@@ -97,7 +98,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
                             menu.dismiss();
                             return true;
                         } else if (menuItem.getItemId() == R.id.moveToFolder) {
-                            showAllFolderDialog(filesArrayList.get(holder.getAdapterPosition()).getFile(),holder.getAdapterPosition());
+                            showAllFolderDialog(filesArrayList.get(holder.getAdapterPosition()).getFile(), holder.getAdapterPosition());
                             menu.dismiss();
                             return true;
                         } else if (menuItem.getItemId() == R.id.convertPdf) {
@@ -110,6 +111,19 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
                 menu.show();
             }
 
+        });
+
+        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (holder.fileTypeTv.getText().toString().equals("E")) {
+                    Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                }else if(holder.fileTypeTv.getText().toString().equals("T")){
+                   Constants.textFileIntent(context,filesArrayList.get(holder.getAdapterPosition()).getFile());
+                }else if(holder.fileTypeTv.getText().toString().equals("W")){
+                   Constants.doxFileIntent(context,filesArrayList.get(holder.getAdapterPosition()).getFile());
+                }
+            }
         });
 
 
@@ -167,7 +181,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
                     Toast.makeText(context, "File move to folder", Toast.LENGTH_SHORT).show();
                     filesArrayList.remove(pos);
                     notifyItemRemoved(pos);
-                }else {
+                } else {
                     Toast.makeText(context, "File not move", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -183,6 +197,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         RelativeLayout fileTypeRl;
         TextView fileTypeTv, fileNameTv, sizeTv, dateTv;
         ImageView moreImg;
+        ConstraintLayout rootLayout;
 
         public MyFilesHolder(@NonNull View itemView) {
             super(itemView);
@@ -192,6 +207,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
             sizeTv = itemView.findViewById(R.id.sizeTv);
             dateTv = itemView.findViewById(R.id.dateTv);
             moreImg = itemView.findViewById(R.id.moreImg);
+            rootLayout = itemView.findViewById(R.id.rootLayout);
         }
     }
 }

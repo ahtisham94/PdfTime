@@ -42,7 +42,8 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     HomeFragment homeFragment;
     FileFragment fileFragment;
     FolderFragment folderFragment;
-    CurrentFragment fragment;
+    SharedFragment sharedFragment;
+    CurrentFragment fragment, sharedFragmentCallback;
     TextView toolBarTitleTv;
     ImageView addFolderImg;
     ArrayList<DraweritemsModel> draweritemsModelsArray;
@@ -77,6 +78,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         homeFragment = new HomeFragment();
         fileFragment = new FileFragment();
         folderFragment = new FolderFragment();
+        sharedFragment = new SharedFragment();
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -87,6 +89,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         fileFragmentPermissionCallback = (PermissionCallback) fileFragment;
         folderFragPermissionsCallback = (PermissionCallback) folderFragment;
         fragment = (CurrentFragment) fileFragment;
+        sharedFragmentCallback = (CurrentFragment) sharedFragment;
 
     }
 
@@ -113,7 +116,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         tabsadapter.addFragments(fileFragment, getResources().getString(R.string.files));
         tabsadapter.addFragments(folderFragment, getResources().getString(R.string.folders));
         tabsadapter.addFragments(new ToolsFragment(), getResources().getString(R.string.tools));
-        tabsadapter.addFragments(new SharedFragment(), getResources().getString(R.string.shared));
+        tabsadapter.addFragments(sharedFragment, getResources().getString(R.string.shared));
         viewPager.setAdapter(tabsadapter);
         viewPager.setOffscreenPageLimit(5);
     }
@@ -153,6 +156,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         } else if (fragment instanceof SharedFragment) {
             addFolderImg.setVisibility(View.GONE);
             setTitle("Shared");
+            sharedFragmentCallback.currentFrag();
         }
     }
 

@@ -19,8 +19,7 @@
     <TextView
         android:id="@+id/fileNameTv"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:paddingStart="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_10sdp"
         android:paddingEnd="@dimen/_5sdp"
@@ -28,8 +27,28 @@
         android:textColor="@color/colorGrayDark"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:maxLength="50"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/allFolderImg"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/allFolderImg" />
+
+    <TextView
+        android:id="@+id/fileSizeTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/fileNameTv"
+        app:layout_constraintTop_toBottomOf="@+id/fileNameTv"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:paddingStart="@dimen/_10sdp"
+        android:text="10MB"/>
+
+    <TextView
+        android:id="@+id/dateTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/_20sdp"
+        app:layout_constraintTop_toTopOf="@+id/fileSizeTv"
+        android:text="10/10/2020"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

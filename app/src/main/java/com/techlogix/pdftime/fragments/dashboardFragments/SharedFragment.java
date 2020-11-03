@@ -20,6 +20,7 @@ import com.techlogix.pdftime.BaseActivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
 import com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup;
+import com.techlogix.pdftime.interfaces.CurrentFragment;
 import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
@@ -27,7 +28,8 @@ import com.techlogix.pdftime.utilis.DirectoryUtils;
 import java.io.File;
 import java.util.ArrayList;
 
-public class SharedFragment extends Fragment implements SingleSelectToggleGroup.OnCheckedChangeListener {
+public class SharedFragment extends Fragment implements SingleSelectToggleGroup.OnCheckedChangeListener,
+        CurrentFragment {
     RecyclerView sharedFilesRecycler;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -95,6 +97,16 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
 
         } else {
             noFileLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void currentFrag() {
+        if(singleSelectToggleGroup.getCheckedId()==R.id.shareWithMe){
+            getFiles(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+        }else if(singleSelectToggleGroup.getCheckedId()==R.id.shareByme){
+            getFiles(new File(Environment.getExternalStorageDirectory(), Constants.folderDirectory + "SharedByMe"));
+
         }
     }
 }

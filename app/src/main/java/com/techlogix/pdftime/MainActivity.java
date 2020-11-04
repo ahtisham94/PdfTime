@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     FileFragment fileFragment;
     FolderFragment folderFragment;
     SharedFragment sharedFragment;
-    CurrentFragment fragment, sharedFragmentCallback;
+    CurrentFragment fragment, sharedFragmentCallback,folderCurrentFrag;
     TextView toolBarTitleTv;
     ImageView addFolderImg;
     ArrayList<DraweritemsModel> draweritemsModelsArray;
@@ -90,6 +90,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         folderFragPermissionsCallback = (PermissionCallback) folderFragment;
         fragment = (CurrentFragment) fileFragment;
         sharedFragmentCallback = (CurrentFragment) sharedFragment;
+        folderCurrentFrag= (CurrentFragment) folderFragment;
 
     }
 
@@ -150,6 +151,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         } else if (fragment instanceof FolderFragment) {
             addFolderImg.setVisibility(View.VISIBLE);
             setTitle("Folders");
+            folderCurrentFrag.currentFrag();
         } else if (fragment instanceof ToolsFragment) {
             addFolderImg.setVisibility(View.GONE);
             setTitle("Tools");

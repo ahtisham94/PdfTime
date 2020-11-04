@@ -80,7 +80,7 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
         fileInfoModelArrayList.clear();
         ArrayList<File> arrayList = mDirectoryUtils.getSelectedFiles(filee, Constants.pdfExtension + "," + Constants.pdfExtension);
         mDirectoryUtils.clearSelectedArray();
-        if (arrayList.size() > 0) {
+        if (arrayList!=null && arrayList.size() > 0) {
             for (File file : arrayList) {
                 String[] fileInfo = file.getName().split("\\.");
                 if (fileInfo.length == 2)

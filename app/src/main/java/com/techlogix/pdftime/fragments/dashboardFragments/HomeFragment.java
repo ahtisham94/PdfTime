@@ -22,6 +22,7 @@ import com.techlogix.pdftime.BaseActivity;
 import com.techlogix.pdftime.MainActivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
+import com.techlogix.pdftime.interfaces.CurrentFragment;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.PermissionCallback;
 import com.techlogix.pdftime.models.FileInfoModel;
@@ -32,7 +33,7 @@ import com.techlogix.pdftime.utilis.PermissionUtils;
 import java.io.File;
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment implements PermissionCallback {
+public class HomeFragment extends Fragment implements PermissionCallback, CurrentFragment {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -54,13 +55,13 @@ public class HomeFragment extends Fragment implements PermissionCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE})) {
+        if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
             getFiles();
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    PermissionUtils.checkAndRequestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+                    PermissionUtils.checkAndRequestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
                 }
             }, 3000);
         }
@@ -107,4 +108,8 @@ public class HomeFragment extends Fragment implements PermissionCallback {
         baseActivity.showToast("Permission not granted", getContext());
     }
 
+    @Override
+    public void currentFrag() {
+
+    }
 }

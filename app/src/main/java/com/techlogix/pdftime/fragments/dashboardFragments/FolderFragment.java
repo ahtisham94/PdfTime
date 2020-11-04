@@ -21,6 +21,7 @@ import com.techlogix.pdftime.BaseActivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.adapters.AllFolderAdapter;
 import com.techlogix.pdftime.dialogs.CreateFolderDialog;
+import com.techlogix.pdftime.interfaces.CurrentFragment;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.PermissionCallback;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
@@ -34,7 +35,7 @@ import static com.techlogix.pdftime.utilis.Constants.READ_EXTERNAL_STORAGE;
 import static com.techlogix.pdftime.utilis.Constants.WRITE_EXTERNAL_STORAGE;
 
 public class FolderFragment extends Fragment implements View.OnClickListener, PermissionCallback,
-        GenericCallback {
+        GenericCallback , CurrentFragment {
     RecyclerView foldersRecycler;
     RelativeLayout noFolderLayout;
     Button createFolderBtn;
@@ -76,6 +77,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
         if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE})) {
             getAllFolders();
         } else {
+
             PermissionUtils.checkAndRequestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE);
         }
     }
@@ -127,5 +129,10 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
         Intent intent=new Intent(getContext(), AllFilesInFolderActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("path",((File)o).getAbsolutePath());
         Objects.requireNonNull(getContext()).startActivity(intent);
+    }
+
+    @Override
+    public void currentFrag() {
+        getAllFolders();
     }
 }

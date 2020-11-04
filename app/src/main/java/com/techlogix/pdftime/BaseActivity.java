@@ -10,10 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity {
-
+    AppContro appContro;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appContro= (AppContro) getApplication();
     }
 
     public void startActivity(Class<?> calledActivity, Bundle bundle) {
@@ -28,4 +29,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appContro.setmCurrentActivity(this);
+    }
 }

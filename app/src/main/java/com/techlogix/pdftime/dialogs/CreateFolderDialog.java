@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.techlogix.pdftime.AppContro;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.PermissionCallback;
@@ -57,7 +58,8 @@ public class CreateFolderDialog extends Dialog {
                             dismiss();
                         }
                     } else {
-                        PermissionUtils.requestPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE, Constants.WRITE_EXTERNAL_STORAGE);
+                        dismiss();
+                        PermissionUtils.checkAndRequestPermissions(AppContro.getInstance().getmCurrentActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.WRITE_EXTERNAL_STORAGE);
                     }
                 } else {
                     callback.callback(folderNameEd.getText().toString());

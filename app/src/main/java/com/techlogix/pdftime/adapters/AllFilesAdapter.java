@@ -1,6 +1,7 @@
 package com.techlogix.pdftime.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.techlogix.pdftime.PDFViewerAcitivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.dialogs.AlertDialogHelper;
 import com.techlogix.pdftime.dialogs.CreateFolderDialog;
@@ -118,10 +120,14 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
             public void onClick(View view) {
                 if (holder.fileTypeTv.getText().toString().equals("E")) {
                     Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                }else if(holder.fileTypeTv.getText().toString().equals("T")){
-                   Constants.textFileIntent(context,filesArrayList.get(holder.getAdapterPosition()).getFile());
-                }else if(holder.fileTypeTv.getText().toString().equals("W")){
-                   Constants.doxFileIntent(context,filesArrayList.get(holder.getAdapterPosition()).getFile());
+                } else if (holder.fileTypeTv.getText().toString().equals("T")) {
+                    Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                } else if (holder.fileTypeTv.getText().toString().equals("W")) {
+                    Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                } else if (holder.fileTypeTv.getText().toString().equals("P")) {
+                    Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("path", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());
+                    context.startActivity(intent);
                 }
             }
         });

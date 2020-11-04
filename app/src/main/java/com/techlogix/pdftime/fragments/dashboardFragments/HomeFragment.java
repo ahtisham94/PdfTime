@@ -110,6 +110,6 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
 
     @Override
     public void currentFrag() {
-
+        getFiles();
     }
 }

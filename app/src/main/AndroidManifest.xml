@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AllFilesInFolderActivity"></activity>
+        <activity android:name=".PDFViewerAcitivity"></activity>
+        <activity android:name=".AllFilesInFolderActivity" />
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait">

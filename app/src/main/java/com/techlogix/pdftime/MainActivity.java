@@ -14,6 +14,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,7 +45,8 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     FileFragment fileFragment;
     FolderFragment folderFragment;
     SharedFragment sharedFragment;
-    CurrentFragment fragment, sharedFragmentCallback,folderCurrentFrag;
+    CurrentFragment fragment, sharedFragmentCallback,folderCurrentFrag,homeCurrentFrag;
+
     TextView toolBarTitleTv;
     ImageView addFolderImg;
     ArrayList<DraweritemsModel> draweritemsModelsArray;
@@ -62,6 +65,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         initViews();
     }
 
@@ -90,6 +96,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         folderFragPermissionsCallback = (PermissionCallback) folderFragment;
         fragment = (CurrentFragment) fileFragment;
         sharedFragmentCallback = (CurrentFragment) sharedFragment;
+        homeCurrentFrag = (CurrentFragment) homeFragment;
         folderCurrentFrag= (CurrentFragment) folderFragment;
 
     }

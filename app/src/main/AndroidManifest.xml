@@ -16,7 +16,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PDFViewerAcitivity"></activity>
+        <activity android:name=".ImageToPdfActivity"></activity>
+        <activity android:name=".PDFViewerAcitivity"
+            android:label="@string/pdf_reader">
+<!--            <intent-filter>-->
+<!--                <category android:name="android.intent.action.VIEW" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <data android:mimeType="application/pdf" />-->
+
+
+<!--            </intent-filter>-->
+
+<!--            <intent-filter android:icon="@mipmap/ic_launcher">-->
+
+<!--                <category android:name="android.intent.action.SEND" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <data android:mimeType="application/pdf" />-->
+<!--            </intent-filter>-->
+        </activity>
         <activity android:name=".AllFilesInFolderActivity" />
         <activity
             android:name=".SplashActivity"

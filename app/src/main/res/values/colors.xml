@@ -12,6 +12,10 @@
     <color name="tbg_color_default_marker">#0E61D4</color>
     <color name="colorBlueMoreLight">#A9CDFF</color>
     <color name="colorBlueLight">#F2F4FF</color>
+    <color name="colorOrangeLight">#FFCF1B</color>
+    <color name="colorOrangeStatusBar">#FF5722</color>
+    <color name="colorOrangePrimaryDark">#F57C00</color>
+    <color name="colorOrange">#FF881B</color>
 
 
 </resources>

@@ -20,4 +20,7 @@
     <string name="get_premium">Get Premium</string>
     <string name="share_by_me">Share by me</string>
     <string name="share_with_me">Share with me</string>
+    <string name="pick_images_from_galary">Pick Images from Galary</string>
+    <string name="image_to_pdf">Image to PDF</string>
+    <string name="enter_file_name">Enter File name</string>
 </resources>

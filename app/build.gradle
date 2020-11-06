@@ -35,4 +35,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0'
     implementation 'com.google.android:flexbox:2.0.1'
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+//    implementation "org.apache.poi:poi:3.17"
+//    implementation "org.apache.poi:poi-ooxml:3.17"
+    implementation files("libs/poi-3.17.jar")
+    implementation files("libs/poi-ooxml-3.17.jar")
+    implementation 'com.itextpdf:itextpdf:5.0.6'
+    implementation 'com.zhihu.android:matisse:0.5.3-beta3'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
 }

@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +29,6 @@ import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileInfoUtils;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFilesHolder> {
@@ -38,11 +36,17 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
     Context context;
     ArrayList<FileInfoModel> filesArrayList;
     DirectoryUtils mDirectory;
-
+    RecyclerView recyclerView;
     public AllFilesAdapter(Context context, ArrayList<FileInfoModel> filesArrayList) {
         this.context = context;
         this.filesArrayList = filesArrayList;
         mDirectory = new DirectoryUtils(context);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView=recyclerView;
     }
 
     @NonNull
@@ -104,6 +108,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
                             menu.dismiss();
                             return true;
                         } else if (menuItem.getItemId() == R.id.convertPdf) {
+                            convertFile(filesArrayList.get(holder.getAdapterPosition()).getFile());
                             menu.dismiss();
                             return true;
                         }
@@ -131,6 +136,26 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
                 }
             }
         });
+
+
+    }
+
+    private void convertFile(File file) {
+
+        File pdfFile = mDirectory.createExcelToPdf(file);
+        if (pdfFile != null) {
+            String[] names=pdfFile.getName().split("\\.");
+
+            FileInfoModel model=new FileInfoModel(names[0],
+                    pdfFile.getAbsolutePath().substring(pdfFile.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                    pdfFile);
+            ArrayList<FileInfoModel> arrayList=filesArrayList;
+            arrayList.add(filesArrayList.size(),model);
+            setData(arrayList);
+            recyclerView.smoothScrollToPosition(filesArrayList.size());
+
+        }
+
 
 
     }

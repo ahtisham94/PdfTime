@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/edittext_white_bg">
+
+    <TextView
+        android:id="@+id/titleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/_20sdp"
+        android:text="@string/image_to_pdf"
+        android:textColor="@color/colorBlack"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/enterFileTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleTv"
+        android:layout_margin="@dimen/_20sdp"
+        android:text="@string/enter_file_name"
+        android:textColor="@color/colorBlack"
+        android:textSize="14sp" />
+
+
+    <EditText
+        android:id="@+id/enterFileNameEd"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_below="@+id/enterFileTv"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:background="@drawable/custom_bg_edittxt"
+        android:hint="@string/enter_file_name"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:maxLength="20"
+        android:paddingStart="@dimen/_15sdp" />
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/enterFileNameEd"
+        android:layout_alignEnd="@+id/enterFileNameEd"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_35sdp"
+        android:background="@drawable/orange_color_btn"
+        android:text="@string/create_now"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="14sp" />
+
+</RelativeLayout>

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.pm.PackageManager;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -31,6 +32,8 @@ import com.techlogix.pdftime.interfaces.CurrentFragment;
 import com.techlogix.pdftime.interfaces.PermissionCallback;
 import com.techlogix.pdftime.models.DraweritemsModel;
 import com.techlogix.pdftime.utilis.Constants;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +72,13 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         initViews();
+        ImageToPDF();
+    }
+
+    private void ImageToPDF() {
+        PdfDocument document=new PdfDocument();
+
+
     }
 
     private void initViews() {
@@ -105,7 +115,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         draweritemsModelsArray = new ArrayList<>();
         draweritemsModelsArray.add(new DraweritemsModel("", -1, Constants.HEADER_TYPE));
         draweritemsModelsArray.add(new DraweritemsModel("Word to PDF", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("Image to PDF", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.image_to_pdf), R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
         draweritemsModelsArray.add(new DraweritemsModel("Merge PDF", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
         draweritemsModelsArray.add(new DraweritemsModel("Remove Ads", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
         draweritemsModelsArray.add(new DraweritemsModel("", -1, Constants.BUTTON_TYPE));

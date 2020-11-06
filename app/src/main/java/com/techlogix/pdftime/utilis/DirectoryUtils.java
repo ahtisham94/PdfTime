@@ -9,7 +9,22 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.techlogix.pdftime.R;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Row;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -371,4 +387,55 @@ public class DirectoryUtils {
 
 
     }
+
+
+    public File createExcelToPdf(File file) {
+        try {
+            File pdfFile = new File(file.getParent(), "test.pdf");
+            if (!pdfFile.exists()) {
+                pdfFile.createNewFile();
+            }
+            FileInputStream stream = new FileInputStream(file);
+            POIFSFileSystem myFileSystem = new POIFSFileSystem(stream);
+            HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
+            HSSFSheet mySheet = myWorkBook.getSheetAt(0);
+            Iterator<Row> rowIter = mySheet.rowIterator();
+            OutputStream outputStream = new FileOutputStream(pdfFile);
+            Document document = null;
+            Font font = null;
+            PdfPTable table = new PdfPTable(mySheet.getRow(0).getLastCellNum());
+            if (mySheet.getRow(0).getLastCellNum() > 10) {
+                document = new Document(PageSize.A4_LANDSCAPE);
+                font = FontFactory.getFont(FontFactory.HELVETICA, 8);
+                table.setWidthPercentage(100f);
+            } else {
+
+                document = new Document(PageSize.A4);
+                font = FontFactory.getFont(FontFactory.HELVETICA, 8);
+                table.setWidthPercentage(150f);
+            }
+            PdfWriter.getInstance(document, outputStream);
+            document.open();
+
+            for (int i = 0; i <= mySheet.getLastRowNum(); i++) {
+                HSSFRow row = mySheet.getRow(i);
+                for (int j = 0; j < row.getLastCellNum(); j++) {
+                    HSSFCell cell = row.getCell(j);
+                    PdfPCell pdfPCell = new PdfPCell(new Phrase(cell.toString(), font));
+
+                    table.addCell(pdfPCell);
+                }
+
+            }
+
+            document.add(table);
+            document.close();
+            return pdfFile;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

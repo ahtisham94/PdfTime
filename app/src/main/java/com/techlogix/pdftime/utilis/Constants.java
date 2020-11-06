@@ -2,6 +2,7 @@ package com.techlogix.pdftime.utilis;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -17,6 +18,7 @@ public class Constants {
     public static int WRITE_EXTERNAL_STORAGE = 155;
     public static int HEADER_TYPE = 120;
     public static int BUTTON_TYPE = 1121;
+    public static int RESULT_LOAD_IMG = 10121;
     public static int ITEM_TYPE = 1120;
     public static final String STORAGE_LOCATION = "storage_location";
     public static final String pdfDirectory = "/PDFfiles/";
@@ -29,6 +31,21 @@ public class Constants {
     public static final String docxExtension = ".docx";
     public static final String tempDirectory = "temp";
     public static final String folderDirectory = "/PDFFolders/";
+    public static final String IMAGE_SCALE_TYPE_ASPECT_RATIO = "maintain_aspect_ratio";
+    public static final String PG_NUM_STYLE_PAGE_X_OF_N = "pg_num_style_page_x_of_n";
+    public static final String PG_NUM_STYLE_X_OF_N = "pg_num_style_x_of_n";
+    public static final String DEFAULT_FONT_COLOR_TEXT = "DefaultFontColor";
+    public static final int DEFAULT_FONT_COLOR = -16777216;
+    public static final String DEFAULT_PAGE_COLOR_TTP = "DefaultPageColorTTP";
+    public static final String DEFAULT_FONT_FAMILY_TEXT = "DefaultFontFamily";
+    public static final String DEFAULT_FONT_FAMILY = "TIMES_ROMAN";
+    public static final String DEFAULT_FONT_SIZE_TEXT = "DefaultFontSize";
+    public static final int DEFAULT_FONT_SIZE = 11;
+    public static final String DEFAULT_PAGE_SIZE_TEXT = "DefaultPageSize";
+    public static final String DEFAULT_PAGE_SIZE = "A4";
+    public static final String DEFAULT_PAGE_COLOR_ITP = "DefaultPageColorITP";
+    public static final int DEFAULT_PAGE_COLOR = Color.WHITE;
+    public static final String AUTHORITY_APP = "com.techlogix.pdftime";
 
     public static void shareFile(Context context, File file) {
         Intent intent = new Intent(Intent.ACTION_SEND);

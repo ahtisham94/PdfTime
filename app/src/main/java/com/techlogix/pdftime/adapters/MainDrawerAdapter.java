@@ -1,17 +1,19 @@
 package com.techlogix.pdftime.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.techlogix.pdftime.ImageToPdfActivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.models.DraweritemsModel;
 import com.techlogix.pdftime.utilis.Constants;
@@ -45,10 +47,19 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof DrawerItemsHolder) {
             ((DrawerItemsHolder) holder).drawerItemTv.setText(arrayList.get(holder.getAdapterPosition()).getTitle());
             ((DrawerItemsHolder) holder).itemDrawbale.setBackgroundResource(arrayList.get(holder.getAdapterPosition()).getIcon());
+            ((DrawerItemsHolder) holder).rootLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (arrayList.get(holder.getAdapterPosition()).getTitle().equals(mContext.getResources().getString(R.string.image_to_pdf))) {
+                        Intent intent = new Intent(mContext, ImageToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        mContext.startActivity(intent);
+                    }
+                }
+            });
         }
     }
 
@@ -88,11 +99,13 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
     class DrawerItemsHolder extends RecyclerView.ViewHolder {
         ImageView itemDrawbale;
         TextView drawerItemTv;
+        ConstraintLayout rootLayout;
 
         public DrawerItemsHolder(@NonNull View itemView) {
             super(itemView);
             itemDrawbale = itemView.findViewById(R.id.itemDrawbale);
             drawerItemTv = itemView.findViewById(R.id.drawerItemTv);
+            rootLayout = itemView.findViewById(R.id.rootLayout);
         }
     }
 }

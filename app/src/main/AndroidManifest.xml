@@ -17,22 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ImageToPdfActivity"></activity>
-        <activity android:name=".PDFViewerAcitivity"
+        <activity
+            android:name=".PDFViewerAcitivity"
             android:label="@string/pdf_reader">
-<!--            <intent-filter>-->
-<!--                <category android:name="android.intent.action.VIEW" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <data android:mimeType="application/pdf" />-->
 
-
-<!--            </intent-filter>-->
-
-<!--            <intent-filter android:icon="@mipmap/ic_launcher">-->
-
-<!--                <category android:name="android.intent.action.SEND" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <data android:mimeType="application/pdf" />-->
-<!--            </intent-filter>-->
         </activity>
         <activity android:name=".AllFilesInFolderActivity" />
         <activity
@@ -53,6 +41,19 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter
+                android:icon="@mipmap/ic_launcher"
+                android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:mimeType="application/pdf" />
+
             </intent-filter>
         </activity>
 

@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -35,6 +37,7 @@ import com.techlogix.pdftime.utilis.Constants;
 
 import org.w3c.dom.Document;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +51,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     FileFragment fileFragment;
     FolderFragment folderFragment;
     SharedFragment sharedFragment;
-    CurrentFragment fragment, sharedFragmentCallback,folderCurrentFrag,homeCurrentFrag;
+    CurrentFragment fragment, sharedFragmentCallback, folderCurrentFrag, homeCurrentFrag;
 
     TextView toolBarTitleTv;
     ImageView addFolderImg;
@@ -72,13 +75,14 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         initViews();
-        ImageToPDF();
-    }
-
-    private void ImageToPDF() {
-        PdfDocument document=new PdfDocument();
-
-
+        Intent intent = getIntent();
+        if (intent.getData() != null) {
+            Uri uri = (Uri) intent.getData();
+            File file = new File(uri.toString());
+            Intent intent1 = new Intent(MainActivity.this, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent1.putExtra("path", file.getAbsolutePath());
+            startActivity(intent);
+        }
     }
 
     private void initViews() {
@@ -107,7 +111,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         fragment = (CurrentFragment) fileFragment;
         sharedFragmentCallback = (CurrentFragment) sharedFragment;
         homeCurrentFrag = (CurrentFragment) homeFragment;
-        folderCurrentFrag= (CurrentFragment) folderFragment;
+        folderCurrentFrag = (CurrentFragment) folderFragment;
 
     }
 

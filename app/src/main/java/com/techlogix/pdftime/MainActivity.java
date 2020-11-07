@@ -78,10 +78,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         Intent intent = getIntent();
         if (intent.getData() != null) {
             Uri uri = (Uri) intent.getData();
-            File file = new File(uri.toString());
             Intent intent1 = new Intent(MainActivity.this, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent1.putExtra("path", file.getAbsolutePath());
-            startActivity(intent);
+            intent1.putExtra("uri", uri.toString());
+            startActivity(intent1);
         }
     }
 

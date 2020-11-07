@@ -2,6 +2,7 @@ package com.techlogix.pdftime.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.techlogix.pdftime.ImageToPdfActivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.TxtWordToPdfActivity;
+import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.models.DraweritemsModel;
 import com.techlogix.pdftime.utilis.Constants;
 
@@ -24,10 +27,12 @@ import java.util.ArrayList;
 public class MainDrawerAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private ArrayList<DraweritemsModel> arrayList;
+    private GenericCallback callback;
 
-    public MainDrawerAdapter(Context mContext, ArrayList<DraweritemsModel> arrayList) {
+    public MainDrawerAdapter(Context mContext, ArrayList<DraweritemsModel> arrayList, GenericCallback callback) {
         this.mContext = mContext;
         this.arrayList = arrayList;
+        this.callback = callback;
     }
 
     @NonNull
@@ -43,6 +48,9 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
         } else if (viewType == Constants.ITEM_TYPE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_item_layout, parent, false);
             return new DrawerItemsHolder(view);
+        } else if (viewType == Constants.EMPTY_VIEW) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_view, parent, false);
+            return new EmptyViewHolder(view);
         }
         return null;
     }
@@ -50,18 +58,18 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof DrawerItemsHolder) {
+            if (arrayList.get(holder.getAdapterPosition()).isSeleted()) {
+                ((DrawerItemsHolder) holder).rootLayout.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorGrayHightted));
+            } else {
+                ((DrawerItemsHolder) holder).rootLayout.setBackgroundColor(Color.TRANSPARENT);
+            }
             ((DrawerItemsHolder) holder).drawerItemTv.setText(arrayList.get(holder.getAdapterPosition()).getTitle());
             ((DrawerItemsHolder) holder).itemDrawbale.setBackgroundResource(arrayList.get(holder.getAdapterPosition()).getIcon());
             ((DrawerItemsHolder) holder).rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (arrayList.get(holder.getAdapterPosition()).getTitle().equals(mContext.getResources().getString(R.string.image_to_pdf))) {
-                        Intent intent = new Intent(mContext, ImageToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        mContext.startActivity(intent);
-                    } else if (arrayList.get(holder.getAdapterPosition()).getTitle().equals(mContext.getResources().getString(R.string.word_pdf))) {
-                        Intent intent = new Intent(mContext, TxtWordToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        mContext.startActivity(intent);
-                    }
+                    callback.callback(arrayList.get(holder.getAdapterPosition()).getTitle());
+                    selectedItem(arrayList.get(holder.getAdapterPosition()));
                 }
             });
         }
@@ -80,6 +88,8 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
             return Constants.BUTTON_TYPE;
         else if (arrayList.get(position).getType() == Constants.ITEM_TYPE)
             return Constants.ITEM_TYPE;
+        else if (arrayList.get(position).getType() == Constants.EMPTY_VIEW)
+            return Constants.EMPTY_VIEW;
         else
             return super.getItemViewType(position);
     }
@@ -100,6 +110,13 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
         }
     }
 
+    class EmptyViewHolder extends RecyclerView.ViewHolder {
+
+        public EmptyViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
     class DrawerItemsHolder extends RecyclerView.ViewHolder {
         ImageView itemDrawbale;
         TextView drawerItemTv;
@@ -111,5 +128,12 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
             drawerItemTv = itemView.findViewById(R.id.drawerItemTv);
             rootLayout = itemView.findViewById(R.id.rootLayout);
         }
+    }
+
+    public void selectedItem(DraweritemsModel draweritemsModel) {
+        for (DraweritemsModel model : arrayList) {
+            model.setSeleted(model.getTitle().equals(draweritemsModel.getTitle()));
+        }
+        notifyDataSetChanged();
     }
 }

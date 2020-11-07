@@ -3,6 +3,15 @@ package com.techlogix.pdftime.models;
 public class DraweritemsModel {
     private String title;
     private int icon, type;
+    private boolean isSeleted;
+
+    public boolean isSeleted() {
+        return isSeleted;
+    }
+
+    public void setSeleted(boolean seleted) {
+        isSeleted = seleted;
+    }
 
     public String getTitle() {
         return title;
@@ -28,9 +37,10 @@ public class DraweritemsModel {
         this.type = type;
     }
 
-    public DraweritemsModel(String title, int icon, int type) {
+    public DraweritemsModel(String title, int icon, int type, boolean isSeleted) {
         this.title = title;
         this.icon = icon;
         this.type = type;
+        this.isSeleted = isSeleted;
     }
 }

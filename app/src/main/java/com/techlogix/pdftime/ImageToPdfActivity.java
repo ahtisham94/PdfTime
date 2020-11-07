@@ -100,6 +100,7 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
                     mPdfOptions.setPageNumStyle(PG_NUM_STYLE_PAGE_X_OF_N);
                     mPdfOptions.setMasterPwd("12345");
                     mPdfOptions.setPageColor(DEFAULT_PAGE_COLOR);
+                    mPdfOptions.setMargins(20,20,20,20);
                     mPdfOptions.setOutFileName((String) o);
 
                     new CreatePdfAsync(mPdfOptions, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), ImageToPdfActivity.this).execute();

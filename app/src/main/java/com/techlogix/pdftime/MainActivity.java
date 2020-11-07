@@ -16,6 +16,8 @@ import android.content.pm.PackageManager;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,6 +33,7 @@ import com.techlogix.pdftime.fragments.dashboardFragments.HomeFragment;
 import com.techlogix.pdftime.fragments.dashboardFragments.SharedFragment;
 import com.techlogix.pdftime.fragments.dashboardFragments.ToolsFragment;
 import com.techlogix.pdftime.interfaces.CurrentFragment;
+import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.PermissionCallback;
 import com.techlogix.pdftime.models.DraweritemsModel;
 import com.techlogix.pdftime.utilis.Constants;
@@ -42,10 +45,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
-    ViewPager viewPager;
+public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener, View.OnClickListener, GenericCallback {
+    public ViewPager viewPager;
     TabLayout tabLayout;
-    MainTabsAdapter tabsadapter;
+    public MainTabsAdapter tabsadapter;
     PermissionCallback homeFragmentPermissionCallBack, fileFragmentPermissionCallback, folderFragPermissionsCallback;
     HomeFragment homeFragment;
     FileFragment fileFragment;
@@ -81,6 +84,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             Intent intent1 = new Intent(MainActivity.this, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent1.putExtra("uri", uri.toString());
             startActivity(intent1);
+
         }
     }
 
@@ -116,18 +120,22 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
     private void fillDrawerData() {
         draweritemsModelsArray = new ArrayList<>();
-        draweritemsModelsArray.add(new DraweritemsModel("", -1, Constants.HEADER_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.word_pdf), R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.image_to_pdf), R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("Merge PDF", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("Remove Ads", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("", -1, Constants.BUTTON_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("History", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("Settings", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("Rate", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("Share", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("Quit", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        MainDrawerAdapter adapter = new MainDrawerAdapter(MainActivity.this, draweritemsModelsArray);
+        draweritemsModelsArray.add(new DraweritemsModel("", -1, Constants.HEADER_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.word_pdf), R.drawable.ic_word_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.image_to_pdf), R.drawable.ic_img_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.merge_pdf), R.drawable.ic_merge_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.file_reducer), R.drawable.ic_reduce_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.password_pro), R.drawable.ic_password_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.remove_ad), R.drawable.ic_ad_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel("", -1, Constants.BUTTON_TYPE, false));
+//        draweritemsModelsArray.add(new DraweritemsModel("History", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.settings), R.drawable.ic_setting_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.rate), R.drawable.ic_rate_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.share), R.drawable.ic_share_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.privacy), R.drawable.ic_privacy_d, Constants.ITEM_TYPE, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.privacy), R.drawable.ic_privacy_d, Constants.EMPTY_VIEW, false));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.quit), R.drawable.ic_quit_d, Constants.ITEM_TYPE, false));
+        MainDrawerAdapter adapter = new MainDrawerAdapter(MainActivity.this, draweritemsModelsArray, this);
         drawerRecycler.setAdapter(adapter);
     }
 
@@ -265,5 +273,25 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         } else {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
+    }
+
+    @Override
+    public void callback(Object o) {
+        final String whereTo = (String) o;
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START))
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (whereTo.equals(getResources().getString(R.string.image_to_pdf))) {
+                    Intent intent = new Intent(MainActivity.this, ImageToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                } else if (whereTo.equals(getResources().getString(R.string.word_pdf))) {
+                    Intent intent = new Intent(MainActivity.this, TxtWordToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            }
+        }, 1000);
+
     }
 }

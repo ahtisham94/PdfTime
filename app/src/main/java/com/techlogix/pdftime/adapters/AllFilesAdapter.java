@@ -15,8 +15,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.techlogix.pdftime.AllFilesInFolderActivity;
+import com.techlogix.pdftime.MainActivity;
 import com.techlogix.pdftime.PDFViewerAcitivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.dialogs.AlertDialogHelper;
@@ -27,6 +30,8 @@ import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileInfoUtils;
+import com.techlogix.pdftime.utilis.FileUtils;
+import com.techlogix.pdftime.utilis.TextToPdfAsync;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,6 +42,12 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
     ArrayList<FileInfoModel> filesArrayList;
     DirectoryUtils mDirectory;
     RecyclerView recyclerView;
+    GenericCallback callback;
+
+    public void setCallback(GenericCallback callback) {
+        this.callback = callback;
+    }
+
     public AllFilesAdapter(Context context, ArrayList<FileInfoModel> filesArrayList) {
         this.context = context;
         this.filesArrayList = filesArrayList;
@@ -46,7 +57,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        this.recyclerView=recyclerView;
+        this.recyclerView = recyclerView;
     }
 
     @NonNull
@@ -83,11 +94,14 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
             holder.fileTypeRl.setBackgroundResource(R.drawable.word_bg);
         }
 
+        //more button Visible or not
+
         holder.moreImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final PopupMenu menu = new PopupMenu(context, holder.fileNameTv, Gravity.END);
                 menu.inflate(R.menu.navigation);
+                menu.getMenu().findItem(R.id.convertPdf).setVisible(isVisible());
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
@@ -140,24 +154,37 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
 
     }
 
+    private boolean isVisible() {
+        return context instanceof MainActivity && ((MainActivity) context).viewPager.getCurrentItem() == 0;
+    }
+
+
     private void convertFile(File file) {
-
-        File pdfFile = mDirectory.createExcelToPdf(file);
-        if (pdfFile != null) {
-            String[] names=pdfFile.getName().split("\\.");
-
-            FileInfoModel model=new FileInfoModel(names[0],
-                    pdfFile.getAbsolutePath().substring(pdfFile.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                    pdfFile);
-            ArrayList<FileInfoModel> arrayList=filesArrayList;
-            arrayList.add(filesArrayList.size(),model);
-            setData(arrayList);
-            recyclerView.smoothScrollToPosition(filesArrayList.size());
-
+        String ext = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("."));
+        if (ext.contains(Constants.excelExtension) || ext.contains(Constants.excelWorkbookExtension)) {
+            File pdfFile = mDirectory.createExcelToPdf(file);
+            if (pdfFile != null) {
+                refreshArray(pdfFile);
+            }
+        } else if (ext.contains(Constants.docExtension) || ext.contains(Constants.docxExtension)
+                || ext.contains(Constants.textExtension)) {
+            if (callback != null) {
+                callback.callback(file);
+            }
         }
 
 
+    }
 
+    public void refreshArray(File pdfFile) {
+        String[] names = pdfFile.getName().split("\\.");
+        FileInfoModel model = new FileInfoModel(names[0],
+                pdfFile.getAbsolutePath().substring(pdfFile.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                pdfFile);
+        ArrayList<FileInfoModel> arrayList = filesArrayList;
+        arrayList.add(filesArrayList.size(), model);
+        setData(arrayList);
+        recyclerView.smoothScrollToPosition(filesArrayList.size());
     }
 
     private void shareFile(File file) {

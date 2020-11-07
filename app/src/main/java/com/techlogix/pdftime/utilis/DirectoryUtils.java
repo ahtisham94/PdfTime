@@ -390,8 +390,10 @@ public class DirectoryUtils {
 
 
     public File createExcelToPdf(File file) {
+        String child = file.getName().substring(0, file.getName().lastIndexOf("."));
+        child = child + pdfExtension;
         try {
-            File pdfFile = new File(file.getParent(), "test.pdf");
+            File pdfFile = new File(file.getParent(), child);
             if (!pdfFile.exists()) {
                 pdfFile.createNewFile();
             }
@@ -436,6 +438,10 @@ public class DirectoryUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String getDownloadFolderPath(){
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
     }
 
 }

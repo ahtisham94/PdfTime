@@ -16,6 +16,7 @@
     <color name="colorOrangeStatusBar">#FF5722</color>
     <color name="colorOrangePrimaryDark">#F57C00</color>
     <color name="colorOrange">#FF881B</color>
+    <color name="colorGrayHightted">#E8E9E2</color>
 
 
 </resources>

@@ -3,6 +3,7 @@ package com.techlogix.pdftime.utilis;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 
 import com.itextpdf.text.BaseColor;
@@ -48,12 +49,15 @@ public class TextToPDFUtils {
 
         String masterpwd = "12345";
 
+
         Rectangle pageSize = new Rectangle(PageSize.getRectangle(mTextToPDFOptions.getPageSize()));
         pageSize.setBackgroundColor(getBaseColor(mTextToPDFOptions.getPageColor()));
         Document document = new Document(pageSize);
 
-        String finalOutput = mSharedPreferences.getString(STORAGE_LOCATION,
-                StringUtils.getInstance().getDefaultStorageLocation()) +
+//        String finalOutput = mSharedPreferences.getString(STORAGE_LOCATION,
+//                StringUtils.getInstance().getDefaultStorageLocation()) +
+//                mTextToPDFOptions.getOutFileName() + ".pdf";
+        String finalOutput = DirectoryUtils.getDownloadFolderPath() + "/" +
                 mTextToPDFOptions.getOutFileName() + ".pdf";
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(finalOutput));
         writer.setPdfVersion(PdfWriter.VERSION_1_7);

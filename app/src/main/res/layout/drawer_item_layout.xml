@@ -3,7 +3,7 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_40sdp"
-    android:layout_marginTop="@dimen/_5sdp"
+    android:background="@color/colorGrayHightted"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -13,7 +13,6 @@
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:src="@drawable/ic_shared_ic"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/_30sdp"/>
 

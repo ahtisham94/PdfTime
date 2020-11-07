@@ -8,6 +8,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+import com.itextpdf.text.PageSize;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.preferences.TextToPdfPreferences;
 
@@ -16,13 +17,14 @@ import java.util.HashMap;
 public class PageSizeUtils {
 
     private final Context mActivity;
-    public static String mPageSize;
+    public static String mPageSize = "A4";
     private final String mDefaultPageSize;
     private final HashMap<Integer, Integer> mPageSizeToString;
     private final TextToPdfPreferences mPreferences;
 
     /**
      * Utils object to modify the page size
+     *
      * @param mActivity - current context
      */
     public PageSizeUtils(Context mActivity) {
@@ -124,7 +126,8 @@ public class PageSizeUtils {
 
     /**
      * Get key from the value
-     * @param map - hash map
+     *
+     * @param map   - hash map
      * @param value - the value for which we want the key
      * @return - key value
      */

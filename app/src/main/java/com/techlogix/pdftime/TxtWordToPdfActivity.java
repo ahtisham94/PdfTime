@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import com.techlogix.pdftime.dialogs.InputFeildDialog;
@@ -19,6 +21,7 @@ import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.OnTextToPdfInterface;
 import com.techlogix.pdftime.interfaces.TextToPdfContract;
 import com.techlogix.pdftime.utilis.Constants;
+import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileUtils;
 import com.techlogix.pdftime.utilis.PageSizeUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
@@ -46,6 +49,9 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_txt_word_to_pdf);
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.colorOrangeStatusBar));
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Word To PDF");
         setSupportActionBar(toolbar);
@@ -61,6 +67,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         convertPdf.setOnClickListener(this);
         dialog = new ProgressDialog(TxtWordToPdfActivity.this);
         dialog.setTitle("Please wait");
+        dialog.setMessage("Creating pdf file");
 
 
     }
@@ -92,7 +99,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void startPdfCreating(String o) {
-        mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        mPath = DirectoryUtils.getDownloadFolderPath();
         mPath = mPath + "/" + o + Constants.pdfExtension;
         TextToPDFOptions options = mBuilder.setFileName(o)
                 .setPageSize(PageSizeUtils.mPageSize)

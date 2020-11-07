@@ -31,4 +31,12 @@
     <string name="extension_not_supported">Sorry! This file type is not supported currently.</string>
     <string name="file_created">File Created</string>
     <string name="word_pdf">Word to PDF</string>
+    <string name="merge_pdf">Merge PDF</string>
+    <string name="remove_ad">Remove Ads</string>
+    <string name="file_reducer">File Reducer</string>
+    <string name="password_pro">Password Protector</string>
+    <string name="settings">Settings</string>
+    <string name="rate">Rate</string>
+    <string name="privacy">Privacy Policy</string>
+    <string name="quit">Quit</string>
 </resources>

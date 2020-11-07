@@ -52,17 +52,18 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_toEndOf="@+id/headingTv"
                     android:padding="@dimen/_30sdp"
-                    android:src="@drawable/ic_word_file" />
+                    android:scaleType="center"
+                    android:src="@drawable/ic_create_pdf_d" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/wordPdfRl"
                 android:layout_width="0dp"
-                android:clickable="true"
-                android:focusable="true"
                 android:layout_height="@dimen/_90sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/word_bt_selector"
+                android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintEnd_toStartOf="@+id/imagePdfRl"
                 app:layout_constraintStart_toStartOf="@+id/createPDFRl"
                 app:layout_constraintTop_toBottomOf="@+id/createPDFRl">
@@ -73,7 +74,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:src="@drawable/ic_word_file" />
+                    android:src="@drawable/ic_word_d_white" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -90,12 +91,12 @@
                 android:id="@+id/imagePdfRl"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_90sdp"
-                android:clickable="true"
-                android:focusable="true"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
-
                 android:background="@drawable/image_pdf_bg"
+                android:clickable="true"
+
+                android:focusable="true"
                 app:layout_constraintEnd_toStartOf="@+id/mergePdfRl"
                 app:layout_constraintStart_toEndOf="@+id/wordPdfRl"
                 app:layout_constraintTop_toTopOf="@+id/wordPdfRl">
@@ -106,7 +107,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:src="@drawable/ic_word_file" />
+                    android:src="@drawable/ic_img_d_white" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -123,10 +124,10 @@
                 android:id="@+id/mergePdfRl"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_90sdp"
-                android:clickable="true"
-                android:focusable="true"
-
                 android:background="@drawable/merge_pdf_bg"
+                android:clickable="true"
+
+                android:focusable="true"
                 app:layout_constraintEnd_toEndOf="@+id/createPDFRl"
                 app:layout_constraintStart_toEndOf="@+id/imagePdfRl"
                 app:layout_constraintTop_toTopOf="@+id/imagePdfRl">
@@ -137,7 +138,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:src="@drawable/ic_word_file" />
+                    android:src="@drawable/ic_merge_d_white" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -154,11 +155,11 @@
             <RelativeLayout
                 android:id="@+id/scanPdfRl"
                 android:layout_width="0dp"
-                android:clickable="true"
-                android:focusable="true"
                 android:layout_height="@dimen/_90sdp"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/scan_pdf_bg"
+                android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintEnd_toStartOf="@+id/securePdfRl"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/wordPdfRl"
@@ -170,7 +171,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:src="@drawable/ic_word_file" />
+                    android:src="@drawable/ic_scan_p" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -187,12 +188,12 @@
                 android:id="@+id/securePdfRl"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_90sdp"
-                android:clickable="true"
-                android:focusable="true"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
-
                 android:background="@drawable/secue_files_bg"
+                android:clickable="true"
+
+                android:focusable="true"
                 app:layout_constraintEnd_toStartOf="@+id/fileReducerPdfRl"
                 app:layout_constraintStart_toEndOf="@+id/scanPdfRl"
                 app:layout_constraintTop_toTopOf="@+id/scanPdfRl">
@@ -203,7 +204,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:src="@drawable/ic_word_file" />
+                    android:src="@drawable/ic_password_d_white" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -218,12 +219,12 @@
 
             <RelativeLayout
                 android:id="@+id/fileReducerPdfRl"
-                android:clickable="true"
-                android:focusable="true"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_90sdp"
-
                 android:background="@drawable/files_reducer_bg"
+                android:clickable="true"
+
+                android:focusable="true"
                 app:layout_constraintEnd_toEndOf="@+id/mergePdfRl"
                 app:layout_constraintStart_toEndOf="@+id/securePdfRl"
                 app:layout_constraintTop_toTopOf="@+id/scanPdfRl">
@@ -234,7 +235,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:src="@drawable/ic_word_file" />
+                    android:src="@drawable/ic_reduce_d_white" />
 
                 <TextView
                     android:layout_width="wrap_content"

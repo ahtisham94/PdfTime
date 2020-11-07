@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.techlogix.pdftime.ImageToPdfActivity;
 import com.techlogix.pdftime.R;
+import com.techlogix.pdftime.TxtWordToPdfActivity;
 import com.techlogix.pdftime.models.DraweritemsModel;
 import com.techlogix.pdftime.utilis.Constants;
 
@@ -56,6 +57,9 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
                 public void onClick(View view) {
                     if (arrayList.get(holder.getAdapterPosition()).getTitle().equals(mContext.getResources().getString(R.string.image_to_pdf))) {
                         Intent intent = new Intent(mContext, ImageToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        mContext.startActivity(intent);
+                    } else if (arrayList.get(holder.getAdapterPosition()).getTitle().equals(mContext.getResources().getString(R.string.word_pdf))) {
+                        Intent intent = new Intent(mContext, TxtWordToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         mContext.startActivity(intent);
                     }
                 }

@@ -23,4 +23,12 @@
     <string name="pick_images_from_galary">Pick Images from Galary</string>
     <string name="image_to_pdf">Image to PDF</string>
     <string name="enter_file_name">Enter File name</string>
+    <string name="select_file">Select File</string>
+    <string name="text_type">text/plain</string>
+    <string name="install_file_manager">Please install a File Manager</string>
+    <string name="pdf_suffix" translatable="false">_pdf</string>
+    <string name="file_selectedd">File selected</string>
+    <string name="extension_not_supported">Sorry! This file type is not supported currently.</string>
+    <string name="file_created">File Created</string>
+    <string name="word_pdf">Word to PDF</string>
 </resources>

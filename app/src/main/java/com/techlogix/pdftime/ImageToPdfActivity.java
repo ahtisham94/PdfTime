@@ -22,7 +22,7 @@ import com.techlogix.pdftime.dialogs.InputFeildDialog;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.OnPDFCreatedInterface;
 import com.techlogix.pdftime.utilis.Constants;
-import com.techlogix.pdftime.utilis.CreatePdf;
+import com.techlogix.pdftime.utilis.CreatePdfAsync;
 import com.techlogix.pdftime.utilis.GifSizeFilter;
 import com.techlogix.pdftime.utilis.ImageToPDFOptions;
 import com.techlogix.pdftime.utilis.ImageUtils;
@@ -102,7 +102,7 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
                     mPdfOptions.setPageColor(DEFAULT_PAGE_COLOR);
                     mPdfOptions.setOutFileName((String) o);
 
-                    new CreatePdf(mPdfOptions, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), ImageToPdfActivity.this).execute();
+                    new CreatePdfAsync(mPdfOptions, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), ImageToPdfActivity.this).execute();
 
 
                 }

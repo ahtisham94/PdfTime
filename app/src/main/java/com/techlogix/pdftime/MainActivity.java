@@ -117,7 +117,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     private void fillDrawerData() {
         draweritemsModelsArray = new ArrayList<>();
         draweritemsModelsArray.add(new DraweritemsModel("", -1, Constants.HEADER_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel("Word to PDF", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
+        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.word_pdf), R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
         draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.image_to_pdf), R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
         draweritemsModelsArray.add(new DraweritemsModel("Merge PDF", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
         draweritemsModelsArray.add(new DraweritemsModel("Remove Ads", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));

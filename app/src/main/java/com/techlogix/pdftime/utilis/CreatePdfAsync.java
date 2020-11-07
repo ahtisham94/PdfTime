@@ -29,7 +29,7 @@ import static com.techlogix.pdftime.utilis.Constants.pdfExtension;
 /**
  * An async task that converts selected images to Pdf
  */
-public class CreatePdf extends AsyncTask<String, String, String> {
+public class CreatePdfAsync extends AsyncTask<String, String, String> {
 
     private final String mFileName;
     private final String mPassword;
@@ -52,8 +52,8 @@ public class CreatePdf extends AsyncTask<String, String, String> {
     private final String mMasterPwd;
     private final int mPageColor;
 
-    public CreatePdf(ImageToPDFOptions mImageToPDFOptions, String parentPath,
-                     OnPDFCreatedInterface onPDFCreated) {
+    public CreatePdfAsync(ImageToPDFOptions mImageToPDFOptions, String parentPath,
+                          OnPDFCreatedInterface onPDFCreated) {
         this.mImagesUri = mImageToPDFOptions.getImagesUri();
         this.mFileName = mImageToPDFOptions.getOutFileName();
         this.mPassword = mImageToPDFOptions.getPassword();

@@ -46,6 +46,7 @@ public class Constants {
     public static final String DEFAULT_PAGE_COLOR_ITP = "DefaultPageColorITP";
     public static final int DEFAULT_PAGE_COLOR = Color.WHITE;
     public static final String AUTHORITY_APP = "com.techlogix.pdftime";
+    public static final  int mFileSelectCode = 0;
 
     public static void shareFile(Context context, File file) {
         Intent intent = new Intent(Intent.ACTION_SEND);

@@ -16,12 +16,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TxtWordToPdfActivity"></activity>
-        <activity android:name=".ImageToPdfActivity" />
+        <activity android:name=".FileReducerActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MergePdfFileActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".TxtWordToPdfActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ImageToPdfActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".PDFViewerAcitivity"
-            android:label="@string/pdf_reader"></activity>
-        <activity android:name=".AllFilesInFolderActivity" />
+            android:label="@string/pdf_reader" />
+        <activity android:name=".AllFilesInFolderActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait">

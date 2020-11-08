@@ -28,6 +28,7 @@ import com.techlogix.pdftime.utilis.ImageToPDFOptions;
 import com.techlogix.pdftime.utilis.ImageUtils;
 import com.techlogix.pdftime.utilis.PageSizeUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
+import com.techlogix.pdftime.utilis.StringUtils;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
@@ -91,23 +92,27 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
                 PermissionUtils.requestPermission(ImageToPdfActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE, Constants.READ_EXTERNAL_STORAGE);
             }
         } else if (view.getId() == R.id.convertPdf) {
-            new InputFeildDialog(this, new GenericCallback() {
-                @Override
-                public void callback(Object o) {
-                    mPdfOptions.setImagesUri(imagesUri);
-                    mPdfOptions.setPageSize(PageSizeUtils.mPageSize);
-                    mPdfOptions.setImageScaleType(ImageUtils.getInstance().mImageScaleType);
-                    mPdfOptions.setPageNumStyle(PG_NUM_STYLE_PAGE_X_OF_N);
-                    mPdfOptions.setMasterPwd("12345");
-                    mPdfOptions.setPageColor(DEFAULT_PAGE_COLOR);
-                    mPdfOptions.setMargins(20,20,20,20);
-                    mPdfOptions.setOutFileName((String) o);
+            if (imagesUri.size() > 0) {
+                new InputFeildDialog(this, new GenericCallback() {
+                    @Override
+                    public void callback(Object o) {
+                        mPdfOptions.setImagesUri(imagesUri);
+                        mPdfOptions.setPageSize(PageSizeUtils.mPageSize);
+                        mPdfOptions.setImageScaleType(ImageUtils.getInstance().mImageScaleType);
+                        mPdfOptions.setPageNumStyle(PG_NUM_STYLE_PAGE_X_OF_N);
+                        mPdfOptions.setMasterPwd("12345");
+                        mPdfOptions.setPageColor(DEFAULT_PAGE_COLOR);
+                        mPdfOptions.setMargins(20, 20, 20, 20);
+                        mPdfOptions.setOutFileName((String) o);
+                        new CreatePdfAsync(mPdfOptions, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), ImageToPdfActivity.this).execute();
 
-                    new CreatePdfAsync(mPdfOptions, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), ImageToPdfActivity.this).execute();
 
+                    }
+                }, "Image To PDF").show();
+            } else {
+                StringUtils.getInstance().showSnackbar(ImageToPdfActivity.this, "Please select file");
+            }
 
-                }
-            }).show();
         }
     }
 
@@ -160,10 +165,23 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
-    public void onPDFCreated(boolean success, String path) {
+    public void onPDFCreated(boolean success, final String path) {
         dialog.dismiss();
         if (success) {
-            Snackbar.make(convertPdf, "PDF created in" + path, Snackbar.LENGTH_SHORT).show();
+            convertPdf.setEnabled(false);
+            imagesUri.clear();
+            StringUtils.getInstance().getSnackbarwithAction(ImageToPdfActivity.this, R.string.pdf_merged)
+                    .setAction(R.string.snackbar_viewAction, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(ImageToPdfActivity.this, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("path", path);
+                            startActivity(intent);
+                        }
+                    }).show();
+        } else {
+            StringUtils.getInstance().showSnackbar(ImageToPdfActivity.this, getString(R.string.convert_error));
+
         }
     }
 }

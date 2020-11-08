@@ -95,7 +95,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
             public void callback(Object o) {
                 startPdfCreating((String) o);
             }
-        }).show();
+        },"Text Or Word To PDF").show();
     }
 
     private void startPdfCreating(String o) {

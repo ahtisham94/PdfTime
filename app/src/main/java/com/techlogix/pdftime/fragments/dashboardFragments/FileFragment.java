@@ -3,6 +3,16 @@ package com.techlogix.pdftime.fragments.dashboardFragments;
 import android.Manifest;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,17 +20,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Environment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-
 import com.techlogix.pdftime.BaseActivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
-import com.techlogix.pdftime.customViews.toggleButton.LabelToggle;
 import com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup;
 import com.techlogix.pdftime.interfaces.CurrentFragment;
 import com.techlogix.pdftime.interfaces.PermissionCallback;
@@ -30,11 +32,14 @@ import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
 
 import java.io.File;
-import java.nio.file.Files;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class FileFragment extends Fragment implements PermissionCallback, SingleSelectToggleGroup.OnCheckedChangeListener,
-        CurrentFragment {
+        CurrentFragment, View.OnClickListener {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -42,6 +47,7 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     RelativeLayout noFileLayout;
     ArrayList<FileInfoModel> fileInfoModelArrayList;
     SingleSelectToggleGroup singleSelectToggleGroup;
+    TextView filterTv, emptyView;
 
     public FileFragment() {
         // Required empty public constructor
@@ -70,6 +76,9 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         singleSelectToggleGroup = view.findViewById(R.id.singleSelectedToggleGroup);
         singleSelectToggleGroup.setOnCheckedChangeListener(this);
         noFileLayout = view.findViewById(R.id.noFileLayout);
+        filterTv = view.findViewById(R.id.filterTv);
+        filterTv.setOnClickListener(this);
+        emptyView = view.findViewById(R.id.empty_view);
 
     }
 
@@ -108,6 +117,45 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         singleSelectToggleGroup.check(R.id.pdfLabel);
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.filterTv) {
+            showSortMenu();
+        }
+    }
+
+    private void showSortMenu() {
+        final PopupMenu menu = new PopupMenu(getContext(), emptyView, Gravity.END);
+        menu.inflate(R.menu.sortby_menu);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.lastUpdatedTv) {
+                    sortArray(5);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.createDateTv) {
+                    sortArray(4);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.zToATv) {
+                    sortArray(3);
+                    return true;
+                } else if (menuItem.getItemId() == R.id.sizeTv) {
+                    sortArray(2);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.aTozTv) {
+                    sortArray(1);
+                    menu.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
+        menu.show();
+    }
+
     class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
 
         @Override
@@ -140,5 +188,27 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
             }
 
         }
+    }
+
+    public void sortArray(final int sortBy) {
+        Collections.sort(fileInfoModelArrayList, new Comparator<FileInfoModel>() {
+            @Override
+            public int compare(FileInfoModel fileInfoModel, FileInfoModel t1) {
+                if (sortBy == 1)
+                    return fileInfoModel.getFileName().compareToIgnoreCase(t1.getFileName());//A to Z
+                else if (sortBy == 2)
+                    return Long.compare(fileInfoModel.getFile().length(), t1.getFile().length());//File size
+                else if (sortBy == 3)
+                    return t1.getFileName().compareToIgnoreCase(fileInfoModel.getFileName());//Z to A
+                else if (sortBy == 4)
+                    return Long.compare(fileInfoModel.getFile().lastModified(), t1.getFile().lastModified());//Create Date By
+                else if (sortBy == 5)
+                    return Long.compare(t1.getFile().lastModified(), fileInfoModel.getFile().lastModified());//Recent updated Date By
+
+                return fileInfoModel.getFileName().compareToIgnoreCase(t1.getFileName());
+
+            }
+        });
+        filesAdapter.notifyDataSetChanged();
     }
 }

@@ -1,11 +1,13 @@
 package com.techlogix.pdftime.utilis;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 public class FileInfoUtils {
 
     // GET PDF DETAILS
+
     /**
      * Gives a formatted last modified date for pdf ListView
      *
@@ -29,6 +31,27 @@ public class FileInfoUtils {
      * @return String Size of pdf in formatted form
      */
     public static String getFormattedSize(File file) {
-        return String.format("%.2f MB", (double) file.length() / (1024 * 1024));
+        String modifiedFileSize = null;
+        double fileSize = 0.0;
+        if (file.isFile()) {
+            fileSize = (double) file.length();//in Bytes
+
+            if (fileSize < 1024) {
+                modifiedFileSize = String.valueOf(fileSize).concat("B");
+            } else if (fileSize > 1024 && fileSize < (1024 * 1024)) {
+                modifiedFileSize = String.valueOf(Math.round((fileSize / 1024 * 100.0)) / 100.0).concat("KB");
+            } else {
+                modifiedFileSize = String.valueOf(Math.round((fileSize / (1024 * 1204) * 100.0)) / 100.0).concat("MB");
+            }
+        } else {
+            modifiedFileSize = "Unknown";
+        }
+
+        return modifiedFileSize;
+
+
+//        return String.format("%.2f MB", (double) file.length() / (1024 * 1024));
     }
+
+
 }

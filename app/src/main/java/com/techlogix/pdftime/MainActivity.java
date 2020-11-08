@@ -3,6 +3,7 @@ package com.techlogix.pdftime;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ShareCompat;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.KeyEventDispatcher;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.pdf.PdfDocument;
@@ -23,10 +25,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.techlogix.pdftime.adapters.MainDrawerAdapter;
 import com.techlogix.pdftime.adapters.MainTabsAdapter;
+import com.techlogix.pdftime.dialogs.AlertDialogHelper;
 import com.techlogix.pdftime.fragments.dashboardFragments.FileFragment;
 import com.techlogix.pdftime.fragments.dashboardFragments.FolderFragment;
 import com.techlogix.pdftime.fragments.dashboardFragments.HomeFragment;
@@ -289,6 +293,35 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                 } else if (whereTo.equals(getResources().getString(R.string.word_pdf))) {
                     Intent intent = new Intent(MainActivity.this, TxtWordToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                } else if (whereTo.equals(getResources().getString(R.string.merge_pdf))) {
+                    Intent intent = new Intent(MainActivity.this, MergePdfFileActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                } else if (whereTo.equals(getResources().getString(R.string.file_reducer))) {
+                    Intent intent = new Intent(MainActivity.this, FileReducerActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                } else if (whereTo.equals(getResources().getString(R.string.rate))) {
+                    Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                    Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                    try {
+                        startActivity(myAppLinkToMarket);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(MainActivity.this, " unable to find market app", Toast.LENGTH_LONG).show();
+                    }
+                } else if (whereTo.equals(getResources().getString(R.string.share))) {
+                    ShareCompat.IntentBuilder.from(MainActivity.this)
+                            .setType("text/plain")
+                            .setChooserTitle("Share App")
+                            .setText("http://play.google.com/store/apps/details?id=" + getPackageName()).startChooser();
+                } else if (whereTo.equals(getResources().getString(R.string.quit))) {
+                    AlertDialogHelper.showAlert(MainActivity.this, new AlertDialogHelper.Callback() {
+                        @Override
+                        public void onSucess(int t) {
+                            if (t == 0) {
+                                finish();
+                                System.exit(0);
+                            }
+                        }
+                    }, "Quit", "Do you want to quit this app?");
                 }
             }
         }, 1000);

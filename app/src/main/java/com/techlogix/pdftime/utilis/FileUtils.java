@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+
 import com.techlogix.pdftime.R;
 
 import java.io.File;
@@ -317,15 +318,15 @@ public class FileUtils {
      *
      * @return - intent
      */
-//    public Intent getFileChooser() {
-//        String folderPath = Environment.getExternalStorageDirectory() + "/";
-//        Intent intent = new Intent();
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        Uri myUri = Uri.parse(folderPath);
-//        intent.setDataAndType(myUri, mContext.getString(R.string.pdf_type));
-//
-//        return Intent.createChooser(intent, mContext.getString(R.string.merge_file_select));
-//    }
+    public Intent getFileChooser() {
+        String folderPath = Environment.getExternalStorageDirectory() + "/";
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        Uri myUri = Uri.parse(folderPath);
+        intent.setDataAndType(myUri, mContext.getString(R.string.pdf_type));
+
+        return Intent.createChooser(intent, mContext.getString(R.string.select_file));
+    }
 //
 //    String getUniqueFileName(String fileName) {
 //        String outputFileName = fileName;

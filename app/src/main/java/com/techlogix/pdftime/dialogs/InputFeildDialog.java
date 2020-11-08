@@ -20,7 +20,7 @@ public class InputFeildDialog extends Dialog {
     TextView enterFileTv, titleTv;
     GenericCallback callback;
 
-    public InputFeildDialog(@NonNull Context context, GenericCallback callbac) {
+    public InputFeildDialog(@NonNull Context context, GenericCallback callbac, String title) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setCancelable(true);
@@ -29,6 +29,9 @@ public class InputFeildDialog extends Dialog {
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         this.callback = callbac;
+        titleTv = findViewById(R.id.titleTv);
+        if (!title.isEmpty())
+            titleTv.setText(title);
         saveBtn = findViewById(R.id.saveBtn);
         enterFileNameEd = findViewById(R.id.enterFileNameEd);
         saveBtn.setOnClickListener(new View.OnClickListener() {
@@ -44,4 +47,6 @@ public class InputFeildDialog extends Dialog {
             }
         });
     }
+
+
 }

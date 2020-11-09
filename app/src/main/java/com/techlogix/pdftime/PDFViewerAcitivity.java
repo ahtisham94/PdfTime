@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -125,6 +126,8 @@ public class PDFViewerAcitivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.pdf_menu, menu);
+        menu.findItem(R.id.premiumImg).setVisible(false);
+        menu.findItem(R.id.giftImg).setVisible(false);
         return true;
     }
 }

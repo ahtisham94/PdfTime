@@ -37,13 +37,53 @@
 
     </com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup>
 
+
+    <TextView
+        android:id="@+id/titleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/files"
+        android:textColor="@color/colorGrayDark"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/singleSelectedToggleGroup" />
+
+
+    <TextView
+        android:id="@+id/filterTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:drawableEnd="@drawable/ic_filter"
+        android:drawablePadding="@dimen/_5sdp"
+        android:paddingStart="@dimen/_5sdp"
+        android:textColor="@color/colorGrayDark"
+        android:text="Sort By"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/singleSelectedToggleGroup" />
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/filterTv"
+        app:layout_constraintStart_toStartOf="@+id/filterTv"
+        app:layout_constraintTop_toBottomOf="@+id/filterTv" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sharedFilesRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/singleSelectedToggleGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/titleTv" />
 
 
     <include

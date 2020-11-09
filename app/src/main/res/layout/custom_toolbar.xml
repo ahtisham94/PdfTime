@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:elevation="@dimen/_5sdp"
-    android:background="@color/colorWhite">
+    android:background="@color/colorWhite"
+    android:elevation="@dimen/_5sdp">
 
     <ImageView
         android:id="@+id/hamburgerIv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_5sdp"
+        android:padding="@dimen/_10sdp"
         android:src="@drawable/ic_menu_ic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,22 +21,58 @@
         android:id="@+id/toolBarTitleTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
         android:text="PDF Reader"
         android:textColor="@color/colorGrayDark"
         android:textSize="16sp"
-        android:layout_marginStart="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/hamburgerIv"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <ImageView
+        android:id="@+id/serachImg"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:padding="@dimen/_2sdp"
+        android:src="@drawable/ic_search_ic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/premiumImg"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/premiumImg"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:padding="@dimen/_2sdp"
+        android:src="@drawable/ic_premium_ic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/giftImg"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/giftImg"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:padding="@dimen/_2sdp"
+        android:src="@drawable/ic_video_gift_ic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/addFolderImg"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <ImageView
         android:id="@+id/addFolderImg"
-        android:src="@drawable/ic_add_folder_bg"
-        android:layout_width="36dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="@dimen/_15sdp"
+        android:src="@drawable/ic_add_folder_bg"
         android:visibility="gone"
-        android:layout_height="0dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

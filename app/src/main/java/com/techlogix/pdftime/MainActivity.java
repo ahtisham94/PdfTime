@@ -61,7 +61,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     CurrentFragment fragment, sharedFragmentCallback, folderCurrentFrag, homeCurrentFrag;
 
     TextView toolBarTitleTv;
-    ImageView addFolderImg;
+    ImageView addFolderImg, serachImg, premiumImg, giftImg;
     ArrayList<DraweritemsModel> draweritemsModelsArray;
     RecyclerView drawerRecycler;
     ImageView hamburgerIv;
@@ -99,6 +99,12 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         toolBarTitleTv = findViewById(R.id.toolBarTitleTv);
         addFolderImg = findViewById(R.id.addFolderImg);
         addFolderImg.setOnClickListener(this);
+        serachImg = findViewById(R.id.serachImg);
+        serachImg.setOnClickListener(this);
+        premiumImg = findViewById(R.id.premiumImg);
+        premiumImg.setOnClickListener(this);
+        giftImg = findViewById(R.id.giftImg);
+        giftImg.setOnClickListener(this);
         mDrawerLayout = findViewById(R.id.mDrawerLayout);
         hamburgerIv = findViewById(R.id.hamburgerIv);
         hamburgerIv.setOnClickListener(this);
@@ -133,7 +139,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.remove_ad), R.drawable.ic_ad_d, Constants.ITEM_TYPE, false));
         draweritemsModelsArray.add(new DraweritemsModel("", -1, Constants.BUTTON_TYPE, false));
 //        draweritemsModelsArray.add(new DraweritemsModel("History", R.drawable.ic_shared_ic, Constants.ITEM_TYPE));
-        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.settings), R.drawable.ic_setting_d, Constants.ITEM_TYPE, false));
+//        draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.settings), R.drawable.ic_setting_d, Constants.ITEM_TYPE, false));
         draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.rate), R.drawable.ic_rate_d, Constants.ITEM_TYPE, false));
         draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.share), R.drawable.ic_share_d, Constants.ITEM_TYPE, false));
         draweritemsModelsArray.add(new DraweritemsModel(getString(R.string.privacy), R.drawable.ic_privacy_d, Constants.ITEM_TYPE, false));
@@ -174,21 +180,21 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         }
         Fragment fragment = tabsadapter.getItem(position);
         if (fragment instanceof HomeFragment) {
-            addFolderImg.setVisibility(View.GONE);
+            setToolboorImagesVisibility();
             setTitle("PDF Reader");
         } else if (fragment instanceof FileFragment) {
-            addFolderImg.setVisibility(View.GONE);
+            setToolboorImagesVisibility();
             setTitle("All Files");
             ((FileFragment) fragment).currentFrag();
         } else if (fragment instanceof FolderFragment) {
-            addFolderImg.setVisibility(View.VISIBLE);
+            setToolboorImagesVisibility();
             setTitle("Folders");
             folderCurrentFrag.currentFrag();
         } else if (fragment instanceof ToolsFragment) {
-            addFolderImg.setVisibility(View.GONE);
+            setToolboorImagesVisibility();
             setTitle("Tools");
         } else if (fragment instanceof SharedFragment) {
-            addFolderImg.setVisibility(View.GONE);
+            setToolboorImagesVisibility();
             setTitle("Shared");
             sharedFragmentCallback.currentFrag();
         }
@@ -205,21 +211,22 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         if (viewPager.getCurrentItem() == 0) {
+            setToolboorImagesVisibility();
             super.onBackPressed();
         } else if (viewPager.getCurrentItem() == 1) {
-            addFolderImg.setVisibility(View.GONE);
+            setToolboorImagesVisibility();
             setTitle("PDF Reader");
             viewPager.setCurrentItem(0, true);
         } else if (viewPager.getCurrentItem() == 2) {
-            addFolderImg.setVisibility(View.GONE);
+            setToolboorImagesVisibility();
             setTitle("All Files");
             viewPager.setCurrentItem(1, true);
         } else if (viewPager.getCurrentItem() == 3) {
             setTitle("Folders");
-            addFolderImg.setVisibility(View.VISIBLE);
+            setToolboorImagesVisibility();
             viewPager.setCurrentItem(2, true);
         } else if (viewPager.getCurrentItem() == 4) {
-            addFolderImg.setVisibility(View.GONE);
+            setToolboorImagesVisibility();
             setTitle("Tools");
             viewPager.setCurrentItem(3, true);
         } else {
@@ -267,6 +274,12 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         if (view.getId() == R.id.addFolderImg) {
             folderFragment.onClick();
         } else if (view.getId() == R.id.hamburgerIv) {
+            openCloseDrawer();
+        } else if (view.getId() == R.id.serachImg) {
+            startActivity(new Intent(MainActivity.this, SearchFileActivity.class));
+        } else if (view.getId() == R.id.premiumImg) {
+            openCloseDrawer();
+        } else if (view.getId() == R.id.giftImg) {
             openCloseDrawer();
         }
     }
@@ -326,5 +339,24 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             }
         }, 1000);
 
+    }
+
+    public void setToolboorImagesVisibility() {
+        if (viewPager.getCurrentItem() == 0) {
+            serachImg.setVisibility(View.VISIBLE);
+            premiumImg.setVisibility(View.VISIBLE);
+            giftImg.setVisibility(View.VISIBLE);
+            addFolderImg.setVisibility(View.GONE);
+        } else if (viewPager.getCurrentItem() == 1 || viewPager.getCurrentItem() == 4 || viewPager.getCurrentItem() == 3) {
+            serachImg.setVisibility(View.GONE);
+            premiumImg.setVisibility(View.VISIBLE);
+            giftImg.setVisibility(View.VISIBLE);
+            addFolderImg.setVisibility(View.GONE);
+        } else if (viewPager.getCurrentItem() == 2) {
+            serachImg.setVisibility(View.GONE);
+            premiumImg.setVisibility(View.VISIBLE);
+            giftImg.setVisibility(View.VISIBLE);
+            addFolderImg.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -99,7 +99,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
             if (PermissionUtils.hasPermissionGranted(FileReducerActivity.this, new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
             })) {
-                startActivityForResult(mFileUtils.getFileChooser(),
+                startActivityForResult(mFileUtils.getFileChooser(""),
                         INTENT_REQUEST_PICK_FILE_CODE);
             }
         } else if (view.getId() == R.id.convertPdf) {

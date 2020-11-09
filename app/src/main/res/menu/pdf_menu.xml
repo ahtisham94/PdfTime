@@ -6,8 +6,19 @@
         android:icon="@drawable/ic_share_white_24"
         android:title="@string/share"
         app:showAsAction="always" />
-    <item android:id="@+id/moveToFolder"
+    <item
+        android:id="@+id/moveToFolder"
+        android:icon="@drawable/ic_add_folder_bg_toolbar"
         android:title="@string/move_to_folder"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_add_folder_bg_toolbar"/>
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/premiumImg"
+        android:icon="@drawable/ic_premium_ic"
+        android:title="@string/move_to_folder"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/giftImg"
+        android:icon="@drawable/ic_video_gift_ic"
+        android:title="@string/move_to_folder"
+        app:showAsAction="always" />
 </menu>

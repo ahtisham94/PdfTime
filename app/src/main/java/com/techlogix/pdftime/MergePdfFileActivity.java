@@ -82,7 +82,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE
             })) {
-                startActivityForResult(mFileUtils.getFileChooser(),
+                startActivityForResult(mFileUtils.getFileChooser(""),
                         INTENT_REQUEST_PICK_FILE_CODE);
             } else {
                 PermissionUtils.checkAndRequestPermissions(MergePdfFileActivity.this, new String[]{
@@ -101,7 +101,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
                     }
 
                 }
-            },"Merge File").show();
+            }, "Merge File").show();
         }
     }
 

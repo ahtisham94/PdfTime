@@ -8,6 +8,43 @@
     tools:context=".fragments.dashboardFragments.FolderFragment">
 
 
+    <TextView
+        android:id="@+id/titleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/folders"
+        android:textColor="@color/colorGrayDark"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/filterTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/ic_filter"
+        android:paddingStart="@dimen/_5sdp"
+        android:text="Sort By"
+        android:drawablePadding="@dimen/_5sdp"
+        android:textColor="@color/colorGrayDark"
+        android:textSize="14sp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/titleTv" />
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/filterTv"
+        app:layout_constraintStart_toStartOf="@+id/filterTv"
+        app:layout_constraintTop_toBottomOf="@+id/filterTv" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/foldersRecycler"
         android:layout_width="match_parent"
@@ -16,7 +53,7 @@
         android:paddingBottom="@dimen/_10sdp"
         app:layout_constraintBottom_toTopOf="@+id/bannerLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleTv"
         app:layout_constraintVertical_bias="0.0" />
 
     <include

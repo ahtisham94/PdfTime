@@ -227,6 +227,11 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         dialog.show();
     }
 
+    public void filterList(ArrayList<FileInfoModel> filterdNames) {
+        this.filesArrayList = filterdNames;
+        notifyDataSetChanged();
+    }
+
     public FileInfoModel getItem(int position) {
         return filesArrayList.get(position);
     }

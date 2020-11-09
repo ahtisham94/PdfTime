@@ -16,19 +16,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FileReducerActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".MergePdfFileActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".TxtWordToPdfActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ImageToPdfActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".SearchFileActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".FileReducerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MergePdfFileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TxtWordToPdfActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ImageToPdfActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".PDFViewerAcitivity"
             android:label="@string/pdf_reader" />
-        <activity android:name=".AllFilesInFolderActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".AllFilesInFolderActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait">

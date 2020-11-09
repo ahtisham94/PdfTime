@@ -318,15 +318,25 @@ public class FileUtils {
      *
      * @return - intent
      */
-    public Intent getFileChooser() {
+    public Intent getFileChooser(String dataType) {
         String folderPath = Environment.getExternalStorageDirectory() + "/";
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
         Uri myUri = Uri.parse(folderPath);
-        intent.setDataAndType(myUri, mContext.getString(R.string.pdf_type));
-
+        intent.setDataAndType(myUri, dataType.isEmpty() ? mContext.getString(R.string.pdf_type) : dataType);
         return Intent.createChooser(intent, mContext.getString(R.string.select_file));
     }
+
+
+    public Intent getMultipleFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        String[] mimeTypes = {"application/pdf", "pplication/msword", "application/vnd.ms-powerpoint", "application/vnd.ms-excel", "text/plain"};
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        return intent;
+    }
+
 //
 //    String getUniqueFileName(String fileName) {
 //        String outputFileName = fileName;

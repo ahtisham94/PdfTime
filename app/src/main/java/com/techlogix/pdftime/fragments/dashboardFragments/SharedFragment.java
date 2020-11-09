@@ -11,10 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.techlogix.pdftime.BaseActivity;
 import com.techlogix.pdftime.R;
@@ -27,8 +31,11 @@ import com.techlogix.pdftime.utilis.DirectoryUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class SharedFragment extends Fragment implements SingleSelectToggleGroup.OnCheckedChangeListener,
+        View.OnClickListener,
         CurrentFragment {
     RecyclerView sharedFilesRecycler;
     BaseActivity baseActivity;
@@ -37,6 +44,7 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
     RelativeLayout noFileLayout;
     ArrayList<FileInfoModel> fileInfoModelArrayList;
     SingleSelectToggleGroup singleSelectToggleGroup;
+    TextView filterTv, emptyView;
 
     public SharedFragment() {
         // Required empty public constructor
@@ -65,6 +73,9 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
         singleSelectToggleGroup = view.findViewById(R.id.singleSelectedToggleGroup);
         singleSelectToggleGroup.setOnCheckedChangeListener(this);
         mDirectoryUtils.createFolder("SharedByMe");
+        filterTv = view.findViewById(R.id.filterTv);
+        filterTv.setOnClickListener(this);
+        emptyView = view.findViewById(R.id.empty_view);
     }
 
     @Override
@@ -108,5 +119,65 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
             getFiles(new File(Environment.getExternalStorageDirectory(), Constants.folderDirectory + "SharedByMe"));
 
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.filterTv) {
+            showSortMenu();
+        }
+    }
+    private void showSortMenu() {
+        final PopupMenu menu = new PopupMenu(getContext(), emptyView, Gravity.END);
+        menu.inflate(R.menu.sortby_menu);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.lastUpdatedTv) {
+                    sortArray(5);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.createDateTv) {
+                    sortArray(4);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.zToATv) {
+                    sortArray(3);
+                    return true;
+                } else if (menuItem.getItemId() == R.id.sizeTv) {
+                    sortArray(2);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.aTozTv) {
+                    sortArray(1);
+                    menu.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
+        menu.show();
+    }
+
+    public void sortArray(final int sortBy) {
+        Collections.sort(fileInfoModelArrayList, new Comparator<FileInfoModel>() {
+            @Override
+            public int compare(FileInfoModel fileInfoModel, FileInfoModel t1) {
+                if (sortBy == 1)
+                    return fileInfoModel.getFileName().compareToIgnoreCase(t1.getFileName());//A to Z
+                else if (sortBy == 2)
+                    return Long.compare(fileInfoModel.getFile().length(), t1.getFile().length());//File size
+                else if (sortBy == 3)
+                    return t1.getFileName().compareToIgnoreCase(fileInfoModel.getFileName());//Z to A
+                else if (sortBy == 4)
+                    return Long.compare(fileInfoModel.getFile().lastModified(), t1.getFile().lastModified());//Create Date By
+                else if (sortBy == 5)
+                    return Long.compare(t1.getFile().lastModified(), fileInfoModel.getFile().lastModified());//Recent updated Date By
+
+                return fileInfoModel.getFileName().compareToIgnoreCase(t1.getFileName());
+
+            }
+        });
+        filesAdapter.notifyDataSetChanged();
     }
 }

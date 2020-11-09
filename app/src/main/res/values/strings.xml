@@ -59,6 +59,9 @@
     <string name="size">Size</string>
     <string name="a_to_z">A To Z</string>
     <string name="z_to_a">Z To A</string>
+    <string name="import_files">Import Files</string>
+    <string name="search_file_here">Search File Here</string>
+    <string name="premium">Premium</string>
 
 
 </resources>

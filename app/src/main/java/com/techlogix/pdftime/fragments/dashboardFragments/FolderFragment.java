@@ -4,11 +4,15 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,18 +28,21 @@ import com.techlogix.pdftime.dialogs.CreateFolderDialog;
 import com.techlogix.pdftime.interfaces.CurrentFragment;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.PermissionCallback;
+import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 import static com.techlogix.pdftime.utilis.Constants.READ_EXTERNAL_STORAGE;
 import static com.techlogix.pdftime.utilis.Constants.WRITE_EXTERNAL_STORAGE;
 
 public class FolderFragment extends Fragment implements View.OnClickListener, PermissionCallback,
-        GenericCallback , CurrentFragment {
+        GenericCallback, CurrentFragment {
     RecyclerView foldersRecycler;
     RelativeLayout noFolderLayout;
     Button createFolderBtn;
@@ -43,6 +50,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
     BaseActivity baseActivity;
     AllFolderAdapter adapter;
     DirectoryUtils mDirectory;
+    TextView filterTv, emptyView;
 
     public FolderFragment() {
         // Required empty public constructor
@@ -70,6 +78,9 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
         noFolderLayout = view.findViewById(R.id.noFolderLayout);
         createFolderBtn = view.findViewById(R.id.createFolderBtn);
         createFolderBtn.setOnClickListener(this);
+        filterTv = view.findViewById(R.id.filterTv);
+        filterTv.setOnClickListener(this);
+        emptyView = view.findViewById(R.id.empty_view);
         adapter = new AllFolderAdapter(foldersArray, getContext());
         adapter.setCallback(this);
         foldersRecycler.setAdapter(adapter);
@@ -96,6 +107,8 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
     public void onClick(View view) {
         if (view.getId() == R.id.createFolderBtn) {
             createFolder();
+        } else if (view.getId() == R.id.filterTv) {
+            showSortMenu();
         }
     }
 
@@ -126,13 +139,67 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
 
     @Override
     public void callback(Object o) {
-        Intent intent=new Intent(getContext(), AllFilesInFolderActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("path",((File)o).getAbsolutePath());
+        Intent intent = new Intent(getContext(), AllFilesInFolderActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("path", ((File) o).getAbsolutePath());
         Objects.requireNonNull(getContext()).startActivity(intent);
     }
 
     @Override
     public void currentFrag() {
         getAllFolders();
+    }
+
+    private void showSortMenu() {
+        final PopupMenu menu = new PopupMenu(getContext(), emptyView, Gravity.END);
+        menu.inflate(R.menu.sortby_menu);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.lastUpdatedTv) {
+                    sortArray(5);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.createDateTv) {
+                    sortArray(4);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.zToATv) {
+                    sortArray(3);
+                    return true;
+                } else if (menuItem.getItemId() == R.id.sizeTv) {
+                    sortArray(2);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.aTozTv) {
+                    sortArray(1);
+                    menu.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
+        menu.show();
+    }
+
+    public void sortArray(final int sortBy) {
+        Collections.sort(foldersArray, new Comparator<File>() {
+            @Override
+            public int compare(File fileInfoModel, File t1) {
+                if (sortBy == 1)
+                    return fileInfoModel.getName().compareToIgnoreCase(t1.getName());//A to Z
+                else if (sortBy == 2)
+                    return Long.compare(fileInfoModel.length(), t1.length());//File size
+                else if (sortBy == 3)
+                    return t1.getName().compareToIgnoreCase(fileInfoModel.getName());//Z to A
+                else if (sortBy == 4)
+                    return Long.compare(fileInfoModel.lastModified(), t1.lastModified());//Create Date By
+                else if (sortBy == 5)
+                    return Long.compare(t1.lastModified(), fileInfoModel.lastModified());//Recent updated Date By
+
+                return fileInfoModel.getName().compareToIgnoreCase(t1.getName());
+
+            }
+        });
+        adapter.notifyDataSetChanged();
     }
 }

@@ -25,10 +25,9 @@
                 android:id="@+id/createPDFRl"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_120sdp"
-                android:layout_marginStart="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:background="@drawable/blue_bg"
+                android:background="@drawable/create_pdf_t"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
 
@@ -45,27 +44,19 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_toEndOf="@+id/headingTv"
-                    android:padding="@dimen/_30sdp"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_create_pdf_d" />
+
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/wordPdfRl"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_90sdp"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:background="@drawable/word_bt_selector"
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintEnd_toStartOf="@+id/imagePdfRl"
-                app:layout_constraintStart_toStartOf="@+id/createPDFRl"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/createPDFRl">
 
                 <ImageView
@@ -124,11 +115,11 @@
                 android:id="@+id/mergePdfRl"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_90sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:background="@drawable/merge_pdf_bg"
                 android:clickable="true"
-
                 android:focusable="true"
-                app:layout_constraintEnd_toEndOf="@+id/createPDFRl"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imagePdfRl"
                 app:layout_constraintTop_toTopOf="@+id/imagePdfRl">
 
@@ -184,7 +175,8 @@
                     android:textSize="12sp" />
             </RelativeLayout>
 
-            <RelativeLayout
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/securePdfRl"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_90sdp"
@@ -198,15 +190,22 @@
                 app:layout_constraintStart_toEndOf="@+id/scanPdfRl"
                 app:layout_constraintTop_toTopOf="@+id/scanPdfRl">
 
+
                 <ImageView
                     android:id="@+id/secureImg"
                     android:layout_width="@dimen/_30sdp"
                     android:layout_height="@dimen/_30sdp"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:src="@drawable/ic_password_d_white" />
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:src="@drawable/ic_password_d_white"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/titleTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/secureImg"
@@ -214,8 +213,11 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:text="Secure File"
                     android:textColor="@color/colorWhite"
-                    android:textSize="12sp" />
-            </RelativeLayout>
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/secureImg" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <RelativeLayout
                 android:id="@+id/fileReducerPdfRl"

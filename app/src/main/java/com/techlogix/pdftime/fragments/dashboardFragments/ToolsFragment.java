@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -17,10 +18,12 @@ import com.techlogix.pdftime.FileReducerActivity;
 import com.techlogix.pdftime.ImageToPdfActivity;
 import com.techlogix.pdftime.MergePdfFileActivity;
 import com.techlogix.pdftime.R;
+import com.techlogix.pdftime.SecurePdfActivity;
 import com.techlogix.pdftime.TxtWordToPdfActivity;
 
 public class ToolsFragment extends Fragment implements View.OnClickListener {
-    RelativeLayout wordPdfRl, imagePdfRl, mergePdfRl, scanPdfRl, securePdfRl, fileReducerPdfRl;
+    RelativeLayout wordPdfRl, imagePdfRl, mergePdfRl, scanPdfRl, fileReducerPdfRl;
+    ConstraintLayout securePdfRl;
 
     public ToolsFragment() {
         // Required empty public constructor
@@ -74,6 +77,9 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.fileReducerPdfRl:
                 startActivity(new Intent(getContext(), FileReducerActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                break;
+            case R.id.securePdfRl:
+                startActivity(new Intent(getContext(), SecurePdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
         }
     }

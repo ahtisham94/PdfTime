@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,22 +19,32 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnErrorListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.exceptions.BadPasswordException;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfReader;
+import com.techlogix.pdftime.dialogs.InputFeildDialog;
 import com.techlogix.pdftime.dialogs.MoveFileDialog;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
+import com.techlogix.pdftime.utilis.RealPathUtil;
+import com.techlogix.pdftime.utilis.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
-public class PDFViewerAcitivity extends BaseActivity {
+public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener, GenericCallback {
     Toolbar toolbar;
     PDFView pdfView;
     File file;
     DirectoryUtils mDirectory;
     Uri uri;
+    Boolean firstTry = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,19 +70,23 @@ public class PDFViewerAcitivity extends BaseActivity {
             } else {
                 uri = Uri.parse(getIntent().getStringExtra("uri"));
             }
-            loadPDFFile(path == null ? uri : file);
+            loadPDFFile(file == null ? uri : file, "");
+
         }
+
         mDirectory = new DirectoryUtils(PDFViewerAcitivity.this);
 
     }
 
-    private void loadPDFFile(Comparable<? extends Comparable<?>> comparable) {
+    private void loadPDFFile(Comparable<? extends Comparable<?>> comparable, String password) {
         if (comparable instanceof File) {
             pdfView.fromFile(file).defaultPage(0)
                     .enableDoubletap(true)
                     .enableSwipe(true)
                     .enableAntialiasing(true)
                     .spacing(0)
+                    .onError(this)
+                    .password(password)
                     .load();
         } else if (comparable instanceof Uri) {
             pdfView.fromUri(uri).defaultPage(0)
@@ -79,6 +94,8 @@ public class PDFViewerAcitivity extends BaseActivity {
                     .enableSwipe(true)
                     .enableAntialiasing(true)
                     .spacing(0)
+                    .onError(this)
+                    .password(password)
                     .load();
         }
     }
@@ -89,8 +106,8 @@ public class PDFViewerAcitivity extends BaseActivity {
                 .enableSwipe(true)
                 .enableAntialiasing(true)
                 .spacing(0)
+                .password("pass@123")
                 .load();
-
 
     }
 
@@ -129,5 +146,33 @@ public class PDFViewerAcitivity extends BaseActivity {
         menu.findItem(R.id.premiumImg).setVisible(false);
         menu.findItem(R.id.giftImg).setVisible(false);
         return true;
+    }
+
+    @Override
+    public void onError(Throwable t) {
+        if (t.getMessage().contains("Password required or incorrect password")) {
+            final InputFeildDialog dialog = new InputFeildDialog(PDFViewerAcitivity.this, this, "PDF File Password");
+            dialog.forpasswordSettings("Enter password");
+            if (firstTry) {
+                dialog.show();
+                firstTry = false;
+            } else {
+                StringUtils.getInstance().getSnackbarwithAction(PDFViewerAcitivity.this, R.string.incorrect_password)
+                        .setAction("Try Again", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.show();
+                            }
+                        }).show();
+            }
+
+        }
+    }
+
+
+    @Override
+    public void callback(Object o) {
+        loadPDFFile(file == null ? uri : file, (String) o);
+
     }
 }

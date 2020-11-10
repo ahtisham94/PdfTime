@@ -62,6 +62,8 @@
     <string name="import_files">Import Files</string>
     <string name="search_file_here">Search File Here</string>
     <string name="premium">Premium</string>
+    <string name="incorrect_password">Incorrect Password</string>
+    <string name="secure_files">Secure Files</string>
 
 
 </resources>

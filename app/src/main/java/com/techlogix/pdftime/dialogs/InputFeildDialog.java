@@ -30,6 +30,7 @@ public class InputFeildDialog extends Dialog {
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         this.callback = callbac;
         titleTv = findViewById(R.id.titleTv);
+        enterFileTv = findViewById(R.id.enterFileTv);
         if (!title.isEmpty())
             titleTv.setText(title);
         saveBtn = findViewById(R.id.saveBtn);
@@ -38,7 +39,7 @@ public class InputFeildDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 if (enterFileNameEd.getText().toString().isEmpty()) {
-                    enterFileNameEd.setError("Please enter file name");
+                    enterFileNameEd.setError("Please enter valid entry");
                     enterFileNameEd.requestFocus();
                 } else {
                     callback.callback(enterFileNameEd.getText().toString());
@@ -48,5 +49,10 @@ public class InputFeildDialog extends Dialog {
         });
     }
 
+    public void forpasswordSettings(String enterFileTv) {
+        this.enterFileTv.setText(enterFileTv);
+        saveBtn.setText("Done");
+        enterFileNameEd.setHint("Please enter password");
 
+    }
 }

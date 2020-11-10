@@ -50,20 +50,20 @@
         android:id="@+id/sizeTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_3sdp"
         android:text="Size : 3MB"
         android:textColor="@color/colorGrayDark"
         app:layout_constraintStart_toStartOf="@+id/fileNameTv"
-        app:layout_constraintTop_toBottomOf="@+id/fileNameTv"
-        android:layout_marginTop="@dimen/_3sdp"/>
+        app:layout_constraintTop_toBottomOf="@+id/fileNameTv" />
 
     <TextView
         android:id="@+id/dateTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/sizeTv"
-        app:layout_constraintEnd_toStartOf="@+id/moreImg"
         android:layout_marginEnd="@dimen/_10sdp"
-        android:text="10-10-2020"/>
+        android:text="10-10-2020"
+        app:layout_constraintEnd_toStartOf="@+id/moreImg"
+        app:layout_constraintTop_toTopOf="@+id/sizeTv" />
 
     <ImageView
         android:id="@+id/moreImg"
@@ -71,6 +71,17 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/_10sdp"
         android:src="@drawable/ic_more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_more"
+        android:visibility="gone"
+        android:padding="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

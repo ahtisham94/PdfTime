@@ -21,6 +21,14 @@
 
             tools:context=".fragments.dashboardFragments.ToolsFragment">
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/verticalGuidLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintGuide_percent="0.666666"
+                android:orientation="vertical" />
+
+
             <RelativeLayout
                 android:id="@+id/createPDFRl"
                 android:layout_width="0dp"
@@ -38,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginStart="@dimen/_30sdp"
                     android:text="Create PDF"
                     android:textColor="@color/colorWhite"
                     android:textSize="18sp"
@@ -54,6 +62,7 @@
                 android:layout_marginStart="@dimen/_10sdp"
                 android:background="@drawable/word_bt_selector"
                 android:clickable="true"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:focusable="true"
                 app:layout_constraintEnd_toStartOf="@+id/imagePdfRl"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,6 +127,7 @@
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:background="@drawable/merge_pdf_bg"
                 android:clickable="true"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:focusable="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imagePdfRl"
@@ -151,6 +161,7 @@
                 android:background="@drawable/scan_pdf_bg"
                 android:clickable="true"
                 android:focusable="true"
+                android:layout_marginEnd="@dimen/_10sdp"
                 app:layout_constraintEnd_toStartOf="@+id/securePdfRl"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/wordPdfRl"
@@ -174,7 +185,6 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="12sp" />
             </RelativeLayout>
-
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/securePdfRl"
@@ -225,7 +235,7 @@
                 android:layout_height="@dimen/_90sdp"
                 android:background="@drawable/files_reducer_bg"
                 android:clickable="true"
-
+                android:layout_marginStart="@dimen/_10sdp"
                 android:focusable="true"
                 app:layout_constraintEnd_toEndOf="@+id/mergePdfRl"
                 app:layout_constraintStart_toEndOf="@+id/securePdfRl"
@@ -249,6 +259,29 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="12sp" />
             </RelativeLayout>
+
+
+            <ImageView
+                android:id="@+id/premiumTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/premium_t"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintEnd_toStartOf="@+id/verticalGuidLine"
+                app:layout_constraintTop_toTopOf="@+id/securePdfRl" />
+
+
+            <ImageView
+                android:id="@+id/premiumTag2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:src="@drawable/premium_t"
+                android:layout_marginEnd="@dimen/_2sdp"
+                app:layout_constraintTop_toTopOf="@+id/fileReducerPdfRl"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

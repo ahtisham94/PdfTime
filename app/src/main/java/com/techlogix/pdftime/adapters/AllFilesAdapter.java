@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,10 +42,11 @@ import java.util.ArrayList;
 public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFilesHolder> {
 
     Context context;
-    ArrayList<FileInfoModel> filesArrayList;
+    ArrayList<FileInfoModel> filesArrayList, checkBoxArray;
     DirectoryUtils mDirectory;
     RecyclerView recyclerView;
     GenericCallback callback;
+    boolean showCheckbox = false;
 
     public void setCallback(GenericCallback callback) {
         this.callback = callback;
@@ -52,6 +56,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         this.context = context;
         this.filesArrayList = filesArrayList;
         mDirectory = new DirectoryUtils(context);
+        checkBoxArray = new ArrayList<>();
     }
 
     @Override
@@ -73,8 +78,14 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         notifyDataSetChanged();
     }
 
+    public void setShowCheckbox(boolean showMoreBtn) {
+        this.showCheckbox = showMoreBtn;
+    }
+
     @Override
     public void onBindViewHolder(@NonNull final MyFilesHolder holder, int position) {
+        if (showCheckbox)
+            holder.setViewsAllignment();
         holder.fileNameTv.setText(filesArrayList.get(holder.getAdapterPosition()).getFileName());
         holder.sizeTv.setText(FileInfoUtils.getFormattedSize(filesArrayList.get(holder.getAdapterPosition()).getFile()));
         holder.dateTv.setText(FileInfoUtils.getFormattedDate(filesArrayList.get(holder.getAdapterPosition()).getFile()));
@@ -150,6 +161,20 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
                 }
             }
         });
+
+
+        if (holder.checkBox.getVisibility() == View.VISIBLE) {
+            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if (b) {
+                        checkBoxArray.add(filesArrayList.get(holder.getAdapterPosition()));
+                    } else
+                        checkBoxArray.remove(filesArrayList.get(holder.getAdapterPosition()));
+                    callback.callback(checkBoxArray);
+                }
+            });
+        }
 
 
     }
@@ -261,6 +286,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         TextView fileTypeTv, fileNameTv, sizeTv, dateTv;
         ImageView moreImg;
         ConstraintLayout rootLayout;
+        CheckBox checkBox;
 
         public MyFilesHolder(@NonNull View itemView) {
             super(itemView);
@@ -271,6 +297,19 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
             dateTv = itemView.findViewById(R.id.dateTv);
             moreImg = itemView.findViewById(R.id.moreImg);
             rootLayout = itemView.findViewById(R.id.rootLayout);
+            checkBox = itemView.findViewById(R.id.checkbox);
+        }
+
+
+        public void setViewsAllignment() {
+            ConstraintLayout constraintLayout = rootLayout;
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(constraintLayout);
+            constraintSet.connect(R.id.fileNameTv, ConstraintSet.END, R.id.checkbox, ConstraintSet.START, 0);
+            constraintSet.connect(R.id.dateTv, ConstraintSet.END, R.id.checkbox, ConstraintSet.START, context.getResources().getDimensionPixelSize(R.dimen._10sdp));
+            constraintSet.applyTo(constraintLayout);
+            moreImg.setVisibility(View.GONE);
+            checkBox.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -18,6 +18,7 @@ import com.techlogix.pdftime.FileReducerActivity;
 import com.techlogix.pdftime.ImageToPdfActivity;
 import com.techlogix.pdftime.MergePdfFileActivity;
 import com.techlogix.pdftime.R;
+import com.techlogix.pdftime.ScanPDFActivity;
 import com.techlogix.pdftime.SecurePdfActivity;
 import com.techlogix.pdftime.TxtWordToPdfActivity;
 
@@ -80,6 +81,9 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.securePdfRl:
                 startActivity(new Intent(getContext(), SecurePdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                break;
+            case R.id.scanPdfRl:
+                startActivity(new Intent(getContext(), ScanPDFActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
         }
     }

@@ -16,6 +16,7 @@ import java.util.Comparator;
 
 public class Constants {
     public static int READ_EXTERNAL_STORAGE = 101;
+    public static int OPEN_CAMERA = 1001;
     public static int WRITE_EXTERNAL_STORAGE = 155;
     public static int HEADER_TYPE = 120;
     public static int BUTTON_TYPE = 1121;

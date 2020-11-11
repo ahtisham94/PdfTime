@@ -17,7 +17,7 @@ import com.techlogix.pdftime.interfaces.GenericCallback;
 public class InputFeildDialog extends Dialog {
     Button saveBtn;
     EditText enterFileNameEd;
-    TextView enterFileTv, titleTv;
+    TextView titleTv;
     GenericCallback callback;
 
     public InputFeildDialog(@NonNull Context context, GenericCallback callbac, String title) {
@@ -30,7 +30,7 @@ public class InputFeildDialog extends Dialog {
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         this.callback = callbac;
         titleTv = findViewById(R.id.titleTv);
-        enterFileTv = findViewById(R.id.enterFileTv);
+
         if (!title.isEmpty())
             titleTv.setText(title);
         saveBtn = findViewById(R.id.saveBtn);
@@ -50,7 +50,6 @@ public class InputFeildDialog extends Dialog {
     }
 
     public void forpasswordSettings(String enterFileTv) {
-        this.enterFileTv.setText(enterFileTv);
         saveBtn.setText("Done");
         enterFileNameEd.setHint("Please enter password");
 

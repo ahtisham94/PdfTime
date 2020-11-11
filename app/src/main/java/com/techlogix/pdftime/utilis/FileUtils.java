@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.techlogix.pdftime.utilis.Constants.PATH_SEPERATOR;
+import static com.techlogix.pdftime.utilis.Constants.STORAGE_LOCATION;
 import static com.techlogix.pdftime.utilis.Constants.pdfExtension;
 
 public class FileUtils {
@@ -169,13 +170,13 @@ public class FileUtils {
      * @return true if file exists else false
      */
 
-//    public boolean isFileExist(String mFileName) {
-//        String path = mSharedPreferences.getString(STORAGE_LOCATION,
-//                StringUtils.getInstance().getDefaultStorageLocation()) + mFileName;
-//        File file = new File(path);
-//
-//        return file.exists();
-//    }
+    public boolean isFileExist(String mFileName) {
+        String path = mSharedPreferences.getString(STORAGE_LOCATION,
+                StringUtils.getInstance().getDefaultStorageLocation()) + mFileName;
+        File file = new File(path);
+
+        return file.exists();
+    }
 
     /**
      * Extracts file name from the URI
@@ -338,26 +339,26 @@ public class FileUtils {
     }
 
 //
-//    String getUniqueFileName(String fileName) {
-//        String outputFileName = fileName;
-//        File file = new File(outputFileName);
-//
-//        if (!isFileExist(file.getName()))
-//            return outputFileName;
-//
-//        File parentFile = file.getParentFile();
-//        if (parentFile != null) {
-//            File[] listFiles = parentFile.listFiles();
-//
-//            if (listFiles != null) {
-//                int append = checkRepeat(outputFileName, Arrays.asList(listFiles));
-//                outputFileName = outputFileName.replace(mContext.getString(R.string.pdf_ext),
-//                        append + mContext.getResources().getString(R.string.pdf_ext));
-//            }
-//        }
-//
-//        return outputFileName;
-//    }
+    String getUniqueFileName(String fileName) {
+        String outputFileName = fileName;
+        File file = new File(outputFileName);
+
+        if (!isFileExist(file.getName()))
+            return outputFileName;
+
+        File parentFile = file.getParentFile();
+        if (parentFile != null) {
+            File[] listFiles = parentFile.listFiles();
+
+            if (listFiles != null) {
+                int append = checkRepeat(outputFileName, Arrays.asList(listFiles));
+                outputFileName = outputFileName.replace(mContext.getString(R.string.pdf_ext),
+                        append + mContext.getResources().getString(R.string.pdf_ext));
+            }
+        }
+
+        return outputFileName;
+    }
 
     /**
      * Opens a Dialog to select a filename.

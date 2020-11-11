@@ -7,6 +7,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -22,10 +24,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
+import com.techlogix.pdftime.dialogs.InputFeildDialog;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
+import com.techlogix.pdftime.utilis.PDFEncryptionUtility;
+import com.techlogix.pdftime.utilis.PDFUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
 import com.techlogix.pdftime.utilis.StringUtils;
 
@@ -43,6 +48,9 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
     AllFilesAdapter filesAdapter;
     TextView filterTv, emptyView;
     Button secureFileBg;
+    int fileNum = -1;
+    PDFEncryptionUtility pdfEncryptionUtility;
+    PDFUtils pdfUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +74,8 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         mDirectoryUtils = new DirectoryUtils(SecurePdfActivity.this);
+        pdfUtils = new PDFUtils(SecurePdfActivity.this);
+        pdfEncryptionUtility = new PDFEncryptionUtility(SecurePdfActivity.this);
         fileInfoModelArrayList = new ArrayList<>();
         checkboxArray = new ArrayList<>();
         dialog = new ProgressDialog(SecurePdfActivity.this);
@@ -110,11 +120,40 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
             showSortMenu();
         } else if (view.getId() == R.id.secureFileBg) {
             if (checkboxArray.size() > 0) {
-
+                fileNum++;
+                doEncryptions(checkboxArray.get(fileNum));
             } else {
                 StringUtils.getInstance().showSnackbar(SecurePdfActivity.this, "Please select atleast one file");
             }
         }
+    }
+
+    private void doEncryptions(final FileInfoModel fileInfoModel) {
+        final InputFeildDialog dialog1 = new InputFeildDialog(SecurePdfActivity.this, new GenericCallback() {
+            @Override
+            public void callback(Object o) {
+                try {
+                    if (!pdfUtils.isPDFEncrypted(fileInfoModel.getFile().getAbsolutePath())) {
+                        dialog.show();
+                        String path = pdfEncryptionUtility.doEncryption(fileInfoModel.getFile().getAbsolutePath(), (String) o);
+                        filesAdapter.refreshArray(new File(path));
+                        dialog.dismiss();
+                    }
+                    fileNum++;
+                    if (fileNum < checkboxArray.size()) {
+                        doEncryptions(checkboxArray.get(fileNum));
+                    }
+
+                } catch (Exception e) {
+                    dialog.dismiss();
+                    Log.d("encryption", "Encryption Error");
+                }
+
+            }
+        }, "Secure PDF");
+        dialog1.forpasswordSettings("Enter Password");
+        dialog1.show();
+
     }
 
     private void showSortMenu() {
@@ -170,6 +209,8 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
         });
         filesAdapter.notifyDataSetChanged();
     }
+
+
 
 
     @Override

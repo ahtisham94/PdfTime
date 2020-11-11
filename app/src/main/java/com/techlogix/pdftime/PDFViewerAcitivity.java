@@ -31,6 +31,7 @@ import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
+import com.techlogix.pdftime.utilis.PDFUtils;
 import com.techlogix.pdftime.utilis.RealPathUtil;
 import com.techlogix.pdftime.utilis.StringUtils;
 
@@ -45,6 +46,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
     DirectoryUtils mDirectory;
     Uri uri;
     Boolean firstTry = true;
+    PDFUtils pdfUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
-
+        pdfUtils = new PDFUtils(PDFViewerAcitivity.this);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("PDF Reader");
         setSupportActionBar(toolbar);
@@ -70,8 +72,8 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
             } else {
                 uri = Uri.parse(getIntent().getStringExtra("uri"));
             }
-            loadPDFFile(file == null ? uri : file, "");
 
+            loadPDFFile(file == null ? uri : file, "");
         }
 
         mDirectory = new DirectoryUtils(PDFViewerAcitivity.this);
@@ -98,17 +100,6 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
                     .password(password)
                     .load();
         }
-    }
-
-    private void loadPDFFile(File file) {
-        pdfView.fromFile(file).defaultPage(0)
-                .enableDoubletap(true)
-                .enableSwipe(true)
-                .enableAntialiasing(true)
-                .spacing(0)
-                .password("pass@123")
-                .load();
-
     }
 
     @Override

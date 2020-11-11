@@ -64,6 +64,9 @@
     <string name="premium">Premium</string>
     <string name="incorrect_password">Incorrect Password</string>
     <string name="secure_files">Secure Files</string>
+    <string name="not_encrypted">File not encrypted</string>
+    <string name="encrypted_file">_encrypted.pdf</string>
+    <string name="filter_file_name">%s_%s.jpg</string>
 
 
 </resources>

@@ -182,6 +182,9 @@ public class AllFilesInFolderActivity extends BaseActivity implements View.OnCli
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        }else if(item.getItemId()==R.id.premiumImg){
+            startActivity(PremiumScreen.class,null);
+            return true;
         }
         return false;
     }

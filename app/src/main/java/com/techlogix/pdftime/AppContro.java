@@ -11,6 +11,7 @@ public class AppContro extends Application {
     public void onCreate() {
         super.onCreate();
         INSTANCE=this;
+        SharePrefData.getInstance().setContext(getApplicationContext());
     }
 
     public static synchronized AppContro getInstance(){

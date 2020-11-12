@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_pdf_bg_t"
+    android:padding="@dimen/_20sdp"
+    tools:context=".IntroActivity">
+
+
+    <include
+        android:id="@+id/bannerLayout"
+        layout="@layout/banner_layout" />
+
+    <include
+        android:id="@+id/bannerLayout1"
+        layout="@layout/banner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bannerLayout" />
+
+    <com.techlogix.pdftime.customViews.viewpager.NonSwipeableViewPager
+        android:id="@+id/introViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@+id/dotsTabsLL"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bannerLayout1" />
+
+
+    <Button
+        android:id="@+id/backBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_35sdp"
+        android:background="@drawable/white_color_btn"
+        android:elevation="@dimen/_5sdp"
+        android:enabled="false"
+        android:text="Back"
+        android:textColor="@color/colorGrayDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/dotsTabsLL"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_5sdp"
+        app:layout_constraintBottom_toTopOf="@+id/nextBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabBackground="@drawable/intro_tab_selector"
+        app:tabGravity="center" />
+
+    <Button
+        android:id="@+id/nextBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_35sdp"
+        android:background="@drawable/white_color_btn"
+        android:elevation="@dimen/_5sdp"
+        android:text="Next"
+        android:textColor="@color/colorGrayDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

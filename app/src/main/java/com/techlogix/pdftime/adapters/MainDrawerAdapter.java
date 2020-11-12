@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.techlogix.pdftime.ImageToPdfActivity;
+import com.techlogix.pdftime.PremiumScreen;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.TxtWordToPdfActivity;
 import com.techlogix.pdftime.interfaces.GenericCallback;
@@ -70,6 +71,13 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
                 public void onClick(View view) {
                     callback.callback(arrayList.get(holder.getAdapterPosition()).getTitle());
                     selectedItem(arrayList.get(holder.getAdapterPosition()));
+                }
+            });
+        } else if (holder instanceof ButtonHolder) {
+            ((ButtonHolder) holder).premiumButtonLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    callback.callback("premiumBtn");
                 }
             });
         }

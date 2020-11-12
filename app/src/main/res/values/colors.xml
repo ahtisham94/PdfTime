@@ -18,5 +18,8 @@
     <color name="colorOrange">#FF881B</color>
     <color name="colorGrayHightted">#E8E9E2</color>
 
+    <color name="black_overlay">#66000000</color>
+    <color name="ColorFirozi">#0099cc</color>
+
 
 </resources>

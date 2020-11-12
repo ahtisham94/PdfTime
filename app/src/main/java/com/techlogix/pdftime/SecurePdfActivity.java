@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
+import com.techlogix.pdftime.dialogs.AlertDialogHelper;
 import com.techlogix.pdftime.dialogs.InputFeildDialog;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.models.FileInfoModel;
@@ -211,13 +212,36 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
     }
 
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.delete_files_menu, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (item.getItemId() == R.id.deleteFiles) {
+            if (checkboxArray.size() > 0) {
+                AlertDialogHelper.showAlert(this, new AlertDialogHelper.Callback() {
+                    @Override
+                    public void onSucess(int t) {
+                        if (t == 0) {
+                            for (FileInfoModel model : checkboxArray) {
+                                mDirectoryUtils.deleteFile(model.getFile());
+                            }
+
+                            StringUtils.getInstance().showSnackbar(SecurePdfActivity.this, "Files deleted");
+                        }
+                    }
+                }, "Delete Files", "Do you really want to delete files?");
+            } else {
+                StringUtils.getInstance().showSnackbar(SecurePdfActivity.this, "Files not selected");
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }

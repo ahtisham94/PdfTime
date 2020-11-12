@@ -50,7 +50,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.techlogix.pdftime.utilis.Constants.DEFAULT_PAGE_COLOR;
 import static com.techlogix.pdftime.utilis.Constants.OPEN_CAMERA;
@@ -83,7 +85,7 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         mDirectoryUtils = new DirectoryUtils(ScanPDFActivity.this);
-        mPdfOptions=new ImageToPDFOptions();
+        mPdfOptions = new ImageToPDFOptions();
         dialog = new ProgressDialog(ScanPDFActivity.this);
         imagesUri = new ArrayList<>();
         storeCompat = new MediaStoreCompat(this);
@@ -127,6 +129,9 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (item.getItemId() == R.id.premiumImg) {
+            startActivity(PremiumScreen.class, null);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -152,6 +157,8 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
             bitmap = (Bitmap) data.getExtras().get("data");
             grayScaleImage.setImageBitmap(toGrayscale(bitmap));
             imagesUri.add(savaImageToGrayScale(toGrayscale(bitmap)));
+        } else {
+            finish();
         }
 
     }
@@ -161,11 +168,11 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
 
         String filename = "temp.jpeg";
         File sd = Environment.getExternalStorageDirectory();
-        File dest = new File(sd, filename);
+        File dest = getOutputMediaFile();
         try {
             dest.createNewFile();
             FileOutputStream out = new FileOutputStream(dest);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
             return dest.getAbsolutePath();
@@ -174,6 +181,35 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
             return "";
         }
     }
+
+    /**
+     * Create a File for saving an image or video
+     */
+    private File getOutputMediaFile() {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
+                + "/Android/data/"
+                + getApplicationContext().getPackageName()
+                + "/Files");
+
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmm").format(new Date());
+        File mediaFile;
+        String mImageName = "MI_" + timeStamp + ".jpg";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        return mediaFile;
+    }
+
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -238,7 +274,7 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
     public void onPDFCreated(boolean success, final String path) {
         dialog.dismiss();
         if (success) {
-            StringUtils.getInstance().getSnackbarwithAction(ScanPDFActivity.this, R.string.pdf_merged)
+            StringUtils.getInstance().getSnackbarwithAction(ScanPDFActivity.this, R.string.file_created)
                     .setAction(R.string.snackbar_viewAction, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

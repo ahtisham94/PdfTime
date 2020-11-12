@@ -67,6 +67,23 @@
     <string name="not_encrypted">File not encrypted</string>
     <string name="encrypted_file">_encrypted.pdf</string>
     <string name="filter_file_name">%s_%s.jpg</string>
+    <string name="title_activity_premium_screen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="pass_pro_text">Password Protect</string>
+    <string name="secure_files_with_password_protect">Secure Files with Password Protect</string>
+    <string name="reduce_file_size">Reduce File Size</string>
+    <string name="redcue_file_size_of_your_large_pdfs">Redcue File size of your large PDFs</string>
+    <string name="merge_files">Merge Files</string>
+    <string name="unlimited_merge_files">Unlimited File Merge Option</string>
+    <string name="remove_ads">Remove Ads</string>
+    <string name="enjoy_ad_free_version_of_app">Enjoy Ad Free Version of App</string>
+    <string name="upgrade_premium">Upgrade to Premium</string>
+    <string name="pdf_editing_tools">PDF Editing Tools</string>
+    <string name="seacure_your_important_files_with_using_n_our_password_protect_feature">Seacure your important files with using \n our password protect feature</string>
+    <string name="add_files_to_folder">Add Files to Folder</string>
+    <string name="share_files">Share Files</string>
+    <string name="share_your_files_with_your_friends_and_n_family_with_tap_of_a_button">Share your files with your friends and\n family with tap of a button</string>
 
 
 </resources>

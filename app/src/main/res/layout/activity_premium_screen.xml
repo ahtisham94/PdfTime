@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rocket_bg_p"
+    tools:context=".PremiumScreen">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/_40sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/cancelBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:padding="@dimen/_10sdp"
+                android:text="X"
+                android:textColor="@color/colorWhite"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:id="@+id/rocketImage"
+                android:layout_width="@dimen/_75sdp"
+                android:layout_height="@dimen/_75sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/rocket_p" />
+
+            <TextView
+                android:id="@+id/upgrqadeToPremium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/upgrade_premium"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Upgrade now and do more with \n premium features"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:id="@+id/passwordProtectRl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/edittext_white_bg"
+                android:elevation="@dimen/_5sdp"
+                android:padding="@dimen/_15sdp">
+
+                <ImageView
+                    android:id="@+id/passProImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_password_p" />
+
+                <TextView
+                    android:id="@+id/passProTitleTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/passProImg"
+                    android:text="@string/pass_pro_text"
+                    android:textColor="@color/colorGrayDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/passProDescTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/passProTitleTv"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/passProImg"
+                    android:text="@string/secure_files_with_password_protect"
+                    android:textColor="@color/colorGrayDark"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/reduceFileRl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/edittext_white_bg"
+                android:elevation="@dimen/_5sdp"
+                android:padding="@dimen/_15sdp">
+
+                <ImageView
+                    android:id="@+id/redecueImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_create_p" />
+
+                <TextView
+                    android:id="@+id/reduceTitleTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/redecueImg"
+                    android:text="@string/reduce_file_size"
+                    android:textColor="@color/colorGrayDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/reduceDescTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/reduceTitleTv"
+                    android:layout_alignStart="@+id/reduceTitleTv"
+                    android:text="@string/redcue_file_size_of_your_large_pdfs"
+                    android:textColor="@color/colorGrayDark"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/mergeFilesRl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/edittext_white_bg"
+                android:elevation="@dimen/_5sdp"
+                android:padding="@dimen/_15sdp">
+
+                <ImageView
+                    android:id="@+id/mergeFileImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_merge_p" />
+
+                <TextView
+                    android:id="@+id/mergeTitleTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/mergeFileImg"
+                    android:text="@string/merge_files"
+                    android:textColor="@color/colorGrayDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/mergeDescTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/mergeTitleTv"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/mergeFileImg"
+                    android:text="@string/unlimited_merge_files"
+                    android:textColor="@color/colorGrayDark"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/removeAdsRl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/edittext_white_bg"
+                android:elevation="@dimen/_5sdp"
+                android:padding="@dimen/_15sdp">
+
+                <ImageView
+                    android:id="@+id/removeAdsImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_remove_ad_p" />
+
+                <TextView
+                    android:id="@+id/removeAdsTitleTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/removeAdsImg"
+                    android:text="@string/remove_ads"
+                    android:textColor="@color/colorGrayDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/removeAdsDescTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/removeAdsTitleTv"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/removeAdsImg"
+                    android:text="@string/enjoy_ad_free_version_of_app"
+                    android:textColor="@color/colorGrayDark"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/upgradePremiumBtn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_margin="@dimen/_20sdp"
+                android:background="@drawable/orange_color_btn"
+                android:text="Upgrade Now 20 % Off"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

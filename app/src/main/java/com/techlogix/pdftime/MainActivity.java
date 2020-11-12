@@ -278,7 +278,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         } else if (view.getId() == R.id.serachImg) {
             startActivity(new Intent(MainActivity.this, SearchFileActivity.class));
         } else if (view.getId() == R.id.premiumImg) {
-            openCloseDrawer();
+            startActivity(PremiumScreen.class, null);
         } else if (view.getId() == R.id.giftImg) {
             openCloseDrawer();
         }
@@ -337,6 +337,8 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                     }, "Quit", "Do you want to quit this app?");
                 } else if (whereTo.equals(getResources().getString(R.string.password_pro))) {
                     startActivity(new Intent(MainActivity.this, SecurePdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                } else if (whereTo.equals("premiumBtn")) {
+                    startActivity(new Intent(MainActivity.this, PremiumScreen.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 }
             }
         }, 1000);

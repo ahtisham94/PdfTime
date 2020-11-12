@@ -5,6 +5,15 @@ import java.io.File;
 public class FileInfoModel {
     String fileName, fileType;
     File file;
+    Boolean isSelect = false;
+
+    public Boolean getSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(Boolean select) {
+        isSelect = select;
+    }
 
     public FileInfoModel(String fileName, String fileType, File file) {
         this.fileName = fileName;

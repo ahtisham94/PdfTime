@@ -138,10 +138,10 @@ public class MainDrawerAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void selectedItem(DraweritemsModel draweritemsModel) {
-        for (DraweritemsModel model : arrayList) {
-            model.setSeleted(model.getTitle().equals(draweritemsModel.getTitle()));
+        public void selectedItem(DraweritemsModel draweritemsModel) {
+            for (DraweritemsModel model : arrayList) {
+                model.setSeleted(model.getTitle().equals(draweritemsModel.getTitle()));
+            }
+            notifyDataSetChanged();
         }
-        notifyDataSetChanged();
-    }
 }

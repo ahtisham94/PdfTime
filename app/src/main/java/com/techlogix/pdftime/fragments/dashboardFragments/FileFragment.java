@@ -5,14 +5,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +35,7 @@ import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
+import com.techlogix.pdftime.utilis.RecyclerItemClickListener;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -39,15 +45,18 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class FileFragment extends Fragment implements PermissionCallback, SingleSelectToggleGroup.OnCheckedChangeListener,
-        CurrentFragment, View.OnClickListener {
+        CurrentFragment, View.OnClickListener, ActionMode.Callback, RecyclerItemClickListener.OnItemClickListener {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
     AllFilesAdapter filesAdapter;
     RelativeLayout noFileLayout;
-    ArrayList<FileInfoModel> fileInfoModelArrayList;
+    ArrayList<FileInfoModel> fileInfoModelArrayList, multiSelectArray;
     SingleSelectToggleGroup singleSelectToggleGroup;
     TextView filterTv, emptyView;
+    boolean isMultiSelect = false;
+    ActionMode mActionMode;
+    Menu multiSelectMenu;
 
     public FileFragment() {
         // Required empty public constructor
@@ -70,6 +79,7 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     private void initViews(View view) {
         baseActivity = (BaseActivity) requireActivity();
         fileInfoModelArrayList = new ArrayList<>();
+        multiSelectArray = new ArrayList<>();
         mDirectoryUtils = new DirectoryUtils(getContext());
         filesRecyclerView = view.findViewById(R.id.filesRecyclerView);
         filesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -79,6 +89,7 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         filterTv = view.findViewById(R.id.filterTv);
         filterTv.setOnClickListener(this);
         emptyView = view.findViewById(R.id.empty_view);
+        filesRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), filesAdapter, filesRecyclerView, this));
 
     }
 
@@ -155,6 +166,79 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         });
         menu.show();
     }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        multiSelectArray = new ArrayList<>();
+        MenuInflater inflater = actionMode.getMenuInflater();
+        inflater.inflate(R.menu.delete_files_menu, menu);
+        multiSelectMenu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+
+        if (menuItem.getItemId() == R.id.deleteFiles) {
+            Toast.makeText(getContext(), multiSelectArray.size() + "", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
+        mActionMode = null;
+        isMultiSelect = false;
+        multiSelectArray = new ArrayList<>();
+
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        if (isMultiSelect) {
+            multiSelect(position);
+        }
+    }
+
+    private void multiSelect(int position) {
+        if (mActionMode != null) {
+            if (multiSelectArray.contains(fileInfoModelArrayList.get(position))) {
+                multiSelectArray.remove(fileInfoModelArrayList.get(position));
+            } else {
+                multiSelectArray.add(fileInfoModelArrayList.get(position));
+            }
+
+            if (multiSelectArray.size() > 0) {
+
+                mActionMode.setTitle("" + multiSelectArray.size() + " Files Selected");
+            } else {
+                if (mActionMode != null) {
+                    mActionMode.finish();
+                    multiSelectArray.clear();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        if (!isMultiSelect) {
+            multiSelectArray = new ArrayList<>();
+            isMultiSelect = true;
+            if (mActionMode == null) {
+                mActionMode = baseActivity.startActionMode(this);
+                multiSelect(position);
+            }
+        }
+    }
+
 
     class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
 

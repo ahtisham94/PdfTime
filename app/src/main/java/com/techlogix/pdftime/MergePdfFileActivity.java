@@ -229,18 +229,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
             StringUtils.getInstance().showSnackbar(MergePdfFileActivity.this, "Please select atleast one file");
         }
     }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == INTENT_REQUEST_PICK_FILE_CODE && data != null) {
-//            String path = RealPathUtil.getInstance().getRealPath(MergePdfFileActivity.this, data.getData());
-//            mFilePaths.add(path);
-//            mMergeSelectedFilesAdapter.notifyDataSetChanged();
-//            StringUtils.getInstance().showSnackbar(MergePdfFileActivity.this, getString(R.string.pdf_added_to_list));
-//            convertPdf.setEnabled(mFilePaths.size() > 1);
-//        }
-//    }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -255,34 +244,6 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
     public void onBackPressed() {
         super.onBackPressed();
     }
-
-//    @Override
-//    public void viewFile(String path) {
-//        Intent intent = new Intent(MergePdfFileActivity.this, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        intent.putExtra("path", path);
-//        startActivity(intent);
-//    }
-
-//    @Override
-//    public void removeFile(String path) {
-//        mFilePaths.remove(path);
-//        mMergeSelectedFilesAdapter.notifyDataSetChanged();
-//        StringUtils.getInstance().showSnackbar(MergePdfFileActivity.this, getString(R.string.pdf_removed_from_list));
-//        if (mFilePaths.size() < 2 && convertPdf.isEnabled())
-//            convertPdf.setEnabled(false);
-//    }
-//
-//    @Override
-//    public void moveUp(int position) {
-//        Collections.swap(mFilePaths, position, position - 1);
-//        mMergeSelectedFilesAdapter.notifyDataSetChanged();
-//    }
-//
-//    @Override
-//    public void moveDown(int position) {
-//        Collections.swap(mFilePaths, position, position + 1);
-//        mMergeSelectedFilesAdapter.notifyDataSetChanged();
-//    }
 
     @Override
     public void resetValues(boolean isPDFMerged, final String path) {
@@ -306,8 +267,6 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
             StringUtils.getInstance().showSnackbar(MergePdfFileActivity.this, R.string.file_access_error);
 
         mFilePaths.clear();
-        mergeFileRecycler.smoothScrollToPosition(adapter.getRealArray().size());
-//        mMergeSelectedFilesAdapter.notifyDataSetChanged();
 
     }
 

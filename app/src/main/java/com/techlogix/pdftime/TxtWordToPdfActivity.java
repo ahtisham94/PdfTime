@@ -146,7 +146,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
             } else {
                 StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, "Please select at least one file");
             }
-        } else if (view.getId() == R.id.selectFilesBtn) {
+        } /*else if (view.getId() == R.id.selectFilesBtn) {
             if (PermissionUtils.hasPermissionGranted(TxtWordToPdfActivity.this, new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
             })) {
@@ -156,7 +156,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
                         Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
                 }, Constants.READ_EXTERNAL_STORAGE);
             }
-        } else if (view.getId() == R.id.filterTv) {
+        }*/ else if (view.getId() == R.id.filterTv) {
             showSortMenu();
         }
     }

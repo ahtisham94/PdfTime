@@ -1,6 +1,7 @@
 package com.techlogix.pdftime.utilis;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
@@ -65,6 +66,11 @@ public class StringUtils {
         }
         if (imm != null)
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public  void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     public String getDefaultStorageLocation() {

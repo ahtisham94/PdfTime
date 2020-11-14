@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
 import com.techlogix.pdftime.dialogs.InputFeildDialog;
 import com.techlogix.pdftime.interfaces.GenericCallback;
@@ -139,7 +140,12 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.convertPdf) {
-            createPFD();
+            if (adapter.getFilesArrayList().size() > 0) {
+                checkboxArray = adapter.getFilesArrayList();
+                createPFD();
+            } else {
+                StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, "Please select at least one file");
+            }
         } else if (view.getId() == R.id.selectFilesBtn) {
             if (PermissionUtils.hasPermissionGranted(TxtWordToPdfActivity.this, new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
@@ -221,7 +227,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
 
     private void startPdfCreating(String o) {
 
-        String fileName = mFileUtils.getFileName(checkboxArray.get(0).getFile().getAbsolutePath());
+        String fileName = mFileUtils.getFileName(checkboxArray.get(filesCount).getFile().getAbsolutePath());
         if (fileName != null) {
             if (fileName.endsWith(Constants.textExtension))
                 mFileExtension = Constants.textExtension;
@@ -323,19 +329,24 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
                         }
                     }).show();
         }
-        if(filesCount<checkboxArray.size()){
+        if (filesCount < checkboxArray.size()) {
             filesCount++;
             showCreateFileNameDialog();
         }
     }
 
     private void showCreateFileNameDialog() {
-        new InputFeildDialog(TxtWordToPdfActivity.this, new GenericCallback() {
-            @Override
-            public void callback(Object o) {
-                startPdfCreating((String) o);
-            }
-        }, "Text Or Word To PDF").show();
+        if (adapter.getFilesArrayList().size() > 0) {
+
+            new InputFeildDialog(TxtWordToPdfActivity.this, new GenericCallback() {
+                @Override
+                public void callback(Object o) {
+                    startPdfCreating((String) o);
+                }
+            }, "Text Or Word To PDF").show();
+        } else {
+            StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, "Please select at least one file");
+        }
     }
 
     private void openpdfFile() {

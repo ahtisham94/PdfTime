@@ -2,6 +2,7 @@ package com.techlogix.pdftime.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -21,7 +22,6 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.techlogix.pdftime.AllFilesInFolderActivity;
 import com.techlogix.pdftime.MainActivity;
 import com.techlogix.pdftime.PDFViewerAcitivity;
 import com.techlogix.pdftime.R;
@@ -30,16 +30,14 @@ import com.techlogix.pdftime.dialogs.CreateFolderDialog;
 import com.techlogix.pdftime.dialogs.MoveFileDialog;
 import com.techlogix.pdftime.fragments.dashboardFragments.FileFragment;
 import com.techlogix.pdftime.interfaces.GenericCallback;
-import com.techlogix.pdftime.models.DraweritemsModel;
 import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileInfoUtils;
-import com.techlogix.pdftime.utilis.FileUtils;
-import com.techlogix.pdftime.utilis.TextToPdfAsync;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFilesHolder> {
 
@@ -85,7 +83,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyFilesHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyFilesHolder holder, final int position) {
         if (showCheckbox)
             holder.setViewsAllignment();
         if (filesArrayList.get(holder.getAdapterPosition()).getSelect()) {
@@ -183,26 +181,28 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
 
 
         if (holder.checkBox.getVisibility() == View.VISIBLE) {
-            holder.checkBox.setChecked(filesArrayList.get(holder.getAdapterPosition()).getSelect());
-            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if (b) {
-                        checkBoxArray.add(filesArrayList.get(holder.getAdapterPosition()));
-                    } else
-                        checkBoxArray.remove(filesArrayList.get(holder.getAdapterPosition()));
-                    callback.callback(checkBoxArray);
-                }
-            });
+            if (filesArrayList.get(holder.getAdapterPosition()).getSelect()) {
+                holder.checkBox.setChecked(true);
+            } else {
+                holder.checkBox.setChecked(false);
+            }
+
         }
 
 
     }
 
+    public ArrayList<FileInfoModel> getFilesArrayList() {
+        return checkBoxArray;
+    }
+
+    public ArrayList<FileInfoModel> getRealArray() {
+        return filesArrayList;
+    }
+
     private boolean isVisible() {
         return context instanceof MainActivity && ((MainActivity) context).viewPager.getCurrentItem() == 0;
     }
-
 
     private void convertFile(File file) {
         String ext = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("."));
@@ -325,6 +325,29 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
             moreImg = itemView.findViewById(R.id.moreImg);
             rootLayout = itemView.findViewById(R.id.rootLayout);
             checkBox = itemView.findViewById(R.id.checkbox);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    FileInfoModel model = filesArrayList.get(getAdapterPosition());
+                    if (b) {
+                        if (model.getSelect())
+                            return;
+                        else {
+                            model.setSelect(true);
+                            checkBoxArray.add(model);
+                        }
+
+                    } else {
+                        if (!model.getSelect()) {
+                            return;
+                        } else {
+                            model.setSelect(false);
+                            checkBoxArray.remove(model);
+                        }
+                    }
+                    notifyDataSetChanged();
+                }
+            });
         }
 
         public void selectedItem(FileInfoModel model) {

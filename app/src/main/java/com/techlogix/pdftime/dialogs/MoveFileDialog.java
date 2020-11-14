@@ -111,8 +111,10 @@ public class MoveFileDialog extends Dialog implements View.OnClickListener, Gene
     public void callback(Object o) {
         dismiss();
         if (o instanceof File) {
-            callback.callback(mDirectory.moveFile(moveFile.getAbsolutePath(), moveFile.getName(), ((File) o).getAbsolutePath() + "/"));
-
+            if (moveFile != null)
+                callback.callback(mDirectory.moveFile(moveFile.getAbsolutePath(), moveFile.getName(), ((File) o).getAbsolutePath() + "/"));
+            else
+                callback.callback(o);
         }
     }
 }

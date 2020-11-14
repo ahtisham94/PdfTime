@@ -1,6 +1,8 @@
 package com.techlogix.pdftime.fragments.dashboardFragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,7 +32,10 @@ import com.techlogix.pdftime.BaseActivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
 import com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup;
+import com.techlogix.pdftime.dialogs.AlertDialogHelper;
+import com.techlogix.pdftime.dialogs.MoveFileDialog;
 import com.techlogix.pdftime.interfaces.CurrentFragment;
+import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.PermissionCallback;
 import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
@@ -43,9 +49,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class FileFragment extends Fragment implements PermissionCallback, SingleSelectToggleGroup.OnCheckedChangeListener,
-        CurrentFragment, View.OnClickListener, ActionMode.Callback, RecyclerItemClickListener.OnItemClickListener {
+        CurrentFragment, View.OnClickListener, ActionMode.Callback, RecyclerItemClickListener.OnItemClickListener, GenericCallback {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -54,9 +61,11 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     ArrayList<FileInfoModel> fileInfoModelArrayList, multiSelectArray;
     SingleSelectToggleGroup singleSelectToggleGroup;
     TextView filterTv, emptyView;
-    boolean isMultiSelect = false;
+    public boolean isMultiSelect = false;
     ActionMode mActionMode;
     Menu multiSelectMenu;
+    RelativeLayout moveToFolderFAB;
+    ProgressDialog dialog;
 
     public FileFragment() {
         // Required empty public constructor
@@ -90,7 +99,11 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         filterTv.setOnClickListener(this);
         emptyView = view.findViewById(R.id.empty_view);
         filesRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), filesAdapter, filesRecyclerView, this));
-
+        moveToFolderFAB = view.findViewById(R.id.moveToFolderFAB);
+        moveToFolderFAB.setOnClickListener(this);
+        dialog = new ProgressDialog(getContext());
+        dialog.setTitle("Please wait");
+        dialog.setMessage("Moving files to folder");
     }
 
     @Override
@@ -132,7 +145,13 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     public void onClick(View view) {
         if (view.getId() == R.id.filterTv) {
             showSortMenu();
+        } else if (view.getId() == R.id.moveToFolderFAB) {
+            movetoFolder();
         }
+    }
+
+    private void movetoFolder() {
+        new MoveFileDialog(Objects.requireNonNull(getContext()), null, this).show();
     }
 
     private void showSortMenu() {
@@ -173,6 +192,8 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         MenuInflater inflater = actionMode.getMenuInflater();
         inflater.inflate(R.menu.delete_files_menu, menu);
         multiSelectMenu = menu;
+        moveToFolderFAB.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.zoom_in));
+        moveToFolderFAB.setVisibility(View.VISIBLE);
         return true;
     }
 
@@ -185,18 +206,51 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
 
         if (menuItem.getItemId() == R.id.deleteFiles) {
-            Toast.makeText(getContext(), multiSelectArray.size() + "", Toast.LENGTH_SHORT).show();
+            deleteFiles();
             return true;
         }
 
         return false;
     }
 
+    private void deleteFiles() {
+        AlertDialogHelper.showAlert(getContext(), new AlertDialogHelper.Callback() {
+            @Override
+            public void onSucess(int t) {
+                dialog.show();
+                if (t == 0) {
+                    for (FileInfoModel model : multiSelectArray) {
+                        mDirectoryUtils.deleteFile(model.getFile());
+                    }
+                    if (singleSelectToggleGroup.getCheckedId() == R.id.pdfLabel)
+                        new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+                    else if (singleSelectToggleGroup.getCheckedId() == R.id.wordLabel)
+                        new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
+                    else if (singleSelectToggleGroup.getCheckedId() == R.id.excelLabel)
+                        new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+                    else if (singleSelectToggleGroup.getCheckedId() == R.id.textLabel)
+                        new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
+
+                }
+                dialog.dismiss();
+                onDestroyActionMode(mActionMode);
+
+
+            }
+        }, "DELETE", "Are you really want to delete files?");
+
+
+    }
+
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
+        mActionMode.finish();
         mActionMode = null;
         isMultiSelect = false;
         multiSelectArray = new ArrayList<>();
+        filesAdapter.refrechList();
+        moveToFolderFAB.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.zoom_out));
+        moveToFolderFAB.setVisibility(View.GONE);
 
     }
 
@@ -209,6 +263,10 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
 
     private void multiSelect(int position) {
         if (mActionMode != null) {
+
+            filesAdapter.getItem(position).setSelect(!filesAdapter.getItem(position).getSelect());
+            filesAdapter.notifyDataSetChanged();
+
             if (multiSelectArray.contains(fileInfoModelArrayList.get(position))) {
                 multiSelectArray.remove(fileInfoModelArrayList.get(position));
             } else {
@@ -239,7 +297,29 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         }
     }
 
+    @Override
+    public void callback(Object o) {
+        if (o instanceof File) {
+            dialog.show();
+            for (FileInfoModel model : multiSelectArray) {
+                mDirectoryUtils.moveFile(model.getFile().getAbsolutePath(), model.getFile().getName(), ((File) o).getAbsolutePath() + "/");
+            }
+            if (singleSelectToggleGroup.getCheckedId() == R.id.pdfLabel)
+                new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+            else if (singleSelectToggleGroup.getCheckedId() == R.id.wordLabel)
+                new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
+            else if (singleSelectToggleGroup.getCheckedId() == R.id.excelLabel)
+                new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+            else if (singleSelectToggleGroup.getCheckedId() == R.id.textLabel)
+                new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
 
+            onDestroyActionMode(mActionMode);
+            dialog.dismiss();
+        }
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
     class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
 
         @Override
@@ -258,11 +338,11 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
                 for (File file : arrayList) {
                     String[] fileInfo = file.getName().split("\\.");
                     if (fileInfo.length == 2)
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file));
+                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
                     else {
                         fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
                                 file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                                file));
+                                file, false));
                     }
                 }
                 filesAdapter = new AllFilesAdapter(getContext(), fileInfoModelArrayList);

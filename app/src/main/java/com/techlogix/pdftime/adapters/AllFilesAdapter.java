@@ -28,6 +28,7 @@ import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.dialogs.AlertDialogHelper;
 import com.techlogix.pdftime.dialogs.CreateFolderDialog;
 import com.techlogix.pdftime.dialogs.MoveFileDialog;
+import com.techlogix.pdftime.fragments.dashboardFragments.FileFragment;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.models.DraweritemsModel;
 import com.techlogix.pdftime.models.FileInfoModel;
@@ -89,7 +90,9 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
             holder.setViewsAllignment();
         if (filesArrayList.get(holder.getAdapterPosition()).getSelect()) {
             holder.rootLayout.setBackgroundColor(context.getResources().getColor(R.color.colorGrayHightted));
-        }
+        } else
+            holder.rootLayout.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
+
         holder.fileNameTv.setText(filesArrayList.get(holder.getAdapterPosition()).getFileName());
         holder.sizeTv.setText(FileInfoUtils.getFormattedSize(filesArrayList.get(holder.getAdapterPosition()).getFile()));
         holder.dateTv.setText(FileInfoUtils.getFormattedDate(filesArrayList.get(holder.getAdapterPosition()).getFile()));
@@ -152,25 +155,35 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (((MainActivity) context).viewPager.getCurrentItem() != 1) {
-                    if (holder.fileTypeTv.getText().toString().equals("E")) {
-                        Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                    } else if (holder.fileTypeTv.getText().toString().equals("T")) {
-                        Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                    } else if (holder.fileTypeTv.getText().toString().equals("W")) {
-                        Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                    } else if (holder.fileTypeTv.getText().toString().equals("P")) {
-                        Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("path", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());
-                        context.startActivity(intent);
+                if (context instanceof MainActivity) {
+                    Fragment fragment = ((MainActivity) context).tabsadapter.getItem(((MainActivity) context).viewPager.getCurrentItem());
+                    if (fragment instanceof FileFragment) {
+                        if (((FileFragment) fragment).isMultiSelect) {
+                            holder.selectedItem(filesArrayList.get(holder.getAdapterPosition()));
+                            return;
+                        }
                     }
-                } else
-                    holder.selectedItem(filesArrayList.get(holder.getAdapterPosition()));
+                }
+
+                if (holder.fileTypeTv.getText().toString().equals("E")) {
+                    Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                } else if (holder.fileTypeTv.getText().toString().equals("T")) {
+                    Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                } else if (holder.fileTypeTv.getText().toString().equals("W")) {
+                    Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                } else if (holder.fileTypeTv.getText().toString().equals("P")) {
+                    Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("path", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());
+                    context.startActivity(intent);
+                }
             }
+
+
         });
 
 
         if (holder.checkBox.getVisibility() == View.VISIBLE) {
+            holder.checkBox.setChecked(filesArrayList.get(holder.getAdapterPosition()).getSelect());
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -212,7 +225,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         String[] names = pdfFile.getName().split("\\.");
         FileInfoModel model = new FileInfoModel(names[0],
                 pdfFile.getAbsolutePath().substring(pdfFile.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                pdfFile);
+                pdfFile, false);
         ArrayList<FileInfoModel> arrayList = filesArrayList;
         arrayList.add(filesArrayList.size(), model);
         setData(arrayList);
@@ -259,6 +272,13 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         dialog.show();
     }
 
+    public void refrechList() {
+        for (FileInfoModel model : filesArrayList) {
+            model.setSelect(false);
+        }
+        notifyDataSetChanged();
+    }
+
     public void filterList(ArrayList<FileInfoModel> filterdNames) {
         this.filesArrayList = filterdNames;
         notifyDataSetChanged();
@@ -268,7 +288,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         return filesArrayList.get(position);
     }
 
-    private void showAllFolderDialog(File moveFile, final int pos) {
+    public void showAllFolderDialog(File moveFile, final int pos) {
         new MoveFileDialog(context, moveFile, new GenericCallback() {
             @Override
             public void callback(Object o) {
@@ -309,7 +329,7 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
 
         public void selectedItem(FileInfoModel model) {
             for (FileInfoModel model1 : filesArrayList) {
-                model1.setSelect(model.getFileName().equals(model.getFileName()));
+                model1.setSelect(model.getFileName().equals(model1.getFileName()));
             }
             notifyDataSetChanged();
         }

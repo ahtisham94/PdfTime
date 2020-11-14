@@ -5,14 +5,14 @@
             <size
                 android:width="20dp"
                 android:height="20dp" />
-            <solid android:color="@color/colorBlue" />
+            <solid android:color="@color/colorWhite" />
         </shape>
     </item>
 
     <item
-        android:top="5dp"
-        android:start="5dp"
-        android:end="5dp"
         android:bottom="5dp"
-        android:drawable="@drawable/ic_delete"/>
+        android:drawable="@drawable/ic_delete"
+        android:end="5dp"
+        android:start="5dp"
+        android:top="5dp" />
 </layer-list>

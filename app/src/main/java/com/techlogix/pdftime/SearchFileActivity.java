@@ -67,11 +67,11 @@ public class SearchFileActivity extends BaseActivity implements TextWatcher {
             for (File file : arrayList) {
                 String[] fileInfo = file.getName().split("\\.");
                 if (fileInfo.length == 2)
-                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file));
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file,false));
                 else {
                     fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
                             file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                            file));
+                            file,false));
                 }
             }
             adapter = new AllFilesAdapter(SearchFileActivity.this, fileInfoModelArrayList);

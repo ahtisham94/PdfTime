@@ -91,11 +91,11 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
             for (File file : arrayList) {
                 String[] fileInfo = file.getName().split("\\.");
                 if (fileInfo.length == 2)
-                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file));
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file,false));
                 else {
                     fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
                             file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                            file));
+                            file,false));
                 }
             }
             filesAdapter = new AllFilesAdapter(getContext(), fileInfoModelArrayList);

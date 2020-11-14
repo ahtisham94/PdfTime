@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.techlogix.pdftime.dialogs.InputFeildDialog;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.OnPDFCreatedInterface;
@@ -89,7 +90,8 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
         dialog = new ProgressDialog(ScanPDFActivity.this);
         imagesUri = new ArrayList<>();
         storeCompat = new MediaStoreCompat(this);
-        dialog.setTitle("PDF Creating");
+        dialog.setTitle("Please wait");
+        dialog.setMessage("Creating pdf file");
         saveFile = findViewById(R.id.saveFile);
 
         grayScaleImage = findViewById(R.id.grayScaleImage);
@@ -155,12 +157,11 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OPEN_CAMERA && data != null) {
             bitmap = (Bitmap) data.getExtras().get("data");
-            grayScaleImage.setImageBitmap(toGrayscale(bitmap));
+            Glide.with(ScanPDFActivity.this).load(toGrayscale(bitmap)).centerCrop().into(grayScaleImage);
             imagesUri.add(savaImageToGrayScale(toGrayscale(bitmap)));
         } else {
             finish();
         }
-
     }
 
     private String savaImageToGrayScale(Bitmap bitmap) {

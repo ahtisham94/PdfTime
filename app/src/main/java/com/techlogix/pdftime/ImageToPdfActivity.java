@@ -6,18 +6,23 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
+import com.techlogix.pdftime.dialogs.AlertDialogHelper;
 import com.techlogix.pdftime.dialogs.InputFeildDialog;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.OnPDFCreatedInterface;
@@ -44,13 +49,14 @@ import static com.techlogix.pdftime.utilis.Constants.RESULT_LOAD_IMG;
 public class ImageToPdfActivity extends BaseActivity implements View.OnClickListener,
         OnPDFCreatedInterface {
     Toolbar toolbar;
-    Button pickImagesButtons, convertPdf;
+    Button convertPdf;
     List<String> imgesPathArray;
     TextView snakeBarTv;
     private ImageToPDFOptions mPdfOptions;
     ArrayList<String> imagesUri;
     ProgressDialog dialog;
     PageSizeUtils mPageSizeUtils;
+    ImageView iamgeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +64,7 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
         setContentView(R.layout.activity_main2);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getResources().getColor(R.color.colorOrangeStatusBar));
+        window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Image To PDF");
         setSupportActionBar(toolbar);
@@ -66,8 +72,7 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        pickImagesButtons = findViewById(R.id.pickImagesButtons);
-        pickImagesButtons.setOnClickListener(this);
+        iamgeView = findViewById(R.id.iamgeView);
         convertPdf = findViewById(R.id.convertPdf);
         convertPdf.setOnClickListener(this);
         imgesPathArray = new ArrayList<>();
@@ -76,22 +81,22 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
         snakeBarTv = findViewById(R.id.snakeBarTv);
         mPdfOptions = new ImageToPDFOptions();
         dialog = new ProgressDialog(ImageToPdfActivity.this);
-        dialog.setTitle("PDF Creating");
+        dialog.setTitle("Please wait");
+        dialog.setMessage("Creating pdf file");
+        if (PermissionUtils.hasPermissionGranted(ImageToPdfActivity.this, new String[]{
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        })) {
+
+            getImagesFromGalary();
+        } else {
+            PermissionUtils.requestPermission(ImageToPdfActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE, Constants.READ_EXTERNAL_STORAGE);
+        }
 
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.pickImagesButtons) {
-            if (PermissionUtils.hasPermissionGranted(ImageToPdfActivity.this, new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-            })) {
-
-                getImagesFromGalary();
-            } else {
-                PermissionUtils.requestPermission(ImageToPdfActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE, Constants.READ_EXTERNAL_STORAGE);
-            }
-        } else if (view.getId() == R.id.convertPdf) {
+        if (view.getId() == R.id.convertPdf) {
             if (imagesUri.size() > 0) {
                 new InputFeildDialog(this, new GenericCallback() {
                     @Override
@@ -137,11 +142,9 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
         if (requestCode == RESULT_LOAD_IMG && data != null) {
             imgesPathArray = Matisse.obtainPathResult(data);
             imagesUri.addAll(Matisse.obtainPathResult(data));
-            if (imgesPathArray.size() > 0) {
-                snakeBarTv.setText(imgesPathArray.size() + "Image(s) selected");
-                snakeBarTv.setVisibility(View.VISIBLE);
-                convertPdf.setEnabled(true);
-            }
+            Glide.with(ImageToPdfActivity.this).load(imgesPathArray.get(0)).centerCrop().into(iamgeView);
+        } else {
+            finish();
         }
     }
 
@@ -155,8 +158,20 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (item.getItemId() == R.id.premiumImg) {
+            startActivity(PremiumScreen.class, null);
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.pdf_menu, menu);
+        menu.findItem(R.id.share).setVisible(false);
+        menu.findItem(R.id.moveToFolder).setVisible(false);
+        return true;
     }
 
     @Override
@@ -168,9 +183,8 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
     public void onPDFCreated(boolean success, final String path) {
         dialog.dismiss();
         if (success) {
-            convertPdf.setEnabled(false);
             imagesUri.clear();
-            StringUtils.getInstance().getSnackbarwithAction(ImageToPdfActivity.this, R.string.pdf_merged)
+            StringUtils.getInstance().getSnackbarwithAction(ImageToPdfActivity.this, R.string.file_created)
                     .setAction(R.string.snackbar_viewAction, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -179,6 +193,19 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
                             startActivity(intent);
                         }
                     }).show();
+
+            AlertDialogHelper.showAlert(this, new AlertDialogHelper.Callback() {
+                @Override
+                public void onSucess(int t) {
+                    if (t == 0) {
+                        imagesUri.clear();
+                        imgesPathArray.clear();
+                        getImagesFromGalary();
+                    } else {
+                        finish();
+                    }
+                }
+            }, "Image to pdf", "Do you want to create more pdf files?");
         } else {
             StringUtils.getInstance().showSnackbar(ImageToPdfActivity.this, getString(R.string.convert_error));
 

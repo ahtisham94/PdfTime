@@ -3,23 +3,33 @@ package com.techlogix.pdftime;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 
+import com.techlogix.pdftime.adapters.AllFilesAdapter;
 import com.techlogix.pdftime.dialogs.InputFeildDialog;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.OnTextToPdfInterface;
 import com.techlogix.pdftime.interfaces.TextToPdfContract;
+import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileUtils;
@@ -30,20 +40,29 @@ import com.techlogix.pdftime.utilis.TextToPDFOptions;
 import com.techlogix.pdftime.utilis.TextToPDFUtils;
 import com.techlogix.pdftime.utilis.TextToPdfAsync;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import static com.techlogix.pdftime.utilis.Constants.mFileSelectCode;
 
 public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickListener,
-        OnTextToPdfInterface, TextToPdfContract.View {
-    Button selectFilesBtn, convertPdf;
+        OnTextToPdfInterface, TextToPdfContract.View, GenericCallback {
+    Button convertPdf;
     Toolbar toolbar;
-
     private Uri mTextFileUri = null;
     private String mFileExtension;
     private FileUtils mFileUtils;
-    private String mFileNameWithType = null;
     private String mPath;
     private ProgressDialog dialog;
     private TextToPDFOptions.Builder mBuilder;
+    private DirectoryUtils mDirectoryUtils;
+    RecyclerView allFilesRecycler;
+    AllFilesAdapter adapter;
+    ArrayList<FileInfoModel> fileInfoModelArrayList, checkboxArray;
+    TextView filterTv, emptyView;
+    int filesCount = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +70,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_txt_word_to_pdf);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getResources().getColor(R.color.colorOrangeStatusBar));
+        window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Word To PDF");
         setSupportActionBar(toolbar);
@@ -61,15 +80,60 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         }
         mBuilder = new TextToPDFOptions.Builder(TxtWordToPdfActivity.this);
         mFileUtils = new FileUtils(TxtWordToPdfActivity.this);
-        selectFilesBtn = findViewById(R.id.selectFilesBtn);
-        selectFilesBtn.setOnClickListener(this);
+        mDirectoryUtils = new DirectoryUtils(TxtWordToPdfActivity.this);
+        filterTv = findViewById(R.id.filterTv);
+        filterTv.setOnClickListener(this);
+        emptyView = findViewById(R.id.empty_view);
         convertPdf = findViewById(R.id.convertPdf);
         convertPdf.setOnClickListener(this);
         dialog = new ProgressDialog(TxtWordToPdfActivity.this);
         dialog.setTitle("Please wait");
         dialog.setMessage("Creating pdf file");
+        allFilesRecycler = findViewById(R.id.allFilesRecycler);
+        allFilesRecycler.setLayoutManager(new LinearLayoutManager(this));
+        fileInfoModelArrayList = new ArrayList<>();
+        new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
+        checkboxArray = new ArrayList<>();
+    }
 
+    @Override
+    public void callback(Object o) {
+        checkboxArray = (ArrayList<FileInfoModel>) o;
+    }
 
+    @SuppressLint("StaticFieldLeak")
+    class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
+
+        @Override
+        protected ArrayList<File> doInBackground(String... strings) {
+            mDirectoryUtils.clearSelectedArray();
+            return mDirectoryUtils.getSelectedFiles(Environment.getExternalStorageDirectory()
+                    , strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<File> arrayList) {
+            super.onPostExecute(arrayList);
+            Log.d("count", arrayList.size() + "");
+            if (arrayList.size() > 0) {
+                fileInfoModelArrayList.clear();
+                for (File file : arrayList) {
+                    String[] fileInfo = file.getName().split("\\.");
+                    if (fileInfo.length == 2)
+                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
+                    else {
+                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
+                                file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                                file, false));
+                    }
+                }
+                adapter = new AllFilesAdapter(TxtWordToPdfActivity.this, fileInfoModelArrayList);
+                allFilesRecycler.setAdapter(adapter);
+                adapter.setShowCheckbox(true);
+                adapter.setCallback(TxtWordToPdfActivity.this);
+            }
+
+        }
     }
 
     @Override
@@ -81,24 +145,97 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
                     Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
             })) {
                 getFileFromStorage();
+            } else {
+                PermissionUtils.checkAndRequestPermissions(TxtWordToPdfActivity.this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, Constants.READ_EXTERNAL_STORAGE);
             }
-        } else {
-            PermissionUtils.checkAndRequestPermissions(TxtWordToPdfActivity.this, new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
-            }, Constants.READ_EXTERNAL_STORAGE);
+        } else if (view.getId() == R.id.filterTv) {
+            showSortMenu();
         }
     }
 
-    private void createPFD() {
-        new InputFeildDialog(TxtWordToPdfActivity.this, new GenericCallback() {
+    private void showSortMenu() {
+        final PopupMenu menu = new PopupMenu(this, emptyView, Gravity.END);
+        menu.inflate(R.menu.sortby_menu);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
-            public void callback(Object o) {
-                startPdfCreating((String) o);
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.lastUpdatedTv) {
+                    sortArray(5);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.createDateTv) {
+                    sortArray(4);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.zToATv) {
+                    sortArray(3);
+                    return true;
+                } else if (menuItem.getItemId() == R.id.sizeTv) {
+                    sortArray(2);
+                    menu.dismiss();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.aTozTv) {
+                    sortArray(1);
+                    menu.dismiss();
+                    return true;
+                }
+                return false;
             }
-        },"Text Or Word To PDF").show();
+        });
+        menu.show();
+    }
+
+    public void sortArray(final int sortBy) {
+        Collections.sort(fileInfoModelArrayList, new Comparator<FileInfoModel>() {
+            @Override
+            public int compare(FileInfoModel fileInfoModel, FileInfoModel t1) {
+                if (sortBy == 1)
+                    return fileInfoModel.getFileName().compareToIgnoreCase(t1.getFileName());//A to Z
+                else if (sortBy == 2)
+                    return Long.compare(fileInfoModel.getFile().length(), t1.getFile().length());//File size
+                else if (sortBy == 3)
+                    return t1.getFileName().compareToIgnoreCase(fileInfoModel.getFileName());//Z to A
+                else if (sortBy == 4)
+                    return Long.compare(fileInfoModel.getFile().lastModified(), t1.getFile().lastModified());//Create Date By
+                else if (sortBy == 5)
+                    return Long.compare(t1.getFile().lastModified(), fileInfoModel.getFile().lastModified());//Recent updated Date By
+
+                return fileInfoModel.getFileName().compareToIgnoreCase(t1.getFileName());
+
+            }
+        });
+        adapter.notifyDataSetChanged();
+    }
+
+
+    private void createPFD() {
+        if (checkboxArray.size() > 0) {
+            filesCount++;
+            showCreateFileNameDialog();
+        } else {
+            StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, "Please select atleast one file");
+        }
     }
 
     private void startPdfCreating(String o) {
+
+        String fileName = mFileUtils.getFileName(checkboxArray.get(0).getFile().getAbsolutePath());
+        if (fileName != null) {
+            if (fileName.endsWith(Constants.textExtension))
+                mFileExtension = Constants.textExtension;
+            else if (fileName.endsWith(Constants.docxExtension))
+                mFileExtension = Constants.docxExtension;
+            else if (fileName.endsWith(Constants.docExtension))
+                mFileExtension = Constants.docExtension;
+            else {
+                StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, R.string.extension_not_supported);
+                return;
+            }
+        }
+        mTextFileUri = Uri.fromFile(checkboxArray.get(filesCount).getFile());
+
         mPath = DirectoryUtils.getDownloadFolderPath();
         mPath = mPath + "/" + o + Constants.pdfExtension;
         TextToPDFOptions options = mBuilder.setFileName(o)
@@ -146,8 +283,8 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
                     return;
                 }
             }
-            mFileNameWithType = mFileUtils.stripExtension(fileName) + getString(R.string.pdf_suffix);
-            selectFilesBtn.setText(fileName);
+
+//            selectFilesBtn.setText(fileName);
             convertPdf.setEnabled(true);
 
         }
@@ -176,8 +313,8 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     public void onPDFCreated(boolean success) {
         dialog.dismiss();
         if (success) {
-            convertPdf.setEnabled(false);
-            selectFilesBtn.setText("Select File");
+            adapter.refrechList();
+            checkboxArray.clear();
             StringUtils.getInstance().getSnackbarwithAction(TxtWordToPdfActivity.this, R.string.file_created)
                     .setAction("View", new View.OnClickListener() {
                         @Override
@@ -186,6 +323,19 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
                         }
                     }).show();
         }
+        if(filesCount<checkboxArray.size()){
+            filesCount++;
+            showCreateFileNameDialog();
+        }
+    }
+
+    private void showCreateFileNameDialog() {
+        new InputFeildDialog(TxtWordToPdfActivity.this, new GenericCallback() {
+            @Override
+            public void callback(Object o) {
+                startPdfCreating((String) o);
+            }
+        }, "Text Or Word To PDF").show();
     }
 
     private void openpdfFile() {

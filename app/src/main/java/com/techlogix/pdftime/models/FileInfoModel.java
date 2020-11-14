@@ -15,10 +15,11 @@ public class FileInfoModel {
         isSelect = select;
     }
 
-    public FileInfoModel(String fileName, String fileType, File file) {
+    public FileInfoModel(String fileName, String fileType, File file, boolean isSelect) {
         this.fileName = fileName;
         this.fileType = fileType;
         this.file = file;
+        this.isSelect = isSelect;
     }
 
     public String getFileName() {

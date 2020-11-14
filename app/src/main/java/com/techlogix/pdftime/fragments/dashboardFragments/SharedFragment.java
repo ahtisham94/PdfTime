@@ -91,15 +91,15 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
         fileInfoModelArrayList.clear();
         ArrayList<File> arrayList = mDirectoryUtils.getSelectedFiles(filee, Constants.pdfExtension + "," + Constants.pdfExtension);
         mDirectoryUtils.clearSelectedArray();
-        if (arrayList!=null && arrayList.size() > 0) {
+        if (arrayList != null && arrayList.size() > 0) {
             for (File file : arrayList) {
                 String[] fileInfo = file.getName().split("\\.");
                 if (fileInfo.length == 2)
-                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file));
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
                 else {
                     fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
                             file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                            file));
+                            file, false));
                 }
             }
             filesAdapter = new AllFilesAdapter(getContext(), fileInfoModelArrayList);
@@ -113,9 +113,9 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
 
     @Override
     public void currentFrag() {
-        if(singleSelectToggleGroup.getCheckedId()==R.id.shareWithMe){
+        if (singleSelectToggleGroup.getCheckedId() == R.id.shareWithMe) {
             getFiles(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
-        }else if(singleSelectToggleGroup.getCheckedId()==R.id.shareByme){
+        } else if (singleSelectToggleGroup.getCheckedId() == R.id.shareByme) {
             getFiles(new File(Environment.getExternalStorageDirectory(), Constants.folderDirectory + "SharedByMe"));
 
         }
@@ -127,6 +127,7 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
             showSortMenu();
         }
     }
+
     private void showSortMenu() {
         final PopupMenu menu = new PopupMenu(getContext(), emptyView, Gravity.END);
         menu.inflate(R.menu.sortby_menu);

@@ -52,7 +52,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_merge_pdf_file);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getResources().getColor(R.color.colorOrangeStatusBar));
+        window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Merge PDF");
         setSupportActionBar(toolbar);

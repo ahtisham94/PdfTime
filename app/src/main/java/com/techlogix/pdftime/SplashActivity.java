@@ -2,6 +2,7 @@ package com.techlogix.pdftime;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
@@ -21,8 +22,13 @@ public class SplashActivity extends BaseActivity {
             public void run() {
                 if (!SharePrefData.getInstance().getIntroScreenVisibility())
                     startActivity(IntroActivity.class, null);
-                else
-                    startActivity(MainActivity.class, null);
+                else {
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    if (getIntent().getData() != null) {
+                        intent.setData(getIntent().getData());
+                    }
+                    startActivity(intent);
+                }
                 finish();
             }
         }, 4000);

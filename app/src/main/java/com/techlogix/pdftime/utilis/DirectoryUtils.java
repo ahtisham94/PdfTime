@@ -305,6 +305,7 @@ public class DirectoryUtils {
 
     public void clearSelectedArray() {
         selectedFiles = new ArrayList<>();
+        fileArrayList = new ArrayList<>();
     }
 
 
@@ -440,7 +441,7 @@ public class DirectoryUtils {
         }
     }
 
-    public static String getDownloadFolderPath(){
+    public static String getDownloadFolderPath() {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
     }
 

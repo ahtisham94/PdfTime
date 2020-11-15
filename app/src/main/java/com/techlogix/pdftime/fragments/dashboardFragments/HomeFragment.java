@@ -28,6 +28,7 @@ import com.techlogix.pdftime.PDFViewerAcitivity;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.TxtWordToPdfActivity;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
+import com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup;
 import com.techlogix.pdftime.interfaces.CurrentFragment;
 import com.techlogix.pdftime.interfaces.GenericCallback;
 import com.techlogix.pdftime.interfaces.OnTextToPdfInterface;
@@ -45,9 +46,11 @@ import com.techlogix.pdftime.utilis.TextToPdfAsync;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class HomeFragment extends Fragment implements PermissionCallback, CurrentFragment,
-        GenericCallback, OnTextToPdfInterface {
+        GenericCallback, OnTextToPdfInterface, SingleSelectToggleGroup.OnCheckedChangeListener {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -57,6 +60,8 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     ProgressDialog dialog;
     private TextToPDFOptions.Builder mBuilder;
     String mPath;
+    SingleSelectToggleGroup singleSelectToggleGroup;
+    boolean lastModified = false;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -86,17 +91,41 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
 
     private void getFiles() {
         ArrayList<File> arrayList = mDirectoryUtils.searchDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+        mDirectoryUtils.clearSelectedArray();
         Log.d("count", arrayList.size() + "");
         if (arrayList.size() > 0) {
+            fileInfoModelArrayList=new ArrayList<>();
             for (File file : arrayList) {
-                String[] fileInfo = file.getName().split("\\.");
-                if (fileInfo.length == 2)
-                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file,false));
-                else {
-                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
-                            file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                            file,false));
+                if (lastModified) {
+                    Date modifiedDate = null;
+                    Date currentDate = new Date();
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(currentDate);
+                    cal.add(Calendar.HOUR, -24);
+                    Date alertDate = cal.getTime();
+                    modifiedDate = new Date(file.lastModified());
+                    if (modifiedDate != null && alertDate.before(modifiedDate)) {
+                        String[] fileInfo = file.getName().split("\\.");
+                        if (fileInfo.length == 2)
+                            fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
+                        else {
+                            fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
+                                    file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                                    file, false));
+                        }
+                    }
+
+                } else {
+                    String[] fileInfo = file.getName().split("\\.");
+                    if (fileInfo.length == 2)
+                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
+                    else {
+                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
+                                file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                                file, false));
+                    }
                 }
+
             }
             filesAdapter = new AllFilesAdapter(getContext(), fileInfoModelArrayList);
             filesAdapter.setCallback(this);
@@ -117,6 +146,8 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
         dialog.setTitle("Please wait");
         dialog.setMessage("Creating pdf file");
         mBuilder = new TextToPDFOptions.Builder(getContext());
+        singleSelectToggleGroup = view.findViewById(R.id.singleSelectedToggleGroup);
+        singleSelectToggleGroup.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -172,6 +203,18 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
             });
         } else {
             StringUtils.getInstance().showSnackbar(getActivity(), "Failed to create pfd file");
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(SingleSelectToggleGroup group, int checkedId) {
+        if (checkedId == R.id.recentlyBtn) {
+            lastModified = false;
+            getFiles();
+        } else if (checkedId == R.id.edittedBtn) {
+            lastModified = true;
+            getFiles();
+
         }
     }
 }

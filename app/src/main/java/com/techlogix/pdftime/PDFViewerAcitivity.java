@@ -4,22 +4,28 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnErrorListener;
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.exceptions.BadPasswordException;
@@ -35,11 +41,14 @@ import com.techlogix.pdftime.utilis.PDFUtils;
 import com.techlogix.pdftime.utilis.RealPathUtil;
 import com.techlogix.pdftime.utilis.StringUtils;
 
+import org.apache.poi.ss.formula.functions.T;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener, GenericCallback {
+public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener, GenericCallback,
+        OnLoadCompleteListener, View.OnClickListener {
     Toolbar toolbar;
     PDFView pdfView;
     File file;
@@ -47,6 +56,9 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
     Uri uri;
     Boolean firstTry = true;
     PDFUtils pdfUtils;
+    TextView backWordTv, forwordTv;
+    LinearLayout addPagesLayout, pagerNumberLL;
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +76,10 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         pdfView = findViewById(R.id.pdfView);
+        dialog = new ProgressDialog(PDFViewerAcitivity.this);
+        dialog.setTitle("Please wait");
+        dialog.setMessage("Creating pdf file");
+
         if (getIntent().getExtras() != null) {
             String path = getIntent().getStringExtra("path");
             if (path != null) {
@@ -72,11 +88,17 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
             } else {
                 uri = Uri.parse(getIntent().getStringExtra("uri"));
             }
-
+            dialog.show();
             loadPDFFile(file == null ? uri : file, "");
         }
 
         mDirectory = new DirectoryUtils(PDFViewerAcitivity.this);
+        addPagesLayout = findViewById(R.id.addPagesLayout);
+        pagerNumberLL = findViewById(R.id.pagerNumberLL);
+        backWordTv = findViewById(R.id.backWordTv);
+        backWordTv.setOnClickListener(this);
+        forwordTv = findViewById(R.id.forwordTv);
+        forwordTv.setOnClickListener(this);
 
     }
 
@@ -88,6 +110,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
                     .enableAntialiasing(true)
                     .spacing(0)
                     .onError(this)
+                    .onLoad(this)
                     .password(password)
                     .load();
         } else if (comparable instanceof Uri) {
@@ -96,6 +119,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
                     .enableSwipe(true)
                     .enableAntialiasing(true)
                     .spacing(0)
+                    .onLoad(this)
                     .onError(this)
                     .password(password)
                     .load();
@@ -141,6 +165,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
 
     @Override
     public void onError(Throwable t) {
+        dialog.dismiss();
         if (t.getMessage().contains("Password required or incorrect password")) {
             final InputFeildDialog dialog = new InputFeildDialog(PDFViewerAcitivity.this, this, "PDF File Password");
             dialog.forpasswordSettings("Enter password");
@@ -165,5 +190,58 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
     public void callback(Object o) {
         loadPDFFile(file == null ? uri : file, (String) o);
 
+    }
+
+    @Override
+    public void loadComplete(int nbPages) {
+        dialog.dismiss();
+        if (pdfView.getPageCount() > 0 && pdfView.getPageCount() < 7) {
+            pagerNumberLL.setVisibility(View.VISIBLE);
+            addPageNumbers();
+        } else {
+            pagerNumberLL.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void addPageNumbers() {
+        for (int i = 0; i < pdfView.getPageCount(); i++) {
+            TextView textView = new TextView(this);
+            textView.setText(i + "");
+            textView.setBackgroundResource(R.drawable.left_right_swipe_bg);
+            LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            linearParams.weight = 1;
+            linearParams.setMarginEnd(getResources().getDimensionPixelSize(R.dimen._5sdp));
+            linearParams.setMarginStart(getResources().getDimensionPixelSize(R.dimen._5sdp));
+            textView.setLayoutParams(linearParams);
+            textView.setGravity(Gravity.CENTER);
+            addPagesLayout.addView(textView);
+            final int finalI = i;
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    pdfView.jumpTo(finalI, true);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.backWordTv) {
+            if (pdfView.getCurrentPage() > 0) {
+                pdfView.jumpTo(pdfView.getCurrentPage() - 1, true);
+            } else {
+                StringUtils.getInstance().showSnackbar(PDFViewerAcitivity.this, "No more page left");
+            }
+        } else if (view.getId() == R.id.forwordTv) {
+            if (pdfView.getCurrentPage() < pdfView.getPageCount()) {
+                pdfView.jumpTo(pdfView.getCurrentPage() + 1, true);
+            } else {
+                StringUtils.getInstance().showSnackbar(PDFViewerAcitivity.this, "No more page left");
+            }
+        }
     }
 }

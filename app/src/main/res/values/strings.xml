@@ -84,6 +84,12 @@
     <string name="add_files_to_folder">Add Files to Folder</string>
     <string name="share_files">Share Files</string>
     <string name="share_your_files_with_your_friends_and_n_family_with_tap_of_a_button">Share your files with your friends and\n family with tap of a button</string>
+    <string name="try_this_feature_to_secure_receipts_text_files_photos_documents_reports_and_lot_more_with_password_protect">Try this feature to secure receipts, text files, photos, documents reports, and lot more with Password Protect</string>
+    <string name="pdf_password_protect">PDF Password Protect</string>
+    <string name="recent">Recent</string>
+    <string name="edited">Edited</string>
+    <string name="backword"><![CDATA[<]]></string>
+    <string name="forword"><![CDATA[>]]></string>
 
 
 </resources>

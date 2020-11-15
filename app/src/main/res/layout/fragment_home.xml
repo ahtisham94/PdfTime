@@ -7,9 +7,94 @@
     android:background="@color/colorWhite"
     tools:context=".fragments.dashboardFragments.HomeFragment">
 
-    <include
+    <RelativeLayout
         android:id="@+id/bannderLayout"
-        layout="@layout/banner_layout" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_margin="@dimen/_10sdp"
+        android:background="@drawable/edittext_white_bg"
+        android:elevation="@dimen/_5sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/settingImg"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/pdf_setting_bg" />
+
+        <TextView
+            android:id="@+id/titleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_toEndOf="@+id/settingImg"
+            android:gravity="start"
+            android:text="@string/pdf_password_protect"
+            android:textColor="@color/colorGrayDark"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/descTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/titleTv"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_toEndOf="@+id/settingImg"
+            android:gravity="start"
+            android:text="@string/try_this_feature_to_secure_receipts_text_files_photos_documents_reports_and_lot_more_with_password_protect"
+            android:textColor="@color/colorGrayDark"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/tryNowBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_below="@+id/descTv"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:background="@drawable/blue_color_btn"
+            android:text="Try Now"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    <com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup
+        android:id="@+id/singleSelectedToggleGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:checkedButton="@id/recentlyBtn"
+        app:layout_constraintEnd_toEndOf="@+id/bannderLayout"
+        app:layout_constraintStart_toStartOf="@+id/bannderLayout"
+        app:layout_constraintTop_toBottomOf="@+id/bannderLayout"
+        app:tbgChildSpacing="@dimen/_5sdp">
+
+        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+            android:id="@+id/recentlyBtn"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:elevation="@dimen/_5sdp"
+            android:text="@string/recent"
+            android:textSize="12sp" />
+
+        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+            android:id="@+id/edittedBtn"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:elevation="@dimen/_5sdp"
+            android:text="@string/edited"
+            android:textSize="12sp" />
+
+    </com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filesRecyclerView"
@@ -18,7 +103,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bannderLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/singleSelectedToggleGroup" />
 
     <include
         android:id="@+id/noFileLayout"

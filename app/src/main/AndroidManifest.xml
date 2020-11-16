@@ -17,12 +17,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".PhotoEditingActivity"></activity>
         <activity
             android:name=".IntroActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_premium_screen"
             android:screenOrientation="portrait"
-            android:theme="@style/FullscreenTheme"/>
+            android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".PremiumScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -58,50 +59,57 @@
             android:name=".AllFilesInFolderActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".EditImageActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme">
-                        <intent-filter>
-                            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                            <category android:name="android.intent.category.LAUNCHER" />
-                        </intent-filter>
-                        <intent-filter
-                            android:icon="@mipmap/ic_launcher"
-                            android:label="@string/app_name">
-                            <action android:name="android.intent.action.VIEW" />
-                            <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter
+                android:icon="@mipmap/ic_launcher"
+                android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.SEND" />
 
-                            <category android:name="android.intent.category.BROWSABLE" />
-                            <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
-                            <data android:scheme="content" />
-                            <data android:scheme="file" />
-                            <data android:mimeType="application/pdf" />
-                        </intent-filter>
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--            <intent-filter-->
-<!--                android:icon="@mipmap/ic_launcher"-->
-<!--                android:label="@string/app_name">-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <action android:name="android.intent.action.SEND" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
 
-<!--                <data android:scheme="content" />-->
-<!--                <data android:scheme="file" />-->
-<!--                <data android:mimeType="application/pdf" />-->
-<!--            </intent-filter>-->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+            <!-- <intent-filter -->
+            <!-- android:icon="@mipmap/ic_launcher" -->
+            <!-- android:label="@string/app_name"> -->
+            <!-- <action android:name="android.intent.action.VIEW" /> -->
+            <!-- <action android:name="android.intent.action.SEND" /> -->
+
+
+            <!-- <category android:name="android.intent.category.BROWSABLE" /> -->
+            <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+
+
+            <!-- <data android:scheme="content" /> -->
+            <!-- <data android:scheme="file" /> -->
+            <!-- <data android:mimeType="application/pdf" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <provider

@@ -2,18 +2,18 @@ package com.techlogix.pdftime.fragments.dashboardFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+
+import com.techlogix.pdftime.EditImageActivity;
 import com.techlogix.pdftime.FileReducerActivity;
 import com.techlogix.pdftime.ImageToPdfActivity;
 import com.techlogix.pdftime.MergePdfFileActivity;
@@ -23,7 +23,7 @@ import com.techlogix.pdftime.SecurePdfActivity;
 import com.techlogix.pdftime.TxtWordToPdfActivity;
 
 public class ToolsFragment extends Fragment implements View.OnClickListener {
-    RelativeLayout wordPdfRl, imagePdfRl, mergePdfRl, scanPdfRl, fileReducerPdfRl;
+    RelativeLayout wordPdfRl, imagePdfRl, mergePdfRl, scanPdfRl, fileReducerPdfRl, createPDFRl;
     ConstraintLayout securePdfRl;
 
     public ToolsFragment() {
@@ -55,12 +55,14 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
         scanPdfRl = view.findViewById(R.id.scanPdfRl);
         securePdfRl = view.findViewById(R.id.securePdfRl);
         fileReducerPdfRl = view.findViewById(R.id.fileReducerPdfRl);
+        createPDFRl = view.findViewById(R.id.createPDFRl);
         wordPdfRl.setOnClickListener(this);
         imagePdfRl.setOnClickListener(this);
         mergePdfRl.setOnClickListener(this);
         scanPdfRl.setOnClickListener(this);
         securePdfRl.setOnClickListener(this);
         fileReducerPdfRl.setOnClickListener(this);
+        createPDFRl.setOnClickListener(this);
 
     }
 
@@ -84,6 +86,9 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.scanPdfRl:
                 startActivity(new Intent(getContext(), ScanPDFActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                break;
+            case R.id.createPDFRl:
+                startActivity(new Intent(getContext(), EditImageActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
         }
     }

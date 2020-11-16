@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -234,8 +235,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 break;
 
             case R.id.imgCamera:
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                if (PermissionUtils.hasPermissionGranted(EditImageActivity.this, new String[]{Manifest.permission.CAMERA})) {
+                    openCamera();
+                } else {
+                    PermissionUtils.checkAndRequestPermissions(EditImageActivity.this, new String[]{
+                            Manifest.permission.CAMERA
+                    }, CAMERA_REQUEST);
+                }
                 break;
 
             case R.id.imgGallery:
@@ -245,6 +251,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST);
                 break;
         }
+    }
+
+    private void openCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
 
     private void shareImage() {
@@ -423,6 +434,16 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             case STICKER:
                 showBottomSheetDialogFragment(mStickerBSFragment);
                 break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==CAMERA_REQUEST){
+            if(grantResults.length>0&& grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                openCamera();
+            }
         }
     }
 

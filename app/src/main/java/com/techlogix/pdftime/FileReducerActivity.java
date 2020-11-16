@@ -288,7 +288,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
                     }).show();
 
 
-            if (fileCount < adapter.getFilesArrayList().size()) {
+            if (fileCount < adapter.getFilesArrayList().size()-1) {
                 showInputDialog();
             } else {
                 adapter.refreshArray(new File(path));

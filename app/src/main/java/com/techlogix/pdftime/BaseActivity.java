@@ -48,7 +48,7 @@ public class BaseActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
-    protected void showLoading(@NonNull String message) {
+    public void showLoading(@NonNull String message) {
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage(message);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -56,7 +56,7 @@ public class BaseActivity extends AppCompatActivity {
         mProgressDialog.show();
     }
 
-    protected void hideLoading() {
+    public void hideLoading() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }

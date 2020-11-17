@@ -101,11 +101,11 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
             for (File file : arrayList) {
                 String[] fileInfo = file.getName().split("\\.");
                 if (fileInfo.length == 2)
-                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file,false));
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
                 else {
                     fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
                             file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                            file,false));
+                            file, false));
                 }
             }
             filesAdapter = new AllFilesAdapter(SecurePdfActivity.this, fileInfoModelArrayList);
@@ -120,6 +120,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
         if (view.getId() == R.id.filterTv) {
             showSortMenu();
         } else if (view.getId() == R.id.secureFileBg) {
+            checkboxArray = filesAdapter.getFilesArrayList();
             if (checkboxArray.size() > 0) {
                 fileNum++;
                 doEncryptions(checkboxArray.get(fileNum));
@@ -225,6 +226,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.deleteFiles) {
+            checkboxArray = filesAdapter.getFilesArrayList();
             if (checkboxArray.size() > 0) {
                 AlertDialogHelper.showAlert(this, new AlertDialogHelper.Callback() {
                     @Override

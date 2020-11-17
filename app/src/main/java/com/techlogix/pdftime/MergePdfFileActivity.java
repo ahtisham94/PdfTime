@@ -151,6 +151,11 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
 
     @SuppressLint("StaticFieldLeak")
     class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoading("Please wait");
+        }
 
         @Override
         protected ArrayList<File> doInBackground(String... strings) {
@@ -162,6 +167,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         @Override
         protected void onPostExecute(ArrayList<File> arrayList) {
             super.onPostExecute(arrayList);
+            hideLoading();
             Log.d("count", arrayList.size() + "");
             if (arrayList.size() > 0) {
                 fileInfoModelArrayList.clear();
@@ -188,7 +194,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.convertPdf) {
-            if (adapter.getFilesArrayList().size() > 0) {
+            if (adapter.getFilesArrayList().size() > 1) {
 
                 new InputFeildDialog(MergePdfFileActivity.this, new GenericCallback() {
                     @Override
@@ -202,7 +208,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
                     }
                 }, "Merge File").show();
             } else {
-                StringUtils.getInstance().showSnackbar(MergePdfFileActivity.this, "Please select atleast one file");
+                StringUtils.getInstance().showSnackbar(MergePdfFileActivity.this, "Please select atleast two files");
 
             }
         } else if (view.getId() == R.id.filterTv) {

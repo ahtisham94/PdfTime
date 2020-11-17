@@ -49,7 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener, View.OnClickListener, GenericCallback {
+public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener, View.OnClickListener
+        , GenericCallback, DrawerLayout.DrawerListener {
     public ViewPager viewPager;
     TabLayout tabLayout;
     public MainTabsAdapter tabsadapter;
@@ -106,6 +107,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         giftImg = findViewById(R.id.giftImg);
         giftImg.setOnClickListener(this);
         mDrawerLayout = findViewById(R.id.mDrawerLayout);
+        mDrawerLayout.addDrawerListener(this);
         hamburgerIv = findViewById(R.id.hamburgerIv);
         hamburgerIv.setOnClickListener(this);
         homeFragment = new HomeFragment();
@@ -294,13 +296,16 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
     @Override
     public void callback(Object o) {
+
         final String whereTo = (String) o;
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START))
             mDrawerLayout.closeDrawer(GravityCompat.START);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (whereTo.equals(getResources().getString(R.string.image_to_pdf))) {
+
                     Intent intent = new Intent(MainActivity.this, ImageToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 } else if (whereTo.equals(getResources().getString(R.string.word_pdf))) {
@@ -352,7 +357,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
         } else if (viewPager.getCurrentItem() == 1 || viewPager.getCurrentItem() == 4 || viewPager.getCurrentItem() == 3) {
-            serachImg.setVisibility(View.GONE);
+            serachImg.setVisibility(View.VISIBLE);
             premiumImg.setVisibility(View.VISIBLE);
             giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
@@ -362,5 +367,25 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+    }
+
+    @Override
+    public void onDrawerOpened(@NonNull View drawerView) {
+
+    }
+
+    @Override
+    public void onDrawerClosed(@NonNull View drawerView) {
+        drawerRecycler.smoothScrollToPosition(0);
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
+
     }
 }

@@ -20,6 +20,7 @@ public class SplashActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+
                 if (!SharePrefData.getInstance().getIntroScreenVisibility())
                     startActivity(IntroActivity.class, null);
                 else {
@@ -28,9 +29,10 @@ public class SplashActivity extends BaseActivity {
                         intent.setData(getIntent().getData());
                     }
                     startActivity(intent);
+
                 }
                 finish();
             }
-        }, 4000);
+        }, 3000);
     }
 }

@@ -69,18 +69,18 @@
 
     <com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup
         android:id="@+id/singleSelectedToggleGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
         android:checkedButton="@id/recentlyBtn"
         app:layout_constraintEnd_toEndOf="@+id/bannderLayout"
         app:layout_constraintStart_toStartOf="@+id/bannderLayout"
         app:layout_constraintTop_toBottomOf="@+id/bannderLayout"
-        app:tbgChildSpacing="@dimen/_5sdp">
+        app:tbgChildSpacing="auto">
 
         <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
             android:id="@+id/recentlyBtn"
-            android:layout_width="@dimen/_120sdp"
+            android:layout_width="@dimen/_140sdp"
             android:layout_height="@dimen/_35sdp"
             android:elevation="@dimen/_5sdp"
             android:text="@string/recent"
@@ -88,7 +88,7 @@
 
         <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
             android:id="@+id/edittedBtn"
-            android:layout_width="@dimen/_120sdp"
+            android:layout_width="@dimen/_140sdp"
             android:layout_height="@dimen/_35sdp"
             android:elevation="@dimen/_5sdp"
             android:text="@string/edited"

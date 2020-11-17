@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.techlogix.pdftime.BaseActivity;
 import com.techlogix.pdftime.R;
@@ -52,7 +53,9 @@ import java.util.Comparator;
 import java.util.Objects;
 
 public class FileFragment extends Fragment implements PermissionCallback, SingleSelectToggleGroup.OnCheckedChangeListener,
-        CurrentFragment, View.OnClickListener, ActionMode.Callback, RecyclerItemClickListener.OnItemClickListener, GenericCallback {
+        CurrentFragment, View.OnClickListener, ActionMode.Callback,
+        RecyclerItemClickListener.OnItemClickListener, GenericCallback,
+        SwipeRefreshLayout.OnRefreshListener {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -66,6 +69,7 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     Menu multiSelectMenu;
     RelativeLayout moveToFolderFAB;
     ProgressDialog dialog;
+    SwipeRefreshLayout swipRefreshLayout;
 
     public FileFragment() {
         // Required empty public constructor
@@ -104,6 +108,8 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         dialog = new ProgressDialog(getContext());
         dialog.setTitle("Please wait");
         dialog.setMessage("Moving files to folder");
+        swipRefreshLayout = view.findViewById(R.id.swipRefreshLayout);
+        swipRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
@@ -120,6 +126,7 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     @Override
     public void onCheckedChanged(SingleSelectToggleGroup group, int checkedId) {
         if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE})) {
+
             if (checkedId == R.id.pdfLabel)
                 new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
             else if (checkedId == R.id.wordLabel)
@@ -318,9 +325,20 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         }
     }
 
+    @Override
+    public void onRefresh() {
+        new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+    }
+
 
     @SuppressLint("StaticFieldLeak")
     class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            baseActivity.showLoading("Please wait");
+        }
 
         @Override
         protected ArrayList<File> doInBackground(String... strings) {
@@ -332,10 +350,14 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         @Override
         protected void onPostExecute(ArrayList<File> arrayList) {
             super.onPostExecute(arrayList);
+            baseActivity.hideLoading();
+            swipRefreshLayout.setRefreshing(false);
             Log.d("count", arrayList.size() + "");
             if (arrayList.size() > 0) {
+                noFileLayout.setVisibility(View.GONE);
                 fileInfoModelArrayList.clear();
                 for (File file : arrayList) {
+
                     String[] fileInfo = file.getName().split("\\.");
                     if (fileInfo.length == 2)
                         fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));

@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.techlogix.pdftime.BaseActivity;
 import com.techlogix.pdftime.MainActivity;
 import com.techlogix.pdftime.PDFViewerAcitivity;
+import com.techlogix.pdftime.PremiumScreen;
 import com.techlogix.pdftime.R;
 import com.techlogix.pdftime.TxtWordToPdfActivity;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
@@ -50,7 +52,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class HomeFragment extends Fragment implements PermissionCallback, CurrentFragment,
-        GenericCallback, OnTextToPdfInterface, SingleSelectToggleGroup.OnCheckedChangeListener {
+        GenericCallback, OnTextToPdfInterface, SingleSelectToggleGroup.OnCheckedChangeListener, View.OnClickListener {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -62,6 +64,7 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     String mPath;
     SingleSelectToggleGroup singleSelectToggleGroup;
     boolean lastModified = false;
+    Button tryNowBtn;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -94,7 +97,7 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
         mDirectoryUtils.clearSelectedArray();
         Log.d("count", arrayList.size() + "");
         if (arrayList.size() > 0) {
-            fileInfoModelArrayList=new ArrayList<>();
+            fileInfoModelArrayList = new ArrayList<>();
             for (File file : arrayList) {
                 if (lastModified) {
                     Date modifiedDate = null;
@@ -148,6 +151,8 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
         mBuilder = new TextToPDFOptions.Builder(getContext());
         singleSelectToggleGroup = view.findViewById(R.id.singleSelectedToggleGroup);
         singleSelectToggleGroup.setOnCheckedChangeListener(this);
+        tryNowBtn = view.findViewById(R.id.tryNowBtn);
+        tryNowBtn.setOnClickListener(this);
     }
 
     @Override
@@ -215,6 +220,13 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
             lastModified = true;
             getFiles();
 
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.tryNowBtn) {
+            baseActivity.startActivity(PremiumScreen.class, null);
         }
     }
 }

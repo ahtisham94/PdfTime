@@ -102,8 +102,14 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         checkboxArray = (ArrayList<FileInfoModel>) o;
     }
 
+
     @SuppressLint("StaticFieldLeak")
     class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoading("Please wait");
+        }
 
         @Override
         protected ArrayList<File> doInBackground(String... strings) {
@@ -115,6 +121,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         @Override
         protected void onPostExecute(ArrayList<File> arrayList) {
             super.onPostExecute(arrayList);
+            hideLoading();
             Log.d("count", arrayList.size() + "");
             if (arrayList.size() > 0) {
                 fileInfoModelArrayList.clear();
@@ -328,10 +335,11 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
                             openpdfFile();
                         }
                     }).show();
-        }
-        if (filesCount < checkboxArray.size()) {
-            filesCount++;
-            showCreateFileNameDialog();
+
+            if (filesCount < checkboxArray.size()) {
+                filesCount++;
+                showCreateFileNameDialog();
+            }
         }
     }
 

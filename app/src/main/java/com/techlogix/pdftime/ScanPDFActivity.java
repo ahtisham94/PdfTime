@@ -66,7 +66,6 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
     Button saveFile;
     DirectoryUtils mDirectoryUtils;
     Bitmap bitmap;
-    ProgressDialog dialog;
     private ImageToPDFOptions mPdfOptions;
     ArrayList<String> imagesUri;
     MediaStoreCompat storeCompat;
@@ -87,11 +86,8 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
         }
         mDirectoryUtils = new DirectoryUtils(ScanPDFActivity.this);
         mPdfOptions = new ImageToPDFOptions();
-        dialog = new ProgressDialog(ScanPDFActivity.this);
         imagesUri = new ArrayList<>();
         storeCompat = new MediaStoreCompat(this);
-        dialog.setTitle("Please wait");
-        dialog.setMessage("Creating pdf file");
         saveFile = findViewById(R.id.saveFile);
 
         grayScaleImage = findViewById(R.id.grayScaleImage);
@@ -268,12 +264,12 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onPDFCreationStarted() {
-        dialog.show();
+        showLoading("Creating pdf file", "Please wait");
     }
 
     @Override
     public void onPDFCreated(boolean success, final String path) {
-        dialog.dismiss();
+        hideLoading();
         if (success) {
             StringUtils.getInstance().getSnackbarwithAction(ScanPDFActivity.this, R.string.file_created)
                     .setAction(R.string.snackbar_viewAction, new View.OnClickListener() {

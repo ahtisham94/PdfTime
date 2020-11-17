@@ -32,6 +32,7 @@ import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileUtils;
+import com.techlogix.pdftime.utilis.GetFilesUtility;
 import com.techlogix.pdftime.utilis.PDFUtils;
 import com.techlogix.pdftime.utilis.RealPathUtil;
 import com.techlogix.pdftime.utilis.StringUtils;
@@ -44,11 +45,10 @@ import java.util.Comparator;
 import static com.techlogix.pdftime.utilis.FileInfoUtils.getFormattedSize;
 
 public class FileReducerActivity extends BaseActivity implements View.OnClickListener
-        , OnPDFCompressedInterface {
+        , OnPDFCompressedInterface, GetFilesUtility.getFilesCallback {
     private static final int INTENT_REQUEST_PICK_FILE_CODE = 558;
     Button selectFilesBtn, convertPdf;
     Toolbar toolbar;
-    private ProgressDialog dialog;
     FileUtils mFileUtils;
     Uri mUri;
     EditText compressionRateEd;
@@ -79,56 +79,36 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
         }
         mFileUtils = new FileUtils(FileReducerActivity.this);
         mPdfUtils = new PDFUtils(FileReducerActivity.this);
-        dialog = new ProgressDialog(FileReducerActivity.this);
         mDirectoryUtils = new DirectoryUtils(FileReducerActivity.this);
         fileInfoModelArrayList = new ArrayList<>();
-        dialog.setTitle("Please wait");
-        dialog.setMessage("Creating pdf file");
-//        selectFilesBtn = findViewById(R.id.selectFilesBtn);
-//        selectFilesBtn.setOnClickListener(this);
         convertPdf = findViewById(R.id.convertPdf);
         convertPdf.setOnClickListener(this);
-//        compressionRateEd = findViewById(R.id.compressionRateEd);
-//        resultTv = findViewById(R.id.resultTv);
         filterTv = findViewById(R.id.filterTv);
         filterTv.setOnClickListener(this);
         emptyView = findViewById(R.id.empty_view);
         allFilesRecycler = findViewById(R.id.allFilesRecycler);
         allFilesRecycler.setLayoutManager(new LinearLayoutManager(FileReducerActivity.this));
-        new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+        new GetFilesUtility(((BaseActivity) FileReducerActivity.this), this).execute(Constants.pdfExtension + "," + Constants.pdfExtension);
     }
 
-    @SuppressLint("StaticFieldLeak")
-    class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
-
-        @Override
-        protected ArrayList<File> doInBackground(String... strings) {
-            mDirectoryUtils.clearSelectedArray();
-            return mDirectoryUtils.getSelectedFiles(Environment.getExternalStorageDirectory()
-                    , strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<File> arrayList) {
-            super.onPostExecute(arrayList);
-            Log.d("count", arrayList.size() + "");
-            if (arrayList.size() > 0) {
-                fileInfoModelArrayList.clear();
-                for (File file : arrayList) {
-                    String[] fileInfo = file.getName().split("\\.");
-                    if (fileInfo.length == 2)
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
-                    else {
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
-                                file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                                file, false));
-                    }
+    @Override
+    public void getFiles(ArrayList<File> arrayList) {
+        Log.d("count", arrayList.size() + "");
+        if (arrayList.size() > 0) {
+            fileInfoModelArrayList.clear();
+            for (File file : arrayList) {
+                String[] fileInfo = file.getName().split("\\.");
+                if (fileInfo.length == 2)
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
+                else {
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
+                            file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                            file, false));
                 }
-                adapter = new AllFilesAdapter(FileReducerActivity.this, fileInfoModelArrayList);
-                allFilesRecycler.setAdapter(adapter);
-                adapter.setShowCheckbox(true);
             }
-
+            adapter = new AllFilesAdapter(FileReducerActivity.this, fileInfoModelArrayList);
+            allFilesRecycler.setAdapter(adapter);
+            adapter.setShowCheckbox(true);
         }
     }
 
@@ -160,14 +140,6 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        /*if (view.getId() == R.id.selectFilesBtn) {
-            if (PermissionUtils.hasPermissionGranted(FileReducerActivity.this, new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
-            })) {
-                startActivityForResult(mFileUtils.getFileChooser(""),
-                        INTENT_REQUEST_PICK_FILE_CODE);
-            }
-        } else*/
         if (view.getId() == R.id.convertPdf) {
             try {
                 if (adapter.getFilesArrayList().size() > 0) {
@@ -270,12 +242,12 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void pdfCompressionStarted() {
-        dialog.show();
+        showLoading("Creating pdf file", "Please wait...");
     }
 
     @Override
     public void pdfCompressionEnded(final String path, Boolean success) {
-        dialog.dismiss();
+        hideLoading();
         if (success) {
             StringUtils.getInstance().getSnackbarwithAction(FileReducerActivity.this, R.string.file_created)
                     .setAction(R.string.snackbar_viewAction, new View.OnClickListener() {
@@ -288,7 +260,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
                     }).show();
 
 
-            if (fileCount < adapter.getFilesArrayList().size()-1) {
+            if (fileCount < adapter.getFilesArrayList().size() - 1) {
                 showInputDialog();
             } else {
                 adapter.refreshArray(new File(path));

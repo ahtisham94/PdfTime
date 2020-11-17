@@ -56,7 +56,6 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     private String mFileExtension;
     private FileUtils mFileUtils;
     private String mPath;
-    private ProgressDialog dialog;
     private TextToPDFOptions.Builder mBuilder;
     private DirectoryUtils mDirectoryUtils;
     RecyclerView allFilesRecycler;
@@ -87,9 +86,6 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         emptyView = findViewById(R.id.empty_view);
         convertPdf = findViewById(R.id.convertPdf);
         convertPdf.setOnClickListener(this);
-        dialog = new ProgressDialog(TxtWordToPdfActivity.this);
-        dialog.setTitle("Please wait");
-        dialog.setMessage("Creating pdf file");
         allFilesRecycler = findViewById(R.id.allFilesRecycler);
         allFilesRecycler.setLayoutManager(new LinearLayoutManager(this));
         fileInfoModelArrayList = new ArrayList<>();
@@ -108,7 +104,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showLoading("Please wait");
+            showLoading("PDF Creating...", "Please wait");
         }
 
         @Override
@@ -319,12 +315,12 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onPDFCreationStarted() {
-        dialog.show();
+        showLoading("Creating pdf file", "Please wait...");
     }
 
     @Override
     public void onPDFCreated(boolean success) {
-        dialog.dismiss();
+        hideLoading();
         if (success) {
             adapter.refrechList();
             checkboxArray.clear();

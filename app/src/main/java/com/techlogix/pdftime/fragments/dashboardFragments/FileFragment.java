@@ -1,11 +1,8 @@
 package com.techlogix.pdftime.fragments.dashboardFragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Gravity;
@@ -13,14 +10,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,12 +36,11 @@ import com.techlogix.pdftime.interfaces.PermissionCallback;
 import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
+import com.techlogix.pdftime.utilis.GetFilesUtility;
 import com.techlogix.pdftime.utilis.PermissionUtils;
 import com.techlogix.pdftime.utilis.RecyclerItemClickListener;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -55,7 +49,7 @@ import java.util.Objects;
 public class FileFragment extends Fragment implements PermissionCallback, SingleSelectToggleGroup.OnCheckedChangeListener,
         CurrentFragment, View.OnClickListener, ActionMode.Callback,
         RecyclerItemClickListener.OnItemClickListener, GenericCallback,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener, GetFilesUtility.getFilesCallback {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -128,13 +122,17 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE})) {
 
             if (checkedId == R.id.pdfLabel)
-                new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+//                new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+                new GetFilesUtility(baseActivity, this).execute(Constants.pdfExtension + "," + Constants.pdfExtension);
             else if (checkedId == R.id.wordLabel)
-                new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
+                new GetFilesUtility(baseActivity, this).execute(Constants.docExtension + "," + Constants.docxExtension);
+//                new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
             else if (checkedId == R.id.excelLabel)
-                new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+                new GetFilesUtility(baseActivity, this).execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+//            new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
             else if (checkedId == R.id.textLabel)
-                new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
+                new GetFilesUtility(baseActivity, this).execute(Constants.textExtension + "," + Constants.textExtension);
+//            new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
 
 
         } else {
@@ -230,13 +228,17 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
                         mDirectoryUtils.deleteFile(model.getFile());
                     }
                     if (singleSelectToggleGroup.getCheckedId() == R.id.pdfLabel)
-                        new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+                        new GetFilesUtility(baseActivity, FileFragment.this).execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+//                        new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
                     else if (singleSelectToggleGroup.getCheckedId() == R.id.wordLabel)
-                        new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
+                        new GetFilesUtility(baseActivity, FileFragment.this).execute(Constants.docExtension + "," + Constants.docxExtension);
+//                    new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
                     else if (singleSelectToggleGroup.getCheckedId() == R.id.excelLabel)
-                        new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+                        new GetFilesUtility(baseActivity, FileFragment.this).execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+//                    new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
                     else if (singleSelectToggleGroup.getCheckedId() == R.id.textLabel)
-                        new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
+                        new GetFilesUtility(baseActivity, FileFragment.this).execute(Constants.textExtension + "," + Constants.textExtension);
+//                    new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
 
                 }
                 dialog.dismiss();
@@ -312,13 +314,17 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
                 mDirectoryUtils.moveFile(model.getFile().getAbsolutePath(), model.getFile().getName(), ((File) o).getAbsolutePath() + "/");
             }
             if (singleSelectToggleGroup.getCheckedId() == R.id.pdfLabel)
-                new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+                new GetFilesUtility(baseActivity, this).execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+//            new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
             else if (singleSelectToggleGroup.getCheckedId() == R.id.wordLabel)
-                new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
+                new GetFilesUtility(baseActivity, this).execute(Constants.docExtension + "," + Constants.docxExtension);
+//            new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
             else if (singleSelectToggleGroup.getCheckedId() == R.id.excelLabel)
-                new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+                new GetFilesUtility(baseActivity, this).execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+//            new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
             else if (singleSelectToggleGroup.getCheckedId() == R.id.textLabel)
-                new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
+                new GetFilesUtility(baseActivity, this).execute(Constants.textExtension + "," + Constants.textExtension);
+//            new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
 
             onDestroyActionMode(mActionMode);
             dialog.dismiss();
@@ -327,54 +333,36 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
 
     @Override
     public void onRefresh() {
-        new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+        singleSelectToggleGroup.check(R.id.pdfLabel);
+
     }
 
+    @Override
+    public void getFiles(ArrayList<File> arrayList) {
+        swipRefreshLayout.setRefreshing(false);
+        Log.d("count", arrayList.size() + "");
+        if (arrayList.size() > 0) {
+            noFileLayout.setVisibility(View.GONE);
+            fileInfoModelArrayList.clear();
+            for (File file : arrayList) {
 
-    @SuppressLint("StaticFieldLeak")
-    class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            baseActivity.showLoading("Please wait");
-        }
-
-        @Override
-        protected ArrayList<File> doInBackground(String... strings) {
-            mDirectoryUtils.clearSelectedArray();
-            return mDirectoryUtils.getSelectedFiles(Environment.getExternalStorageDirectory()
-                    , strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<File> arrayList) {
-            super.onPostExecute(arrayList);
-            baseActivity.hideLoading();
-            swipRefreshLayout.setRefreshing(false);
-            Log.d("count", arrayList.size() + "");
-            if (arrayList.size() > 0) {
-                noFileLayout.setVisibility(View.GONE);
-                fileInfoModelArrayList.clear();
-                for (File file : arrayList) {
-
-                    String[] fileInfo = file.getName().split("\\.");
-                    if (fileInfo.length == 2)
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
-                    else {
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
-                                file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                                file, false));
-                    }
+                String[] fileInfo = file.getName().split("\\.");
+                if (fileInfo.length == 2)
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
+                else {
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
+                            file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                            file, false));
                 }
-                filesAdapter = new AllFilesAdapter(getContext(), fileInfoModelArrayList);
-                filesRecyclerView.setAdapter(filesAdapter);
-            } else {
-                noFileLayout.setVisibility(View.VISIBLE);
             }
-
+            filesAdapter = new AllFilesAdapter(getContext(), fileInfoModelArrayList);
+            filesRecyclerView.setAdapter(filesAdapter);
+        } else {
+            noFileLayout.setVisibility(View.VISIBLE);
+            filesAdapter.setData(new ArrayList<FileInfoModel>());
         }
     }
+
 
     public void sortArray(final int sortBy) {
         Collections.sort(fileInfoModelArrayList, new Comparator<FileInfoModel>() {

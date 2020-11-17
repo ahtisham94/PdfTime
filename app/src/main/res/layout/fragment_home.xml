@@ -10,9 +10,9 @@
     <RelativeLayout
         android:id="@+id/bannderLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_100sdp"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
-        android:background="@drawable/edittext_white_bg"
+        android:background="@drawable/pdf_setting_bg"
         android:elevation="@dimen/_5sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,9 +20,10 @@
         <ImageView
             android:id="@+id/settingImg"
             android:layout_width="@dimen/_70sdp"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/pdf_setting_bg" />
+            android:layout_height="wrap_content"
+
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_pdf_password_ic" />
 
         <TextView
             android:id="@+id/titleTv"
@@ -111,9 +112,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/filesRecyclerView"
+        app:layout_constraintStart_toStartOf="@+id/filesRecyclerView"
+        app:layout_constraintBottom_toBottomOf="@+id/filesRecyclerView"
+        app:layout_constraintTop_toTopOf="@+id/filesRecyclerView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -48,7 +48,6 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
     private static final int INTENT_REQUEST_PICK_FILE_CODE = 558;
     Button convertPdf;
     Toolbar toolbar;
-    private ProgressDialog dialog;
     RecyclerView mergeFileRecycler;
     private ArrayList<String> mFilePaths;
     private String mHomePath = "";
@@ -80,9 +79,6 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         emptyView = findViewById(R.id.empty_view);
         mergeFileRecycler = findViewById(R.id.allFilesRecycler);
         mergeFileRecycler.setLayoutManager(new LinearLayoutManager(MergePdfFileActivity.this));
-        dialog = new ProgressDialog(MergePdfFileActivity.this);
-        dialog.setTitle("Please wait");
-        dialog.setMessage("Creating pdf file");
         mFilePaths = new ArrayList<>();
         new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
     }
@@ -154,7 +150,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showLoading("Please wait");
+            showLoading("Please wait", "Merging...");
         }
 
         @Override
@@ -253,7 +249,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void resetValues(boolean isPDFMerged, final String path) {
-        dialog.dismiss();
+        hideLoading();
 
         if (isPDFMerged) {
             adapter.refreshArray(new File(path));
@@ -278,6 +274,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void mergeStarted() {
-        dialog.show();
+        showLoading("Merging pdf files", "Please wait...");
+
     }
 }

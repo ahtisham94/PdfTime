@@ -43,7 +43,6 @@ import java.util.Comparator;
 public class SecurePdfActivity extends BaseActivity implements GenericCallback, View.OnClickListener {
     Toolbar toolbar;
     RecyclerView filesRecyclerView;
-    ProgressDialog dialog;
     ArrayList<FileInfoModel> fileInfoModelArrayList, checkboxArray;
     DirectoryUtils mDirectoryUtils;
     AllFilesAdapter filesAdapter;
@@ -79,9 +78,6 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
         pdfEncryptionUtility = new PDFEncryptionUtility(SecurePdfActivity.this);
         fileInfoModelArrayList = new ArrayList<>();
         checkboxArray = new ArrayList<>();
-        dialog = new ProgressDialog(SecurePdfActivity.this);
-        dialog.setTitle("Please wait");
-        dialog.setMessage("Securing pdf file");
         if (PermissionUtils.hasPermissionGranted(SecurePdfActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
             getFiles();
         } else {
@@ -136,10 +132,10 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
             public void callback(Object o) {
                 try {
                     if (!pdfUtils.isPDFEncrypted(fileInfoModel.getFile().getAbsolutePath())) {
-                        dialog.show();
+                        showLoading("Securing pdf file", "Please wait...");
                         String path = pdfEncryptionUtility.doEncryption(fileInfoModel.getFile().getAbsolutePath(), (String) o);
                         filesAdapter.refreshArray(new File(path));
-                        dialog.dismiss();
+                        hideLoading();
                     }
                     fileNum++;
                     if (fileNum < checkboxArray.size()) {
@@ -147,7 +143,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
                     }
 
                 } catch (Exception e) {
-                    dialog.dismiss();
+                    hideLoading();
                     Log.d("encryption", "Encryption Error");
                 }
 

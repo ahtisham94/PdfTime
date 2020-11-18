@@ -34,6 +34,7 @@ import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileUtils;
+import com.techlogix.pdftime.utilis.GetFilesUtility;
 import com.techlogix.pdftime.utilis.PageSizeUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
 import com.techlogix.pdftime.utilis.StringUtils;
@@ -49,7 +50,7 @@ import java.util.Comparator;
 import static com.techlogix.pdftime.utilis.Constants.mFileSelectCode;
 
 public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickListener,
-        OnTextToPdfInterface, TextToPdfContract.View, GenericCallback {
+        OnTextToPdfInterface, TextToPdfContract.View, GenericCallback ,GetFilesUtility.getFilesCallback{
     Button convertPdf;
     Toolbar toolbar;
     private Uri mTextFileUri = null;
@@ -89,7 +90,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         allFilesRecycler = findViewById(R.id.allFilesRecycler);
         allFilesRecycler.setLayoutManager(new LinearLayoutManager(this));
         fileInfoModelArrayList = new ArrayList<>();
-        new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
+        new GetFilesUtility(((BaseActivity) TxtWordToPdfActivity.this),this).execute(Constants.docExtension + "," + Constants.docxExtension);
         checkboxArray = new ArrayList<>();
     }
 
@@ -98,47 +99,29 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         checkboxArray = (ArrayList<FileInfoModel>) o;
     }
 
-
-    @SuppressLint("StaticFieldLeak")
-    class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showLoading("PDF Creating...", "Please wait");
-        }
-
-        @Override
-        protected ArrayList<File> doInBackground(String... strings) {
-            mDirectoryUtils.clearSelectedArray();
-            return mDirectoryUtils.getSelectedFiles(Environment.getExternalStorageDirectory()
-                    , strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<File> arrayList) {
-            super.onPostExecute(arrayList);
-            hideLoading();
-            Log.d("count", arrayList.size() + "");
-            if (arrayList.size() > 0) {
-                fileInfoModelArrayList.clear();
-                for (File file : arrayList) {
-                    String[] fileInfo = file.getName().split("\\.");
-                    if (fileInfo.length == 2)
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
-                    else {
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
-                                file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                                file, false));
-                    }
+    @Override
+    public void getFiles(ArrayList<File> arrayList) {
+        Log.d("count", arrayList.size() + "");
+        if (arrayList.size() > 0) {
+            fileInfoModelArrayList.clear();
+            for (File file : arrayList) {
+                String[] fileInfo = file.getName().split("\\.");
+                if (fileInfo.length == 2)
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
+                else {
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
+                            file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                            file, false));
                 }
-                adapter = new AllFilesAdapter(TxtWordToPdfActivity.this, fileInfoModelArrayList);
-                allFilesRecycler.setAdapter(adapter);
-                adapter.setShowCheckbox(true);
-                adapter.setCallback(TxtWordToPdfActivity.this);
             }
-
+            adapter = new AllFilesAdapter(TxtWordToPdfActivity.this, fileInfoModelArrayList);
+            allFilesRecycler.setAdapter(adapter);
+            adapter.setShowCheckbox(true);
+            adapter.setCallback(TxtWordToPdfActivity.this);
+            convertPdf.setEnabled(true);
         }
     }
+
 
     @Override
     public void onClick(View view) {
@@ -149,17 +132,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
             } else {
                 StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, "Please select at least one file");
             }
-        } /*else if (view.getId() == R.id.selectFilesBtn) {
-            if (PermissionUtils.hasPermissionGranted(TxtWordToPdfActivity.this, new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
-            })) {
-                getFileFromStorage();
-            } else {
-                PermissionUtils.checkAndRequestPermissions(TxtWordToPdfActivity.this, new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
-                }, Constants.READ_EXTERNAL_STORAGE);
-            }
-        }*/ else if (view.getId() == R.id.filterTv) {
+        }  else if (view.getId() == R.id.filterTv) {
             showSortMenu();
         }
     }

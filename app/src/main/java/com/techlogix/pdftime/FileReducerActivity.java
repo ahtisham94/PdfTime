@@ -109,6 +109,8 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
             adapter = new AllFilesAdapter(FileReducerActivity.this, fileInfoModelArrayList);
             allFilesRecycler.setAdapter(adapter);
             adapter.setShowCheckbox(true);
+            convertPdf.setEnabled(true);
+
         }
     }
 

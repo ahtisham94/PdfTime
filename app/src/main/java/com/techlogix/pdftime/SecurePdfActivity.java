@@ -78,13 +78,13 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
         pdfEncryptionUtility = new PDFEncryptionUtility(SecurePdfActivity.this);
         fileInfoModelArrayList = new ArrayList<>();
         checkboxArray = new ArrayList<>();
-        if (PermissionUtils.hasPermissionGranted(SecurePdfActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+        if (PermissionUtils.hasPermissionGranted(SecurePdfActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
             getFiles();
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    PermissionUtils.checkAndRequestPermissions(SecurePdfActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+                    PermissionUtils.checkAndRequestPermissions(SecurePdfActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
                 }
             }, 3000);
         }
@@ -108,6 +108,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
             filesAdapter.setShowCheckbox(true);
             filesAdapter.setCallback(this);
             filesRecyclerView.setAdapter(filesAdapter);
+            secureFileBg.setEnabled(true);
         }
     }
 

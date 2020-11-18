@@ -179,6 +179,7 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
 
             }
         });
-        filesAdapter.notifyDataSetChanged();
+        if (filesAdapter != null)
+            filesAdapter.notifyDataSetChanged();
     }
 }

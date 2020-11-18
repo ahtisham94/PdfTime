@@ -61,22 +61,24 @@ public class SearchFileActivity extends BaseActivity implements TextWatcher {
     }
 
     private void getFiles() {
+        showLoading("Loading Files", "Please wait...");
         ArrayList<File> arrayList = mDirectoryUtils.searchDir(Environment.getExternalStorageDirectory());
         Log.d("count", arrayList.size() + "");
         if (arrayList.size() > 0) {
             for (File file : arrayList) {
                 String[] fileInfo = file.getName().split("\\.");
                 if (fileInfo.length == 2)
-                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file,false));
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
                 else {
                     fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
                             file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                            file,false));
+                            file, false));
                 }
             }
             adapter = new AllFilesAdapter(SearchFileActivity.this, fileInfoModelArrayList);
             allFilesRecycler.setAdapter(adapter);
         }
+        hideLoading();
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.techlogix.pdftime.models.FileInfoModel;
 import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileUtils;
+import com.techlogix.pdftime.utilis.GetFilesUtility;
 import com.techlogix.pdftime.utilis.MergePdf;
 import com.techlogix.pdftime.utilis.PermissionUtils;
 import com.techlogix.pdftime.utilis.RealPathUtil;
@@ -44,7 +45,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class MergePdfFileActivity extends BaseActivity implements View.OnClickListener,
-        MergeFilesListener, GenericCallback {
+        MergeFilesListener, GenericCallback,GetFilesUtility.getFilesCallback {
     private static final int INTENT_REQUEST_PICK_FILE_CODE = 558;
     Button convertPdf;
     Toolbar toolbar;
@@ -80,7 +81,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         mergeFileRecycler = findViewById(R.id.allFilesRecycler);
         mergeFileRecycler.setLayoutManager(new LinearLayoutManager(MergePdfFileActivity.this));
         mFilePaths = new ArrayList<>();
-        new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+        new GetFilesUtility(((BaseActivity) MergePdfFileActivity.this), this).execute(Constants.pdfExtension + "," + Constants.pdfExtension);
     }
 
     @Override
@@ -145,43 +146,26 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         adapter.notifyDataSetChanged();
     }
 
-    @SuppressLint("StaticFieldLeak")
-    class GetFiles extends AsyncTask<String, Void, ArrayList<File>> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showLoading("Please wait", "Merging...");
-        }
-
-        @Override
-        protected ArrayList<File> doInBackground(String... strings) {
-            mDirectoryUtils.clearSelectedArray();
-            return mDirectoryUtils.getSelectedFiles(Environment.getExternalStorageDirectory()
-                    , strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<File> arrayList) {
-            super.onPostExecute(arrayList);
-            hideLoading();
-            Log.d("count", arrayList.size() + "");
-            if (arrayList.size() > 0) {
-                fileInfoModelArrayList.clear();
-                for (File file : arrayList) {
-                    String[] fileInfo = file.getName().split("\\.");
-                    if (fileInfo.length == 2)
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
-                    else {
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
-                                file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                                file, false));
-                    }
+    @Override
+    public void getFiles(ArrayList<File> arrayList) {
+        Log.d("count", arrayList.size() + "");
+        if (arrayList.size() > 0) {
+            fileInfoModelArrayList.clear();
+            for (File file : arrayList) {
+                String[] fileInfo = file.getName().split("\\.");
+                if (fileInfo.length == 2)
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
+                else {
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
+                            file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                            file, false));
                 }
-                adapter = new AllFilesAdapter(MergePdfFileActivity.this, fileInfoModelArrayList);
-                mergeFileRecycler.setAdapter(adapter);
-                adapter.setShowCheckbox(true);
-                adapter.setCallback(MergePdfFileActivity.this);
             }
+            adapter = new AllFilesAdapter(MergePdfFileActivity.this, fileInfoModelArrayList);
+            mergeFileRecycler.setAdapter(adapter);
+            adapter.setShowCheckbox(true);
+            adapter.setCallback(MergePdfFileActivity.this);
+            convertPdf.setEnabled(true);
 
         }
     }

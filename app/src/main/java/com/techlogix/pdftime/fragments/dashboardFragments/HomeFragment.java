@@ -80,13 +80,13 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+        if (PermissionUtils.hasPermissionGranted(getContext(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
             getFiles();
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    PermissionUtils.checkAndRequestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+                    PermissionUtils.checkAndRequestPermissions(requireActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
                 }
             }, 3000);
         }
@@ -164,6 +164,7 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     @Override
     public void denied() {
         baseActivity.showToast("Permission not granted", getContext());
+        requireActivity().finish();
     }
 
     @Override
@@ -214,11 +215,20 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     @Override
     public void onCheckedChanged(SingleSelectToggleGroup group, int checkedId) {
         if (checkedId == R.id.recentlyBtn) {
-            lastModified = false;
-            getFiles();
+            if (PermissionUtils.hasPermissionGranted(getContext(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+                lastModified = false;
+                getFiles();
+            } else {
+                PermissionUtils.checkAndRequestPermissions(requireActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+            }
         } else if (checkedId == R.id.edittedBtn) {
-            lastModified = true;
-            getFiles();
+            if (PermissionUtils.hasPermissionGranted(getContext(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+                lastModified = true;
+                getFiles();
+            } else {
+                PermissionUtils.checkAndRequestPermissions(requireActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+
+            }
 
         }
     }

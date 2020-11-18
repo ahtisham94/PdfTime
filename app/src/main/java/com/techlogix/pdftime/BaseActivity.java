@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,10 +20,11 @@ import com.google.android.material.snackbar.Snackbar;
 public class BaseActivity extends AppCompatActivity {
     AppContro appContro;
     private ProgressDialog mProgressDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appContro= (AppContro) getApplication();
+        appContro = (AppContro) getApplication();
     }
 
     public void startActivity(Class<?> calledActivity, Bundle bundle) {
@@ -48,7 +50,7 @@ public class BaseActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
-    public void showLoading(@NonNull String message,@NonNull String title) {
+    public void showLoading(@NonNull String message, @NonNull String title) {
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setTitle(title);
         mProgressDialog.setMessage(message);
@@ -58,11 +60,15 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void hideLoading() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
+        try {
+
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+        } catch (Exception e) {
+            Log.d("exxx", "" + e.getMessage());
         }
     }
-
 
 
     protected void showSnackbar(@NonNull String message) {

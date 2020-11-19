@@ -340,6 +340,7 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     @Override
     public void getFiles(ArrayList<File> arrayList) {
         swipRefreshLayout.setRefreshing(false);
+
         Log.d("count", arrayList.size() + "");
         if (arrayList.size() > 0) {
             noFileLayout.setVisibility(View.GONE);

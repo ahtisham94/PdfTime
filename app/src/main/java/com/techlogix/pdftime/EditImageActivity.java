@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
@@ -21,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.FileProvider;
@@ -37,12 +41,22 @@ import com.techlogix.pdftime.fragments.photoEditingFragments.PropertiesBSFragmen
 import com.techlogix.pdftime.fragments.photoEditingFragments.StickerBSFragment;
 import com.techlogix.pdftime.fragments.photoEditingFragments.TextEditorDialogFragment;
 import com.techlogix.pdftime.interfaces.FilterListener;
+import com.techlogix.pdftime.interfaces.OnPDFCreatedInterface;
+import com.techlogix.pdftime.utilis.Constants;
+import com.techlogix.pdftime.utilis.CreatePdfAsync;
+import com.techlogix.pdftime.utilis.FileUtils;
+import com.techlogix.pdftime.utilis.ImageToPDFOptions;
+import com.techlogix.pdftime.utilis.ImageUtils;
+import com.techlogix.pdftime.utilis.PDFOptions;
+import com.techlogix.pdftime.utilis.PageSizeUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
+import com.techlogix.pdftime.utilis.RealPathUtil;
 import com.techlogix.pdftime.utilis.StringUtils;
 import com.techlogix.pdftime.utilis.ToolType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
@@ -52,14 +66,17 @@ import ja.burhanrashid52.photoeditor.SaveSettings;
 import ja.burhanrashid52.photoeditor.TextStyleBuilder;
 import ja.burhanrashid52.photoeditor.ViewType;
 
+import static com.techlogix.pdftime.utilis.Constants.DEFAULT_PAGE_COLOR;
+import static com.techlogix.pdftime.utilis.Constants.PG_NUM_STYLE_PAGE_X_OF_N;
+
 public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
         View.OnClickListener,
         PropertiesBSFragment.Properties,
         EmojiBSFragment.EmojiListener,
-        StickerBSFragment.StickerListener, EditingToolsAdapter.OnItemSelected, FilterListener {
+        StickerBSFragment.StickerListener, EditingToolsAdapter.OnItemSelected, FilterListener, OnPDFCreatedInterface {
 
     private static final String TAG = EditImageActivity.class.getSimpleName();
-    public static final String FILE_PROVIDER_AUTHORITY = "com.burhanrashid52.photoeditor.fileprovider";
+    public static final String FILE_PROVIDER_AUTHORITY = "com.techlogix.pdftime.fileprovider";
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
     PhotoEditor mPhotoEditor;
@@ -75,18 +92,19 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private ConstraintLayout mRootView;
     private ConstraintSet mConstraintSet = new ConstraintSet();
     private boolean mIsFilterVisible;
-
+    Toolbar toolbar;
     @Nullable
     @VisibleForTesting
     Uri mSaveImageUri;
-
+    String imagePath = "";
+    private ImageToPDFOptions mPdfOptions;
+    ArrayList<String> imagesUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        makeFullScreen();
         setContentView(R.layout.activity_photo_editing);
-
+        makeFullScreen();
         initViews();
 
         handleIntentImage(mPhotoEditorView.getSource());
@@ -138,6 +156,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     private void initViews() {
+        imagesUri = new ArrayList<>();
+        mPdfOptions = new ImageToPDFOptions();
         ImageView imgUndo;
         ImageView imgRedo;
         ImageView imgCamera;
@@ -147,7 +167,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         ImageView imgShare;
 
         mPhotoEditorView = findViewById(R.id.photoEditorView);
-        mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
+//        mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
         mRvTools = findViewById(R.id.rvConstraintTools);
         mRvFilters = findViewById(R.id.rvFilterView);
         mRootView = findViewById(R.id.rootView);
@@ -164,15 +184,46 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         imgGallery = findViewById(R.id.imgGallery);
         imgGallery.setOnClickListener(this);
 
-        imgSave = findViewById(R.id.imgSave);
-        imgSave.setOnClickListener(this);
-
-        imgClose = findViewById(R.id.imgClose);
-        imgClose.setOnClickListener(this);
+//        imgSave = findViewById(R.id.imgSave);
+//        imgSave.setOnClickListener(this);
+//
+//        imgClose = findViewById(R.id.imgClose);
+//        imgClose.setOnClickListener(this);
 
         imgShare = findViewById(R.id.imgShare);
         imgShare.setOnClickListener(this);
 
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("New PDF");
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.shareFile) {
+            shareImage();
+            return true;
+        } else if (item.getItemId() == R.id.saveFile) {
+            saveImage();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_file_menu, menu);
+        return true;
     }
 
     @Override
@@ -186,7 +237,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 styleBuilder.withTextColor(colorCode);
 
                 mPhotoEditor.editText(rootView, inputText, styleBuilder);
-                mTxtCurrentTool.setText(R.string.label_text);
+//                mTxtCurrentTool.setText(R.string.label_text);
             }
         });
     }
@@ -223,13 +274,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 mPhotoEditor.redo();
                 break;
 
-            case R.id.imgSave:
-                saveImage();
-                break;
-
-            case R.id.imgClose:
-                onBackPressed();
-                break;
             case R.id.imgShare:
                 shareImage();
                 break;
@@ -266,21 +310,15 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_STREAM, buildFileProviderUri(mSaveImageUri));
+        intent.putExtra(Intent.EXTRA_STREAM, Constants.fileUri(this, new File(imagePath)));
         startActivity(Intent.createChooser(intent, getString(R.string.msg_share_image)));
-    }
-
-    private Uri buildFileProviderUri(@NonNull Uri uri) {
-        return FileProvider.getUriForFile(this,
-                FILE_PROVIDER_AUTHORITY,
-                new File(uri.getPath()));
     }
 
     @SuppressLint("MissingPermission")
     private void saveImage() {
         if (PermissionUtils.hasPermissionGranted(EditImageActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
-            showLoading("Please wait","Saving...");
-            File file = new File(Environment.getExternalStorageDirectory()
+            showLoading("Please wait", "Saving...");
+            final File file = new File(Environment.getExternalStorageDirectory()
                     + File.separator + ""
                     + System.currentTimeMillis() + ".png");
             try {
@@ -293,11 +331,22 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
                 mPhotoEditor.saveAsFile(file.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
                     @Override
-                    public void onSuccess(@NonNull String imagePath) {
-                        hideLoading();
+                    public void onSuccess(@NonNull String path) {
+
                         showSnackbar("Image Saved Successfully");
-                        mSaveImageUri = Uri.fromFile(new File(imagePath));
+                        mSaveImageUri = Uri.fromFile(new File(path));
                         mPhotoEditorView.getSource().setImageURI(mSaveImageUri);
+                        imagePath = path;
+                        imagesUri.add(path);
+                        mPdfOptions.setImagesUri(imagesUri);
+                        mPdfOptions.setPageSize(PageSizeUtils.mPageSize);
+                        mPdfOptions.setImageScaleType(ImageUtils.getInstance().mImageScaleType);
+                        mPdfOptions.setPageNumStyle(PG_NUM_STYLE_PAGE_X_OF_N);
+                        mPdfOptions.setMasterPwd("12345");
+                        mPdfOptions.setPageColor(DEFAULT_PAGE_COLOR);
+                        mPdfOptions.setMargins(20, 20, 20, 20);
+                        mPdfOptions.setOutFileName((FileUtils.getFileNameWithoutExtension(path)));
+                        new CreatePdfAsync(mPdfOptions, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), EditImageActivity.this).execute();
                     }
 
                     @Override
@@ -341,31 +390,31 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onColorChanged(int colorCode) {
         mPhotoEditor.setBrushColor(colorCode);
-        mTxtCurrentTool.setText(R.string.label_brush);
+//        mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onOpacityChanged(int opacity) {
         mPhotoEditor.setOpacity(opacity);
-        mTxtCurrentTool.setText(R.string.label_brush);
+//        mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onBrushSizeChanged(int brushSize) {
         mPhotoEditor.setBrushSize(brushSize);
-        mTxtCurrentTool.setText(R.string.label_brush);
+//        mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onEmojiClick(String emojiUnicode) {
         mPhotoEditor.addEmoji(emojiUnicode);
-        mTxtCurrentTool.setText(R.string.label_emoji);
+//        mTxtCurrentTool.setText(R.string.label_emoji);
     }
 
     @Override
     public void onStickerClick(Bitmap bitmap) {
         mPhotoEditor.addImage(bitmap);
-        mTxtCurrentTool.setText(R.string.label_sticker);
+//        mTxtCurrentTool.setText(R.string.label_sticker);
     }
 
     private void showSaveDialog() {
@@ -404,7 +453,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         switch (toolType) {
             case BRUSH:
                 mPhotoEditor.setBrushDrawingMode(true);
-                mTxtCurrentTool.setText(R.string.label_brush);
+//                mTxtCurrentTool.setText(R.string.label_brush);
                 showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
             case TEXT:
@@ -416,16 +465,16 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                         styleBuilder.withTextColor(colorCode);
 
                         mPhotoEditor.addText(inputText, styleBuilder);
-                        mTxtCurrentTool.setText(R.string.label_text);
+//                        mTxtCurrentTool.setText(R.string.label_text);
                     }
                 });
                 break;
             case ERASER:
                 mPhotoEditor.brushEraser();
-                mTxtCurrentTool.setText(R.string.label_eraser_mode);
+//                mTxtCurrentTool.setText(R.string.label_eraser_mode);
                 break;
             case FILTER:
-                mTxtCurrentTool.setText(R.string.label_filter);
+//                mTxtCurrentTool.setText(R.string.label_filter);
                 showFilter(true);
                 break;
             case EMOJI:
@@ -440,8 +489,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==CAMERA_REQUEST){
-            if(grantResults.length>0&& grantResults[0]== PackageManager.PERMISSION_GRANTED){
+        if (requestCode == CAMERA_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             }
         }
@@ -483,11 +532,24 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public void onBackPressed() {
         if (mIsFilterVisible) {
             showFilter(false);
-            mTxtCurrentTool.setText(R.string.app_name);
+//            mTxtCurrentTool.setText(R.string.app_name);
         } else if (!mPhotoEditor.isCacheEmpty()) {
             showSaveDialog();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onPDFCreationStarted() {
+
+    }
+
+    @Override
+    public void onPDFCreated(boolean success, String path) {
+        hideLoading();
+        if (success) {
+            showSnackbar("Image Saved Successfully");
         }
     }
 }

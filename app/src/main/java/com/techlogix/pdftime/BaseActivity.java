@@ -46,8 +46,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void makeFullScreen() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
     }
 
     public void showLoading(@NonNull String message, @NonNull String title) {

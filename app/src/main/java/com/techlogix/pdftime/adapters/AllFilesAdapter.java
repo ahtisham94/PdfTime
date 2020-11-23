@@ -2,6 +2,7 @@ package com.techlogix.pdftime.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -162,17 +163,22 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
                         }
                     }
                 }
+                try {
 
-                if (holder.fileTypeTv.getText().toString().equals("E")) {
-                    Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                } else if (holder.fileTypeTv.getText().toString().equals("T")) {
-                    Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                } else if (holder.fileTypeTv.getText().toString().equals("W")) {
-                    Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                } else if (holder.fileTypeTv.getText().toString().equals("P")) {
-                    Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("path", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());
-                    context.startActivity(intent);
+                    if (holder.fileTypeTv.getText().toString().equals("E")) {
+                        Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                    } else if (holder.fileTypeTv.getText().toString().equals("T")) {
+                        Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                    } else if (holder.fileTypeTv.getText().toString().equals("W")) {
+
+                        Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                    } else if (holder.fileTypeTv.getText().toString().equals("P")) {
+                        Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("path", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());
+                        context.startActivity(intent);
+                    }
+                } catch (Exception e) {
+                    Log.d("exxx", "" + e.getMessage());
                 }
             }
 

@@ -49,7 +49,7 @@ public class Constants {
     public static final String DEFAULT_PAGE_COLOR_ITP = "DefaultPageColorITP";
     public static final int DEFAULT_PAGE_COLOR = Color.WHITE;
     public static final String AUTHORITY_APP = "com.techlogix.pdftime";
-    public static final  int mFileSelectCode = 0;
+    public static final int mFileSelectCode = 0;
 
     public static void shareFile(Context context, File file) {
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -67,14 +67,14 @@ public class Constants {
         );
     }
 
-    public static void excelIntent(Context context, File file) {
+    public static void excelIntent(Context context, File file) throws Exception {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(fileUri(context, file), "application/vnd.ms-excel");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(intent);
     }
 
-    public static void textFileIntent(Context context, File filee) {
+    public static void textFileIntent(Context context, File filee) throws Exception {
         File file = new File(filee.getAbsolutePath());
         Uri uri = fileUri(context, file);
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -83,11 +83,11 @@ public class Constants {
         context.startActivity(intent);
     }
 
-    public static void doxFileIntent(Context context, File file) {
+    public static void doxFileIntent(Context context, File file) throws Exception {
         //Uri uri = Uri.parse("file://"+file.getAbsolutePath());
         Intent intent = new Intent(Intent.ACTION_VIEW);
         String type = "application/msword";
-        intent.setDataAndType(fileUri(context,file), type);
+        intent.setDataAndType(fileUri(context, file), type);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(intent);
     }

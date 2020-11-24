@@ -23,7 +23,7 @@ public class GetFilesUtility extends AsyncTask<String, Void, ArrayList<File>> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        baseActivity.showLoading("Please wait", "Loading...");
+        baseActivity.showLoading("Please wait", "Loading files...");
     }
 
     @Override

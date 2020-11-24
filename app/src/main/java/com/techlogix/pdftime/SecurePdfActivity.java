@@ -151,6 +151,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
             }
         }, "Secure PDF");
         dialog1.forpasswordSettings("Enter Password");
+        dialog1.setCanceledOnTouchOutside(false);
         dialog1.show();
 
     }

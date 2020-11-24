@@ -85,5 +85,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <View
+        android:id="@+id/empty_view"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/fileTypeRl"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:background="@color/gray_div2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

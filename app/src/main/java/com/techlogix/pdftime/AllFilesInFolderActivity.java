@@ -161,6 +161,9 @@ public class AllFilesInFolderActivity extends BaseActivity implements View.OnCli
                             moveFile, false);
                     fileInfoModelArrayList.add(model);
                     adapter = new AllFilesAdapter(this, fileInfoModelArrayList);
+                    allFilesRecycler.setAdapter(adapter);
+                    noFileLayout.setVisibility(View.GONE);
+
                 } else
                     adapter.refreshArray(moveFile);
                 StringUtils.getInstance().showSnackbar(AllFilesInFolderActivity.this, "File imported");

@@ -117,11 +117,13 @@ public class AllFolderAdapter extends RecyclerView.Adapter {
             rootLayout = itemView.findViewById(R.id.rootLayout);
         }
 
-        public void bind(final File data) {
+        public void bind(File data) {
+            swipeLayout.close(true);
             deleteLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteFile(data);
+                    File temFile = new File(folderArray.get(getAdapterPosition()).getAbsolutePath());
+                    deleteFile(temFile);
                     folderArray.remove(getAdapterPosition());
                     notifyItemRemoved(getAdapterPosition());
 
@@ -130,8 +132,9 @@ public class AllFolderAdapter extends RecyclerView.Adapter {
             rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    File temFile = new File(folderArray.get(getAdapterPosition()).getAbsolutePath());
                     if (callback != null) {
-                        callback.callback(data);
+                        callback.callback(temFile);
                     }
                 }
             });
@@ -143,7 +146,16 @@ public class AllFolderAdapter extends RecyclerView.Adapter {
     }
 
     public void deleteFile(File file) {
-        if (file.exists())
+//        File deleteFile = new File(file.getAbsolutePath());
+        if (file.listFiles().length == 0) {
+            if (file.exists())
+                file.delete();
+        } else {
+            for (File tempFile : file.listFiles()) {
+                if (tempFile.exists())
+                    tempFile.delete();
+            }
             file.delete();
+        }
     }
 }

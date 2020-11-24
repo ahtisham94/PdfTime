@@ -77,7 +77,7 @@
         app:layout_constraintEnd_toEndOf="@+id/bannderLayout"
         app:layout_constraintStart_toStartOf="@+id/bannderLayout"
         app:layout_constraintTop_toBottomOf="@+id/bannderLayout"
-        app:tbgChildSpacing="auto">
+        app:tbgChildSpacing="@dimen/_5sdp">
 
         <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
             android:id="@+id/recentlyBtn"

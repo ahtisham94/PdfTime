@@ -95,11 +95,14 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
 
     private void getAllFolders() {
         foldersArray = mDirectory.getAllFolders();
-        if (foldersArray!=null && foldersArray.size() > 0) {
+        if (foldersArray != null && foldersArray.size() > 0) {
             adapter.setFolderArray(foldersArray);
             noFolderLayout.setVisibility(View.GONE);
         } else {
             noFolderLayout.setVisibility(View.VISIBLE);
+            if (adapter != null && adapter.getItemCount() > 0) {
+                adapter.setFolderArray(new ArrayList<File>());
+            }
         }
     }
 
@@ -117,7 +120,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
             @Override
             public void callback(Object o) {
                 foldersArray.add((File) o);
-                adapter.notifyDataSetChanged();
+                adapter.setFolderArray(foldersArray);
                 noFolderLayout.setVisibility(View.GONE);
             }
         }, true).show();

@@ -124,7 +124,7 @@ public class AllFilesInFolderActivity extends BaseActivity implements View.OnCli
     }
 
     public void sortArray(final int sortBy) {
-      
+
         Collections.sort(fileInfoModelArrayList, new Comparator<FileInfoModel>() {
             @Override
             public int compare(FileInfoModel fileInfoModel, FileInfoModel t1) {
@@ -154,7 +154,15 @@ public class AllFilesInFolderActivity extends BaseActivity implements View.OnCli
             File moveFile = new File(filePath);
             boolean isMoved = mDirectoryUtils.moveFile(moveFile.getAbsolutePath(), moveFile.getName(), folderFile.getAbsolutePath() + "/");
             if (isMoved) {
-                adapter.refreshArray(moveFile);
+                if (adapter.getRealArray().size() == 0) {
+                    String[] names = moveFile.getName().split("\\.");
+                    FileInfoModel model = new FileInfoModel(names[0],
+                            moveFile.getAbsolutePath().substring(moveFile.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                            moveFile, false);
+                    fileInfoModelArrayList.add(model);
+                    adapter = new AllFilesAdapter(this, fileInfoModelArrayList);
+                } else
+                    adapter.refreshArray(moveFile);
                 StringUtils.getInstance().showSnackbar(AllFilesInFolderActivity.this, "File imported");
             } else {
                 StringUtils.getInstance().showSnackbar(AllFilesInFolderActivity.this, "File not imported");
@@ -176,8 +184,8 @@ public class AllFilesInFolderActivity extends BaseActivity implements View.OnCli
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        }else if(item.getItemId()==R.id.premiumImg){
-            startActivity(PremiumScreen.class,null);
+        } else if (item.getItemId() == R.id.premiumImg) {
+            startActivity(PremiumScreen.class, null);
             return true;
         }
         return false;
@@ -190,11 +198,11 @@ public class AllFilesInFolderActivity extends BaseActivity implements View.OnCli
             for (File file : arrayList) {
                 String[] fileInfo = file.getName().split("\\.");
                 if (fileInfo.length == 2)
-                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file,false));
+                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
                 else {
                     fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
                             file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                            file,false));
+                            file, false));
                 }
             }
             adapter = new AllFilesAdapter(AllFilesInFolderActivity.this, fileInfoModelArrayList);

@@ -476,7 +476,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 break;
             case FILTER:
 //                mTxtCurrentTool.setText(R.string.label_filter);
-                showFilter(true);
+               // showFilter(true);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST);
                 break;
             case EMOJI:
                 showBottomSheetDialogFragment(mEmojiBSFragment);

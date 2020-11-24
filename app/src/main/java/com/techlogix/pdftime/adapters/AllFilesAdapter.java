@@ -235,7 +235,8 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         ArrayList<FileInfoModel> arrayList = filesArrayList;
         arrayList.add(filesArrayList.size(), model);
         setData(arrayList);
-        recyclerView.smoothScrollToPosition(filesArrayList.size());
+        if (recyclerView != null)
+            recyclerView.smoothScrollToPosition(filesArrayList.size());
     }
 
     private void shareFile(File file) {

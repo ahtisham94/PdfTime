@@ -188,14 +188,14 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             setToolboorImagesVisibility();
             setTitle("All Files");
             ((FileFragment) fragment).currentFrag();
-        } else if (fragment instanceof FolderFragment) {
+        } else if (fragment instanceof FolderFragment && folderCurrentFrag!=null) {
             setToolboorImagesVisibility();
             setTitle("Folders");
             folderCurrentFrag.currentFrag();
         } else if (fragment instanceof ToolsFragment) {
             setToolboorImagesVisibility();
             setTitle("Tools");
-        } else if (fragment instanceof SharedFragment) {
+        } else if (fragment instanceof SharedFragment && sharedFragmentCallback!=null) {
             setToolboorImagesVisibility();
             setTitle("Shared");
             sharedFragmentCallback.currentFrag();

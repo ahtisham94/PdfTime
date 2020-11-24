@@ -95,7 +95,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
 
     private void getAllFolders() {
         foldersArray = mDirectory.getAllFolders();
-        if (foldersArray.size() > 0) {
+        if (foldersArray!=null && foldersArray.size() > 0) {
             adapter.setFolderArray(foldersArray);
             noFolderLayout.setVisibility(View.GONE);
         } else {

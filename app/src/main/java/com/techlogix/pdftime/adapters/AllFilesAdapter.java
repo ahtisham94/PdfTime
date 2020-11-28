@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.techlogix.pdftime.MainActivity;
 import com.techlogix.pdftime.PDFViewerAcitivity;
 import com.techlogix.pdftime.R;
+import com.techlogix.pdftime.SearchPdfFileActivity;
 import com.techlogix.pdftime.dialogs.AlertDialogHelper;
 import com.techlogix.pdftime.dialogs.CreateFolderDialog;
 import com.techlogix.pdftime.dialogs.MoveFileDialog;
@@ -154,31 +155,40 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (context instanceof MainActivity) {
-                    Fragment fragment = ((MainActivity) context).tabsadapter.getItem(((MainActivity) context).viewPager.getCurrentItem());
-                    if (fragment instanceof FileFragment) {
-                        if (((FileFragment) fragment).isMultiSelect) {
-                            holder.selectedItem(filesArrayList.get(holder.getAdapterPosition()));
-                            return;
+                if(context instanceof SearchPdfFileActivity){
+                    Intent intent = new Intent();
+                    intent.putExtra("path", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());
+
+                    ((SearchPdfFileActivity) context).setResult(Constants.OPEN_SEARCH_REQUEST_CODE,intent);
+                    ((SearchPdfFileActivity) context).finish();
+
+                }else {
+                    if (context instanceof MainActivity) {
+                        Fragment fragment = ((MainActivity) context).tabsadapter.getItem(((MainActivity) context).viewPager.getCurrentItem());
+                        if (fragment instanceof FileFragment) {
+                            if (((FileFragment) fragment).isMultiSelect) {
+                                holder.selectedItem(filesArrayList.get(holder.getAdapterPosition()));
+                                return;
+                            }
                         }
                     }
-                }
-                try {
+                    try {
 
-                    if (holder.fileTypeTv.getText().toString().equals("E")) {
-                        Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                    } else if (holder.fileTypeTv.getText().toString().equals("T")) {
-                        Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                    } else if (holder.fileTypeTv.getText().toString().equals("W")) {
+                        if (holder.fileTypeTv.getText().toString().equals("E")) {
+                            Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                        } else if (holder.fileTypeTv.getText().toString().equals("T")) {
+                            Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                        } else if (holder.fileTypeTv.getText().toString().equals("W")) {
 
-                        Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
-                    } else if (holder.fileTypeTv.getText().toString().equals("P")) {
-                        Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("path", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());
-                        context.startActivity(intent);
+                            Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                        } else if (holder.fileTypeTv.getText().toString().equals("P")) {
+                            Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("path", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());
+                            context.startActivity(intent);
+                        }
+                    } catch (Exception e) {
+                        Log.d("exxx", "" + e.getMessage());
                     }
-                } catch (Exception e) {
-                    Log.d("exxx", "" + e.getMessage());
                 }
             }
 

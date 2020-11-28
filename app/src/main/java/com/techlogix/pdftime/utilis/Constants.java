@@ -23,6 +23,7 @@ public class Constants {
     public static int RESULT_LOAD_IMG = 10121;
     public static int ITEM_TYPE = 1120;
     public static int EMPTY_VIEW = 71120;
+    public static int OPEN_SEARCH_REQUEST_CODE = 400;
     public static final String STORAGE_LOCATION = "storage_location";
     public static final String pdfDirectory = "/PDFfiles/";
     public static final String PATH_SEPERATOR = "/";

@@ -92,6 +92,9 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         fileInfoModelArrayList = new ArrayList<>();
         new GetFilesUtility(((BaseActivity) TxtWordToPdfActivity.this),this).execute(Constants.docExtension + "," + Constants.docxExtension);
         checkboxArray = new ArrayList<>();
+
+        showButtonAnmination(convertPdf);
+
     }
 
     @Override

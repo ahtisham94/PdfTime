@@ -38,12 +38,12 @@ public class StringUtils {
 
     public void showSnackbar(Activity context, int resID) {
         Snackbar.make(Objects.requireNonNull(context).findViewById(android.R.id.content),
-                resID, Snackbar.LENGTH_LONG).show();
+                resID, 4000).show();
     }
 
     public void showSnackbar(Activity context, String resID) {
         Snackbar.make(Objects.requireNonNull(context).findViewById(android.R.id.content),
-                resID, Snackbar.LENGTH_LONG).show();
+                resID, 4000).show();
     }
 
     public Snackbar showIndefiniteSnackbar(Activity context, String resID) {
@@ -53,7 +53,7 @@ public class StringUtils {
 
     public Snackbar getSnackbarwithAction(Activity context, int resID) {
         return Snackbar.make(Objects.requireNonNull(context).findViewById(android.R.id.content),
-                resID, Snackbar.LENGTH_LONG);
+                resID, 4000);
     }
 
     public void hideKeyboard(Activity activity) {

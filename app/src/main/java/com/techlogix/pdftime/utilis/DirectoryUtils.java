@@ -282,6 +282,27 @@ public class DirectoryUtils {
         return null;
     }
 
+    public ArrayList<File> searchPDFDir(File dir) {
+        File FileList[] = dir.listFiles();
+
+        if (FileList != null) {
+            for (int i = 0; i < FileList.length; i++) {
+
+                if (FileList[i].isDirectory()) {
+                    searchPDFDir(FileList[i]);
+                } else {
+                    if (FileList[i].getName().endsWith(pdfExtension)) {
+                        //here you have that file.
+                        fileArrayList.add(FileList[i]);
+
+                    }
+                }
+            }
+            return fileArrayList;
+        }
+        return null;
+    }
+
     public ArrayList<File> getSelectedFiles(File file, String type) {
         File FileList[] = file.listFiles();
         String[] types = type.split(",");

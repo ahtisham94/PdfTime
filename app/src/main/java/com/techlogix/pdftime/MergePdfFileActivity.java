@@ -23,6 +23,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.techlogix.pdftime.adapters.AllFilesAdapter;
 import com.techlogix.pdftime.adapters.MergeSelectedFilesAdapter;
 import com.techlogix.pdftime.dialogs.InputFeildDialog;
@@ -82,6 +84,11 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         mergeFileRecycler.setLayoutManager(new LinearLayoutManager(MergePdfFileActivity.this));
         mFilePaths = new ArrayList<>();
         new GetFilesUtility(((BaseActivity) MergePdfFileActivity.this), this).execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+
+        showButtonAnmination(convertPdf);
+
+
+
     }
 
     @Override

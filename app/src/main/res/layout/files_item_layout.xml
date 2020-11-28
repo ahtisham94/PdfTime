@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="PDF"
+            android:text="P"
             android:textColor="@color/colorWhite"
             android:textSize="16sp"
             android:textStyle="bold" />

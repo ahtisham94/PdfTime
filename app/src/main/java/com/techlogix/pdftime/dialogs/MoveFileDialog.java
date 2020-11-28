@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,7 @@ public class MoveFileDialog extends Dialog implements View.OnClickListener, Gene
     DirectoryUtils mDirectory;
     ArrayList<File> foldersArray;
     Button createFolderBtn;
+    ImageView createFolderBtn2;
     RelativeLayout noFolderLayout;
     File moveFile;
     GenericCallback callback;
@@ -54,8 +56,10 @@ public class MoveFileDialog extends Dialog implements View.OnClickListener, Gene
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         allFoldersRecycler = findViewById(R.id.allFoldersRecycler);
         createFolderBtn = findViewById(R.id.createFolderBtn);
+        createFolderBtn2 = findViewById(R.id.createFolderBtn2);
         noFolderLayout = findViewById(R.id.noFolderLayout);
         createFolderBtn.setOnClickListener(this);
+        createFolderBtn2.setOnClickListener(this);
         allFoldersRecycler.setLayoutManager(new LinearLayoutManager(context));
         mDirectory = new DirectoryUtils(getContext());
         foldersArray = new ArrayList<>();
@@ -81,26 +85,29 @@ public class MoveFileDialog extends Dialog implements View.OnClickListener, Gene
         if (foldersArray.size() > 0) {
             adapter.setFolderArray(foldersArray);
             noFolderLayout.setVisibility(View.GONE);
+            createFolderBtn2.setVisibility(View.VISIBLE);
         } else {
             noFolderLayout.setVisibility(View.VISIBLE);
+            createFolderBtn2.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.createFolderBtn) {
+        if (view.getId() == R.id.createFolderBtn  || view.getId() == R.id.createFolderBtn2) {
             createFolder();
         }
     }
 
     private void createFolder() {
-        dismiss();
+        /*dismiss();*/
         new CreateFolderDialog(Objects.requireNonNull(getContext()), new GenericCallback() {
             @Override
             public void callback(Object o) {
                 foldersArray.add((File) o);
                 adapter.notifyDataSetChanged();
                 noFolderLayout.setVisibility(View.GONE);
+                createFolderBtn2.setVisibility(View.VISIBLE);
             }
         }, true).show();
 

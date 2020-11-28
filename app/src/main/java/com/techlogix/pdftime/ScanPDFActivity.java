@@ -177,6 +177,9 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
             e.printStackTrace();
             return "";
         }
+
+
+
     }
 
     /**

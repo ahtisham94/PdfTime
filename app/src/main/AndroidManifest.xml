@@ -39,6 +39,11 @@
             android:name=".SearchFileActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".SearchPdfFileActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".FileReducerActivity"
             android:screenOrientation="portrait" />

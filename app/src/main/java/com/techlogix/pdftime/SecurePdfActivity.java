@@ -48,7 +48,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
     AllFilesAdapter filesAdapter;
     TextView filterTv, emptyView;
     Button secureFileBg;
-    int fileNum = -1;
+    int fileNum = 0;
     PDFEncryptionUtility pdfEncryptionUtility;
     PDFUtils pdfUtils;
 
@@ -88,6 +88,9 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
                 }
             }, 3000);
         }
+
+        showButtonAnmination(secureFileBg);
+
     }
 
     private void getFiles() {
@@ -119,7 +122,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
         } else if (view.getId() == R.id.secureFileBg) {
             checkboxArray = filesAdapter.getFilesArrayList();
             if (checkboxArray.size() > 0) {
-                fileNum++;
+//                fileNum++;
                 doEncryptions(checkboxArray.get(fileNum));
             } else {
                 StringUtils.getInstance().showSnackbar(SecurePdfActivity.this, "Please select atleast one file");

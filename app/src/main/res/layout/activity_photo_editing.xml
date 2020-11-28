@@ -39,7 +39,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintVertical_bias="0.0"
-        app:photo_src="@drawable/empty_white_bg" />
+        app:photo_src="@drawable/white_empty_bg" />
 
     <ImageView
         android:id="@+id/imgUndo"

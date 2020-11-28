@@ -9,12 +9,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.material.snackbar.Snackbar;
 
 public class BaseActivity extends AppCompatActivity {
@@ -75,9 +78,16 @@ public class BaseActivity extends AppCompatActivity {
     protected void showSnackbar(@NonNull String message) {
         View view = findViewById(android.R.id.content);
         if (view != null) {
-            Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, message, 3000).show();
         } else {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void showButtonAnmination(Button button){
+        YoYo.with(Techniques.Bounce)
+                .duration(1500)
+                .repeat(100)
+                .playOn(button);
     }
 }

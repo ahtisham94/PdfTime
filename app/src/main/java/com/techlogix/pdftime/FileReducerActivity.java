@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -89,6 +90,10 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
         allFilesRecycler = findViewById(R.id.allFilesRecycler);
         allFilesRecycler.setLayoutManager(new LinearLayoutManager(FileReducerActivity.this));
         new GetFilesUtility(((BaseActivity) FileReducerActivity.this), this).execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+
+        showButtonAnmination(convertPdf);
+
+
     }
 
     @Override
@@ -124,6 +129,10 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
             Log.d("Uripath", mPath);
             selectFilesBtn.setText(mPath);
             convertPdf.setEnabled(true);
+        }else if(requestCode == Constants.OPEN_SEARCH_REQUEST_CODE && data != null){
+            mPath=data.getStringExtra("path");
+            showInputDialogAfterSearch();
+            Log.d("Uripath", mPath);
         }
     }
 
@@ -132,6 +141,19 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
 
             outputPath = DirectoryUtils.getDownloadFolderPath() + "/" + o + Constants.pdfExtension;
             mPdfUtils.compressPDF(adapter.getFilesArrayList().get(fileCount).getFile().getAbsolutePath(), outputPath, 30, this);
+
+        } catch (Exception e) {
+            Log.d("exxx", e.getMessage() + "");
+            adapter.refrechList();
+            adapter.getFilesArrayList().clear();
+        }
+    }
+
+    private void reduceSearchFile(String o) {
+        try {
+
+            outputPath = DirectoryUtils.getDownloadFolderPath() + "/" + o + Constants.pdfExtension;
+            mPdfUtils.compressPDF(mPath, outputPath, 30, this);
 
         } catch (Exception e) {
             Log.d("exxx", e.getMessage() + "");
@@ -169,6 +191,16 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void callback(Object o) {
                 reduceFile((String) o);
+            }
+        }, "File Reducer").show();
+    }
+
+    private void showInputDialogAfterSearch() {
+        StringUtils.getInstance().hideKeyboard(FileReducerActivity.this);
+        new InputFeildDialog(FileReducerActivity.this, new GenericCallback() {
+            @Override
+            public void callback(Object o) {
+                reduceSearchFile((String) o);
             }
         }, "File Reducer").show();
     }
@@ -228,9 +260,18 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_file_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+            return true;
+        }else if(item.getItemId() == R.id.searchFile){
+            startActivityForResult(new Intent(FileReducerActivity.this, SearchPdfFileActivity.class),Constants.OPEN_SEARCH_REQUEST_CODE);
             return true;
         }
 
@@ -274,6 +315,9 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
             StringUtils.getInstance().showSnackbar(FileReducerActivity.this, getString(R.string.convert_error));
         }
     }
+
+
+
 
 
 }

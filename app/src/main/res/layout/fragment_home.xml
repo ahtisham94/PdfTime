@@ -81,7 +81,7 @@
 
         <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
             android:id="@+id/recentlyBtn"
-            android:layout_width="@dimen/_140sdp"
+            android:layout_width="@dimen/_135sdp"
             android:layout_height="@dimen/_35sdp"
             android:elevation="@dimen/_5sdp"
             android:text="@string/recent"
@@ -89,7 +89,7 @@
 
         <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
             android:id="@+id/edittedBtn"
-            android:layout_width="@dimen/_140sdp"
+            android:layout_width="@dimen/_135sdp"
             android:layout_height="@dimen/_35sdp"
             android:elevation="@dimen/_5sdp"
             android:text="@string/edited"

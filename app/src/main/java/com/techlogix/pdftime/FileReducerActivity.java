@@ -129,8 +129,8 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
             Log.d("Uripath", mPath);
             selectFilesBtn.setText(mPath);
             convertPdf.setEnabled(true);
-        }else if(requestCode == Constants.OPEN_SEARCH_REQUEST_CODE && data != null){
-            mPath=data.getStringExtra("path");
+        } else if (requestCode == Constants.OPEN_SEARCH_REQUEST_CODE && data != null) {
+            mPath = data.getStringExtra("path");
             showInputDialogAfterSearch();
             Log.d("Uripath", mPath);
         }
@@ -270,8 +270,8 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        }else if(item.getItemId() == R.id.searchFile){
-            startActivityForResult(new Intent(FileReducerActivity.this, SearchPdfFileActivity.class),Constants.OPEN_SEARCH_REQUEST_CODE);
+        } else if (item.getItemId() == R.id.searchFile) {
+            startActivityForResult(new Intent(FileReducerActivity.this, SearchPdfFileActivity.class), Constants.OPEN_SEARCH_REQUEST_CODE);
             return true;
         }
 
@@ -309,15 +309,13 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
                 adapter.refreshArray(new File(path));
                 adapter.refrechList();
                 adapter.getFilesArrayList().clear();
+                fileCount = -1;
             }
 
         } else {
             StringUtils.getInstance().showSnackbar(FileReducerActivity.this, getString(R.string.convert_error));
         }
     }
-
-
-
 
 
 }

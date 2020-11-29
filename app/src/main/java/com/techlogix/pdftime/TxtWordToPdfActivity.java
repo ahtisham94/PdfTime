@@ -14,13 +14,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -50,7 +54,7 @@ import java.util.Comparator;
 import static com.techlogix.pdftime.utilis.Constants.mFileSelectCode;
 
 public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickListener,
-        OnTextToPdfInterface, TextToPdfContract.View, GenericCallback ,GetFilesUtility.getFilesCallback{
+        OnTextToPdfInterface, TextToPdfContract.View, GenericCallback ,GetFilesUtility.getFilesCallback, TextWatcher {
     Button convertPdf;
     Toolbar toolbar;
     private Uri mTextFileUri = null;
@@ -64,6 +68,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     ArrayList<FileInfoModel> fileInfoModelArrayList, checkboxArray;
     TextView filterTv, emptyView;
     int filesCount = -1;
+    EditText searchEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,8 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         toolbar = findViewById(R.id.toolbar);
+        searchEt=findViewById(R.id.searchEd);
+        searchEt.addTextChangedListener(this);
         toolbar.setTitle("Word To PDF");
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -280,9 +287,20 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        }else if (item.getItemId() == R.id.searchFile) {
+            searchEt.setVisibility(View.VISIBLE);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_file_menu, menu);
+        return true;
+    }
+
+
 
     @Override
     public void onBackPressed() {
@@ -338,5 +356,37 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void updateView() {
 
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        filter(charSequence.toString());
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
+
+    private void filter(String text) {
+        //new array list that will hold the filtered data
+        ArrayList<FileInfoModel> filterdNames = new ArrayList<>();
+
+        //looping through existing elements
+        for (FileInfoModel s : fileInfoModelArrayList) {
+            //if the existing elements contains the search input
+            if (s.getFileName().toLowerCase().contains(text.toLowerCase())) {
+                //adding the element to filtered list
+                filterdNames.add(s);
+            }
+        }
+
+        //calling a method of the adapter class and passing the filtered list
+        adapter.filterList(filterdNames);
     }
 }

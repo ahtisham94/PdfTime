@@ -36,7 +36,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/colorBlue"
-            app:tabTextAppearance="?android:attr/textAppearanceSmall"
+            app:tabTextAppearance="@style/CustomTabText"
             app:tabTextColor="@color/nav_color" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

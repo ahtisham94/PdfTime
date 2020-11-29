@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -40,7 +43,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class SecurePdfActivity extends BaseActivity implements GenericCallback, View.OnClickListener {
+public class SecurePdfActivity extends BaseActivity implements GenericCallback, View.OnClickListener
+        , TextWatcher {
     Toolbar toolbar;
     RecyclerView filesRecyclerView;
     ArrayList<FileInfoModel> fileInfoModelArrayList, checkboxArray;
@@ -51,6 +55,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
     int fileNum = 0;
     PDFEncryptionUtility pdfEncryptionUtility;
     PDFUtils pdfUtils;
+    EditText searchEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,8 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
         window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Secure PDFs");
+        searchEt=findViewById(R.id.searchEd);
+        searchEt.addTextChangedListener(this);
         filesRecyclerView = findViewById(R.id.filesRecyclerView);
         filesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         filterTv = findViewById(R.id.filterTv);
@@ -245,6 +252,9 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
                 StringUtils.getInstance().showSnackbar(SecurePdfActivity.this, "Files not selected");
             }
 
+        }else if (item.getItemId() == R.id.searchFile) {
+            searchEt.setVisibility(View.VISIBLE);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -257,5 +267,38 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
     @Override
     public void callback(Object o) {
         checkboxArray = (ArrayList<FileInfoModel>) o;
+    }
+
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        filter(charSequence.toString());
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
+
+    private void filter(String text) {
+        //new array list that will hold the filtered data
+        ArrayList<FileInfoModel> filterdNames = new ArrayList<>();
+
+        //looping through existing elements
+        for (FileInfoModel s : fileInfoModelArrayList) {
+            //if the existing elements contains the search input
+            if (s.getFileName().toLowerCase().contains(text.toLowerCase())) {
+                //adding the element to filtered list
+                filterdNames.add(s);
+            }
+        }
+
+        //calling a method of the adapter class and passing the filtered list
+        filesAdapter.filterList(filterdNames);
     }
 }

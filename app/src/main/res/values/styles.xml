@@ -11,6 +11,10 @@
 
     </style>
 
+    <style name="CustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">8sp</item>
+    </style>
+
     <style name="BottomNavigation">
         <item name="android:background">@color/colorWhite</item>
         <item name="itemIconTint">@color/nav_color</item>

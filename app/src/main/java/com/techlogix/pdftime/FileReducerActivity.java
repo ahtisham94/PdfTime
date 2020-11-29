@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -46,7 +48,7 @@ import java.util.Comparator;
 import static com.techlogix.pdftime.utilis.FileInfoUtils.getFormattedSize;
 
 public class FileReducerActivity extends BaseActivity implements View.OnClickListener
-        , OnPDFCompressedInterface, GetFilesUtility.getFilesCallback {
+        , OnPDFCompressedInterface, GetFilesUtility.getFilesCallback, TextWatcher {
     private static final int INTENT_REQUEST_PICK_FILE_CODE = 558;
     Button selectFilesBtn, convertPdf;
     Toolbar toolbar;
@@ -63,6 +65,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
     TextView filterTv, emptyView;
     RecyclerView allFilesRecycler;
     int fileCount = -1;
+    EditText searchEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
         window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Compress  PDF");
+        searchEt=findViewById(R.id.searchEd);
+        searchEt.addTextChangedListener(this);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -271,7 +276,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.searchFile) {
-            startActivityForResult(new Intent(FileReducerActivity.this, SearchPdfFileActivity.class), Constants.OPEN_SEARCH_REQUEST_CODE);
+            searchEt.setVisibility(View.VISIBLE);
             return true;
         }
 
@@ -318,4 +323,35 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
     }
 
 
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        filter(charSequence.toString());
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
+
+    private void filter(String text) {
+        //new array list that will hold the filtered data
+        ArrayList<FileInfoModel> filterdNames = new ArrayList<>();
+
+        //looping through existing elements
+        for (FileInfoModel s : fileInfoModelArrayList) {
+            //if the existing elements contains the search input
+            if (s.getFileName().toLowerCase().contains(text.toLowerCase())) {
+                //adding the element to filtered list
+                filterdNames.add(s);
+            }
+        }
+
+        //calling a method of the adapter class and passing the filtered list
+        adapter.filterList(filterdNames);
+    }
 }

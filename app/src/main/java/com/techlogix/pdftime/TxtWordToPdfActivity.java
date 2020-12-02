@@ -323,12 +323,13 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
 
     private void showCreateFileNameDialog() {
         filesCount++;
+        String fileName = FileUtils.getFileName(adapter.getFilesArrayList().get(filesCount).getFile().getAbsolutePath());
         new InputFeildDialog(TxtWordToPdfActivity.this, new GenericCallback() {
             @Override
             public void callback(Object o) {
                 startPdfCreating((String) o);
             }
-        }, "Text Or Word To PDF").show();
+        }, fileName).show();
 
 
     }

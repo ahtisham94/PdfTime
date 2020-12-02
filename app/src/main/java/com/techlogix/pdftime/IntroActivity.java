@@ -23,7 +23,7 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
     NonSwipeableViewPager introViewPager;
     TabLayout dotsTabsLL;
     MainTabsAdapter adapter;
-    Button nextBtn, backBtn;
+    public Button nextBtn, backBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +34,15 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_intro);
         introViewPager = findViewById(R.id.introViewPager);
         dotsTabsLL = findViewById(R.id.dotsTabsLL);
-        dotsTabsLL.setupWithViewPager(introViewPager);
-        setupViewPager(introViewPager);
-        backBtn = findViewById(R.id.backBtn);
-        backBtn.setOnClickListener(this);
         nextBtn = findViewById(R.id.nextBtn);
         nextBtn.setOnClickListener(this);
+        backBtn = findViewById(R.id.backBtn);
+        backBtn.setOnClickListener(this);
+        backBtn.setVisibility(View.INVISIBLE);
+        dotsTabsLL.setupWithViewPager(introViewPager);
+        setupViewPager(introViewPager);
+
+
 
     }
 
@@ -51,6 +54,31 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
         adapter.addFragments(new IntroFragFour(), "");
         introViewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(4);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+               /* if(position!=0){
+                    backBtn.setVisibility(View.VISIBLE);
+                }else{
+                    backBtn.setVisibility(View.INVISIBLE);
+                }*/
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position!=0){
+                    backBtn.setVisibility(View.VISIBLE);
+                }else{
+                    backBtn.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
 
@@ -64,13 +92,13 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
             }
             if (introViewPager.getCurrentItem() < adapter.getCount())
                 introViewPager.setCurrentItem(introViewPager.getCurrentItem() + 1);
-            backBtn.setEnabled(introViewPager.getCurrentItem() != 0);
+//            backBtn.setEnabled(introViewPager.getCurrentItem() != 0);
 
 
         } else if (view.getId() == R.id.backBtn) {
             if (introViewPager.getCurrentItem() > 0) {
                 introViewPager.setCurrentItem(introViewPager.getCurrentItem() - 1);
-                backBtn.setEnabled(introViewPager.getCurrentItem() != 0);
+//                backBtn.setEnabled(introViewPager.getCurrentItem() != 0);
             }
         }
     }

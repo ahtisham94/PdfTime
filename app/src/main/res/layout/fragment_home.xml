@@ -68,34 +68,58 @@
 
     </RelativeLayout>
 
-    <com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup
-        android:id="@+id/singleSelectedToggleGroup"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toggleLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
         android:checkedButton="@id/recentlyBtn"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         app:layout_constraintEnd_toEndOf="@+id/bannderLayout"
         app:layout_constraintStart_toStartOf="@+id/bannderLayout"
         app:layout_constraintTop_toBottomOf="@+id/bannderLayout"
-        app:tbgChildSpacing="@dimen/_5sdp">
 
-        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+        >
+
+        <Button
             android:id="@+id/recentlyBtn"
-            android:layout_width="@dimen/_135sdp"
+            android:layout_width="0dp"
             android:layout_height="@dimen/_35sdp"
-            android:elevation="@dimen/_5sdp"
+            android:background="@drawable/blue_color_btn"
             android:text="@string/recent"
-            android:textSize="12sp" />
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            app:layout_constraintEnd_toStartOf="@id/edittedBtn"
+            />
 
-        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+        <Button
             android:id="@+id/edittedBtn"
-            android:layout_width="@dimen/_135sdp"
+            android:layout_width="0dp"
             android:layout_height="@dimen/_35sdp"
-            android:elevation="@dimen/_5sdp"
+            android:background="@drawable/edittext_white_bg"
             android:text="@string/edited"
-            android:textSize="12sp" />
+            android:textAllCaps="false"
+            android:textColor="@color/colorBlack"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/recentlyBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            />
 
-    </com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filesRecyclerView"
@@ -104,7 +128,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/singleSelectedToggleGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/toggleLayout" />
 
     <include
         android:id="@+id/noFileLayout"

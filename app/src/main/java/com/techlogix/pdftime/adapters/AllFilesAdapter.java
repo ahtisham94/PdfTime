@@ -61,6 +61,8 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         checkBoxArray = new ArrayList<>();
     }
 
+
+
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);

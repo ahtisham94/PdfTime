@@ -2,31 +2,31 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/_10sdp"
     android:layout_marginEnd="@dimen/_10sdp"
-    android:layout_marginTop="@dimen/_5sdp"
     android:padding="4dp"
     tools:background="@android:color/white">
 
 
     <ImageView
         android:id="@+id/imgToolIcon"
-        android:layout_width="@dimen/_24sdp"
-        android:layout_height="@dimen/_24sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_brush" />
+        tools:src="@drawable/cal_ic" />
 
     <TextView
         android:id="@+id/txtTool"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
+        android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgToolIcon"

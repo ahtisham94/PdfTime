@@ -1,10 +1,9 @@
 package com.techlogix.pdftime.utilis;
 
 public enum ToolType {
-    BRUSH,
+    CALENDAR,
     TEXT,
-    ERASER,
-    FILTER,
-    EMOJI,
-    STICKER
+    MARKER,
+    SIGNATURE,
+    UNDU
 }

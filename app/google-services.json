@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "766924483087",
-    "firebase_url": "https://pdftimes.firebaseio.com",
-    "project_id": "pdftimes",
-    "storage_bucket": "pdftimes.appspot.com"
+    "project_number": "397461802165",
+    "firebase_url": "https://important-apps.firebaseio.com",
+    "project_id": "important-apps",
+    "storage_bucket": "important-apps.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:766924483087:android:a4e87403a6fcf48ec5d17a",
+        "mobilesdk_app_id": "1:397461802165:android:e3ace9c4faba87d51a02fc",
         "android_client_info": {
-          "package_name": "com.techlogix.pdftime"
+          "package_name": "com.pdfreader.pdfviewer.pdfeditor.pdfcreator.securepdf"
         }
       },
       "oauth_client": [
         {
-          "client_id": "766924483087-ikiki0et6i3o189bqoutpl937aorddml.apps.googleusercontent.com",
+          "client_id": "397461802165-ninj6mv92kcrk85kd8tma4fponfa8o5p.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDblBGFnTKs_FrCKdzv4On-3Sji6sZoVmU"
+          "current_key": "AIzaSyCg_r6UAmsVPdg3oqXnlFEuJF0uX7EEqW8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "766924483087-ikiki0et6i3o189bqoutpl937aorddml.apps.googleusercontent.com",
+              "client_id": "397461802165-ninj6mv92kcrk85kd8tma4fponfa8o5p.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

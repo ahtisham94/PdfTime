@@ -1,0 +1,252 @@
+Index: app/src/main/java/com/techlogix/pdftime/TxtWordToPdfActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.techlogix.pdftime;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.appcompat.widget.Toolbar;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport android.Manifest;\r\nimport android.annotation.SuppressLint;\r\nimport android.app.ProgressDialog;\r\nimport android.content.Intent;\r\nimport android.net.Uri;\r\nimport android.os.AsyncTask;\r\nimport android.os.Bundle;\r\nimport android.os.Environment;\r\nimport android.text.Editable;\r\nimport android.text.TextWatcher;\r\nimport android.util.Log;\r\nimport android.view.Gravity;\r\nimport android.view.Menu;\r\nimport android.view.MenuItem;\r\nimport android.view.View;\r\nimport android.view.Window;\r\nimport android.view.WindowManager;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.PopupMenu;\r\nimport android.widget.TextView;\r\n\r\nimport com.google.android.material.snackbar.Snackbar;\r\nimport com.techlogix.pdftime.adapters.AllFilesAdapter;\r\nimport com.techlogix.pdftime.dialogs.InputFeildDialog;\r\nimport com.techlogix.pdftime.interfaces.GenericCallback;\r\nimport com.techlogix.pdftime.interfaces.OnTextToPdfInterface;\r\nimport com.techlogix.pdftime.interfaces.TextToPdfContract;\r\nimport com.techlogix.pdftime.models.FileInfoModel;\r\nimport com.techlogix.pdftime.utilis.Constants;\r\nimport com.techlogix.pdftime.utilis.DirectoryUtils;\r\nimport com.techlogix.pdftime.utilis.FileUtils;\r\nimport com.techlogix.pdftime.utilis.GetFilesUtility;\r\nimport com.techlogix.pdftime.utilis.PageSizeUtils;\r\nimport com.techlogix.pdftime.utilis.PermissionUtils;\r\nimport com.techlogix.pdftime.utilis.StringUtils;\r\nimport com.techlogix.pdftime.utilis.TextToPDFOptions;\r\nimport com.techlogix.pdftime.utilis.TextToPDFUtils;\r\nimport com.techlogix.pdftime.utilis.TextToPdfAsync;\r\n\r\nimport java.io.File;\r\nimport java.util.ArrayList;\r\nimport java.util.Collections;\r\nimport java.util.Comparator;\r\n\r\nimport static com.techlogix.pdftime.utilis.Constants.mFileSelectCode;\r\n\r\npublic class TxtWordToPdfActivity extends BaseActivity implements View.OnClickListener,\r\n        OnTextToPdfInterface, TextToPdfContract.View, GenericCallback ,GetFilesUtility.getFilesCallback, TextWatcher {\r\n    Button convertPdf;\r\n    Toolbar toolbar;\r\n    private Uri mTextFileUri = null;\r\n    private String mFileExtension;\r\n    private FileUtils mFileUtils;\r\n    private String mPath;\r\n    private TextToPDFOptions.Builder mBuilder;\r\n    private DirectoryUtils mDirectoryUtils;\r\n    RecyclerView allFilesRecycler;\r\n    AllFilesAdapter adapter;\r\n    ArrayList<FileInfoModel> fileInfoModelArrayList, checkboxArray;\r\n    TextView filterTv, emptyView;\r\n    int filesCount = -1;\r\n    EditText searchEt;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_txt_word_to_pdf);\r\n        Window window = getWindow();\r\n        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);\r\n        window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));\r\n        toolbar = findViewById(R.id.toolbar);\r\n        searchEt=findViewById(R.id.searchEd);\r\n        searchEt.addTextChangedListener(this);\r\n        toolbar.setTitle(\"Word To PDF\");\r\n        setSupportActionBar(toolbar);\r\n        if (getSupportActionBar() != null) {\r\n            getSupportActionBar().setDisplayHomeAsUpEnabled(true);\r\n            getSupportActionBar().setDisplayShowHomeEnabled(true);\r\n        }\r\n        mBuilder = new TextToPDFOptions.Builder(TxtWordToPdfActivity.this);\r\n        mFileUtils = new FileUtils(TxtWordToPdfActivity.this);\r\n        mDirectoryUtils = new DirectoryUtils(TxtWordToPdfActivity.this);\r\n        filterTv = findViewById(R.id.filterTv);\r\n        filterTv.setOnClickListener(this);\r\n        emptyView = findViewById(R.id.empty_view);\r\n        convertPdf = findViewById(R.id.convertPdf);\r\n        convertPdf.setOnClickListener(this);\r\n        allFilesRecycler = findViewById(R.id.allFilesRecycler);\r\n        allFilesRecycler.setLayoutManager(new LinearLayoutManager(this));\r\n        fileInfoModelArrayList = new ArrayList<>();\r\n        new GetFilesUtility(((BaseActivity) TxtWordToPdfActivity.this),this).execute(Constants.docExtension + \",\" + Constants.docxExtension);\r\n        checkboxArray = new ArrayList<>();\r\n\r\n        showButtonAnmination(convertPdf);\r\n\r\n    }\r\n\r\n    @Override\r\n    public void callback(Object o) {\r\n        checkboxArray = (ArrayList<FileInfoModel>) o;\r\n    }\r\n\r\n    @Override\r\n    public void getFiles(ArrayList<File> arrayList) {\r\n        Log.d(\"count\", arrayList.size() + \"\");\r\n        if (arrayList.size() > 0) {\r\n            fileInfoModelArrayList.clear();\r\n            for (File file : arrayList) {\r\n                String[] fileInfo = file.getName().split(\"\\\\.\");\r\n                if (fileInfo.length == 2)\r\n                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));\r\n                else {\r\n                    fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],\r\n                            file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(\".\")).replace(\".\", \"\"),\r\n                            file, false));\r\n                }\r\n            }\r\n            adapter = new AllFilesAdapter(TxtWordToPdfActivity.this, fileInfoModelArrayList);\r\n            allFilesRecycler.setAdapter(adapter);\r\n            adapter.setShowCheckbox(true);\r\n            adapter.setCallback(TxtWordToPdfActivity.this);\r\n            convertPdf.setEnabled(true);\r\n        }\r\n    }\r\n\r\n\r\n    @Override\r\n    public void onClick(View view) {\r\n        if (view.getId() == R.id.convertPdf) {\r\n            if (adapter.getFilesArrayList().size() > 0) {\r\n                checkboxArray = adapter.getFilesArrayList();\r\n                createPFD();\r\n            } else {\r\n                StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, \"Please select at least one file\");\r\n            }\r\n        }  else if (view.getId() == R.id.filterTv) {\r\n            showSortMenu();\r\n        }\r\n    }\r\n\r\n    private void showSortMenu() {\r\n        final PopupMenu menu = new PopupMenu(this, emptyView, Gravity.END);\r\n        menu.inflate(R.menu.sortby_menu);\r\n        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {\r\n            @Override\r\n            public boolean onMenuItemClick(MenuItem menuItem) {\r\n                if (menuItem.getItemId() == R.id.lastUpdatedTv) {\r\n                    sortArray(5);\r\n                    menu.dismiss();\r\n                    return true;\r\n                } else if (menuItem.getItemId() == R.id.createDateTv) {\r\n                    sortArray(4);\r\n                    menu.dismiss();\r\n                    return true;\r\n                } else if (menuItem.getItemId() == R.id.zToATv) {\r\n                    sortArray(3);\r\n                    return true;\r\n                } else if (menuItem.getItemId() == R.id.sizeTv) {\r\n                    sortArray(2);\r\n                    menu.dismiss();\r\n                    return true;\r\n                } else if (menuItem.getItemId() == R.id.aTozTv) {\r\n                    sortArray(1);\r\n                    menu.dismiss();\r\n                    return true;\r\n                }\r\n                return false;\r\n            }\r\n        });\r\n        menu.show();\r\n    }\r\n\r\n    public void sortArray(final int sortBy) {\r\n        Collections.sort(fileInfoModelArrayList, new Comparator<FileInfoModel>() {\r\n            @Override\r\n            public int compare(FileInfoModel fileInfoModel, FileInfoModel t1) {\r\n                if (sortBy == 1)\r\n                    return fileInfoModel.getFileName().compareToIgnoreCase(t1.getFileName());//A to Z\r\n                else if (sortBy == 2)\r\n                    return Long.compare(fileInfoModel.getFile().length(), t1.getFile().length());//File size\r\n                else if (sortBy == 3)\r\n                    return t1.getFileName().compareToIgnoreCase(fileInfoModel.getFileName());//Z to A\r\n                else if (sortBy == 4)\r\n                    return Long.compare(fileInfoModel.getFile().lastModified(), t1.getFile().lastModified());//Create Date By\r\n                else if (sortBy == 5)\r\n                    return Long.compare(t1.getFile().lastModified(), fileInfoModel.getFile().lastModified());//Recent updated Date By\r\n\r\n                return fileInfoModel.getFileName().compareToIgnoreCase(t1.getFileName());\r\n\r\n            }\r\n        });\r\n        adapter.notifyDataSetChanged();\r\n    }\r\n\r\n\r\n    private void createPFD() {\r\n        if (checkboxArray.size() > 0) {\r\n            filesCount++;\r\n            showCreateFileNameDialog();\r\n        } else {\r\n            StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, \"Please select atleast one file\");\r\n        }\r\n    }\r\n\r\n    private void startPdfCreating(String o) {\r\n\r\n        String fileName = mFileUtils.getFileName(checkboxArray.get(filesCount).getFile().getAbsolutePath());\r\n        if (fileName != null) {\r\n            if (fileName.endsWith(Constants.textExtension))\r\n                mFileExtension = Constants.textExtension;\r\n            else if (fileName.endsWith(Constants.docxExtension))\r\n                mFileExtension = Constants.docxExtension;\r\n            else if (fileName.endsWith(Constants.docExtension))\r\n                mFileExtension = Constants.docExtension;\r\n            else {\r\n                StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, R.string.extension_not_supported);\r\n                return;\r\n            }\r\n        }\r\n        mTextFileUri = Uri.fromFile(checkboxArray.get(filesCount).getFile());\r\n\r\n        mPath = DirectoryUtils.getDownloadFolderPath();\r\n        mPath = mPath + \"/\" + o + Constants.pdfExtension;\r\n        TextToPDFOptions options = mBuilder.setFileName(o)\r\n                .setPageSize(PageSizeUtils.mPageSize)\r\n                .setInFileUri(mTextFileUri)\r\n                .build();\r\n        TextToPDFUtils fileUtil = new TextToPDFUtils(TxtWordToPdfActivity.this);\r\n        new TextToPdfAsync(fileUtil, options, mFileExtension,\r\n                TxtWordToPdfActivity.this).execute();\r\n    }\r\n\r\n    private void getFileFromStorage() {\r\n        Uri uri = Uri.parse(Environment.getRootDirectory() + \"/\");\r\n        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);\r\n        intent.setDataAndType(uri, \"*/*\");\r\n        String[] mimeTypes = {\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\r\n                \"application/msword\", getString(R.string.text_type)};\r\n        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);\r\n        intent.addCategory(Intent.CATEGORY_OPENABLE);\r\n        try {\r\n            startActivityForResult(\r\n                    Intent.createChooser(intent, String.valueOf(R.string.select_file)),\r\n                    mFileSelectCode);\r\n        } catch (android.content.ActivityNotFoundException ex) {\r\n            StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, R.string.install_file_manager);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {\r\n        super.onActivityResult(requestCode, resultCode, data);\r\n        if (requestCode == mFileSelectCode && data != null) {\r\n            mTextFileUri = data.getData();\r\n            StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, getString(R.string.file_selectedd));\r\n            String fileName = mFileUtils.getFileName(mTextFileUri);\r\n            if (fileName != null) {\r\n                if (fileName.endsWith(Constants.textExtension))\r\n                    mFileExtension = Constants.textExtension;\r\n                else if (fileName.endsWith(Constants.docxExtension))\r\n                    mFileExtension = Constants.docxExtension;\r\n                else if (fileName.endsWith(Constants.docExtension))\r\n                    mFileExtension = Constants.docExtension;\r\n                else {\r\n                    StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, R.string.extension_not_supported);\r\n                    return;\r\n                }\r\n            }\r\n\r\n//            selectFilesBtn.setText(fileName);\r\n            convertPdf.setEnabled(true);\r\n\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public boolean onOptionsItemSelected(@NonNull MenuItem item) {\r\n        if (item.getItemId() == android.R.id.home) {\r\n            onBackPressed();\r\n            return true;\r\n        }else if (item.getItemId() == R.id.searchFile) {\r\n            searchEt.setVisibility(View.VISIBLE);\r\n            return true;\r\n        }\r\n        return super.onOptionsItemSelected(item);\r\n    }\r\n\r\n    @Override\r\n    public boolean onCreateOptionsMenu(Menu menu) {\r\n        getMenuInflater().inflate(R.menu.search_file_menu, menu);\r\n        return true;\r\n    }\r\n\r\n\r\n\r\n    @Override\r\n    public void onBackPressed() {\r\n        super.onBackPressed();\r\n    }\r\n\r\n    @Override\r\n    public void onPDFCreationStarted() {\r\n        showLoading(\"Creating pdf file\", \"Please wait...\");\r\n    }\r\n\r\n    @Override\r\n    public void onPDFCreated(boolean success) {\r\n        hideLoading();\r\n        if (success) {\r\n            adapter.refrechList();\r\n            checkboxArray.clear();\r\n            StringUtils.getInstance().getSnackbarwithAction(TxtWordToPdfActivity.this, R.string.file_created)\r\n                    .setAction(\"View\", new View.OnClickListener() {\r\n                        @Override\r\n                        public void onClick(View view) {\r\n                            openpdfFile();\r\n                        }\r\n                    }).show();\r\n\r\n            if (filesCount < checkboxArray.size()) {\r\n                filesCount++;\r\n                showCreateFileNameDialog();\r\n            }\r\n        }\r\n    }\r\n\r\n    private void showCreateFileNameDialog() {\r\n        if (adapter.getFilesArrayList().size() > 0) {\r\n\r\n            new InputFeildDialog(TxtWordToPdfActivity.this, new GenericCallback() {\r\n                @Override\r\n                public void callback(Object o) {\r\n                    startPdfCreating((String) o);\r\n                }\r\n            }, \"Text Or Word To PDF\").show();\r\n        } else {\r\n            StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, \"Please select at least one file\");\r\n        }\r\n    }\r\n\r\n    private void openpdfFile() {\r\n        Intent intent = new Intent(TxtWordToPdfActivity.this, PDFViewerAcitivity.class);\r\n        intent.putExtra(\"path\", mPath);\r\n        startActivity(intent);\r\n    }\r\n\r\n    @Override\r\n    public void updateView() {\r\n\r\n    }\r\n\r\n    @Override\r\n    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {\r\n\r\n    }\r\n\r\n    @Override\r\n    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {\r\n        filter(charSequence.toString());\r\n    }\r\n\r\n    @Override\r\n    public void afterTextChanged(Editable editable) {\r\n\r\n    }\r\n\r\n    private void filter(String text) {\r\n        //new array list that will hold the filtered data\r\n        ArrayList<FileInfoModel> filterdNames = new ArrayList<>();\r\n\r\n        //looping through existing elements\r\n        for (FileInfoModel s : fileInfoModelArrayList) {\r\n            //if the existing elements contains the search input\r\n            if (s.getFileName().toLowerCase().contains(text.toLowerCase())) {\r\n                //adding the element to filtered list\r\n                filterdNames.add(s);\r\n            }\r\n        }\r\n\r\n        //calling a method of the adapter class and passing the filtered list\r\n        adapter.filterList(filterdNames);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/techlogix/pdftime/TxtWordToPdfActivity.java	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
++++ app/src/main/java/com/techlogix/pdftime/TxtWordToPdfActivity.java	(date 1606730285146)
+@@ -204,9 +204,10 @@
+ 
+     private void createPFD() {
+         if (checkboxArray.size() > 0) {
+-            filesCount++;
++//            filesCount++;
+             showCreateFileNameDialog();
+         } else {
++            filesCount=-1;
+             StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, "Please select atleast one file");
+         }
+     }
+@@ -327,13 +328,14 @@
+                     }).show();
+ 
+             if (filesCount < checkboxArray.size()) {
+-                filesCount++;
++//                filesCount++;
+                 showCreateFileNameDialog();
+             }
+         }
+     }
+ 
+     private void showCreateFileNameDialog() {
++        filesCount++;
+         if (adapter.getFilesArrayList().size() > 0) {
+ 
+             new InputFeildDialog(TxtWordToPdfActivity.this, new GenericCallback() {
+Index: app/src/main/java/com/techlogix/pdftime/adapters/AllFilesAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.techlogix.pdftime.adapters;\r\n\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.util.Log;\r\nimport android.util.Pair;\r\nimport android.view.Gravity;\r\nimport android.view.LayoutInflater;\r\nimport android.view.MenuItem;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.CheckBox;\r\nimport android.widget.CompoundButton;\r\nimport android.widget.ImageView;\r\nimport android.widget.PopupMenu;\r\nimport android.widget.RelativeLayout;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.constraintlayout.widget.ConstraintLayout;\r\nimport androidx.constraintlayout.widget.ConstraintSet;\r\nimport androidx.fragment.app.Fragment;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.techlogix.pdftime.MainActivity;\r\nimport com.techlogix.pdftime.PDFViewerAcitivity;\r\nimport com.techlogix.pdftime.R;\r\nimport com.techlogix.pdftime.SearchPdfFileActivity;\r\nimport com.techlogix.pdftime.dialogs.AlertDialogHelper;\r\nimport com.techlogix.pdftime.dialogs.CreateFolderDialog;\r\nimport com.techlogix.pdftime.dialogs.MoveFileDialog;\r\nimport com.techlogix.pdftime.fragments.dashboardFragments.FileFragment;\r\nimport com.techlogix.pdftime.interfaces.GenericCallback;\r\nimport com.techlogix.pdftime.models.FileInfoModel;\r\nimport com.techlogix.pdftime.utilis.Constants;\r\nimport com.techlogix.pdftime.utilis.DirectoryUtils;\r\nimport com.techlogix.pdftime.utilis.FileInfoUtils;\r\n\r\nimport java.io.File;\r\nimport java.util.ArrayList;\r\nimport java.util.HashMap;\r\n\r\npublic class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFilesHolder> {\r\n\r\n    Context context;\r\n    ArrayList<FileInfoModel> filesArrayList, checkBoxArray;\r\n    DirectoryUtils mDirectory;\r\n    RecyclerView recyclerView;\r\n    GenericCallback callback;\r\n    boolean showCheckbox = false;\r\n\r\n    public void setCallback(GenericCallback callback) {\r\n        this.callback = callback;\r\n    }\r\n\r\n    public AllFilesAdapter(Context context, ArrayList<FileInfoModel> filesArrayList) {\r\n        this.context = context;\r\n        this.filesArrayList = filesArrayList;\r\n        mDirectory = new DirectoryUtils(context);\r\n        checkBoxArray = new ArrayList<>();\r\n    }\r\n\r\n    @Override\r\n    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {\r\n        super.onAttachedToRecyclerView(recyclerView);\r\n        this.recyclerView = recyclerView;\r\n    }\r\n\r\n    @NonNull\r\n    @Override\r\n    public MyFilesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.files_item_layout, parent, false);\r\n        return new MyFilesHolder(view);\r\n    }\r\n\r\n    public void setData(ArrayList<FileInfoModel> filesArrayList) {\r\n        this.filesArrayList = new ArrayList<>();\r\n        this.filesArrayList = filesArrayList;\r\n        notifyDataSetChanged();\r\n    }\r\n\r\n    public void setShowCheckbox(boolean showMoreBtn) {\r\n        this.showCheckbox = showMoreBtn;\r\n    }\r\n\r\n    @Override\r\n    public void onBindViewHolder(@NonNull final MyFilesHolder holder, final int position) {\r\n        if (showCheckbox)\r\n            holder.setViewsAllignment();\r\n        if (filesArrayList.get(holder.getAdapterPosition()).getSelect()) {\r\n            holder.rootLayout.setBackgroundColor(context.getResources().getColor(R.color.colorGrayHightted));\r\n        } else\r\n            holder.rootLayout.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));\r\n\r\n        holder.fileNameTv.setText(filesArrayList.get(holder.getAdapterPosition()).getFileName());\r\n        holder.sizeTv.setText(FileInfoUtils.getFormattedSize(filesArrayList.get(holder.getAdapterPosition()).getFile()));\r\n        holder.dateTv.setText(FileInfoUtils.getFormattedDate(filesArrayList.get(holder.getAdapterPosition()).getFile()));\r\n        if (filesArrayList.get(holder.getAdapterPosition()).getFileType().equals(\"pdf\")) {\r\n            holder.fileTypeTv.setText(\"P\");\r\n            holder.fileTypeRl.setBackgroundResource(R.drawable.pdf_bg);\r\n        } else if (filesArrayList.get(holder.getAdapterPosition()).getFileType().equals(\"txt\")) {\r\n            holder.fileTypeRl.setBackgroundResource(R.drawable.text_bg);\r\n            holder.fileTypeTv.setText(\"T\");\r\n        } else if (filesArrayList.get(holder.getAdapterPosition()).getFileType().equals(\"xls\") ||\r\n                filesArrayList.get(holder.getAdapterPosition()).getFileType().equals(\"xlsx\")) {\r\n            holder.fileTypeRl.setBackgroundResource(R.drawable.excel_bg);\r\n            holder.fileTypeTv.setText(\"E\");\r\n        } else if (filesArrayList.get(holder.getAdapterPosition()).getFileType().equals(\"doc\") ||\r\n                filesArrayList.get(holder.getAdapterPosition()).getFileType().equals(\"docx\")) {\r\n            holder.fileTypeTv.setText(\"W\");\r\n            holder.fileTypeRl.setBackgroundResource(R.drawable.word_bg);\r\n        }\r\n\r\n        //more button Visible or not\r\n\r\n        holder.moreImg.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                final PopupMenu menu = new PopupMenu(context, holder.fileNameTv, Gravity.END);\r\n                menu.inflate(R.menu.navigation);\r\n                menu.getMenu().findItem(R.id.convertPdf).setVisible(isVisible());\r\n                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {\r\n                    @Override\r\n                    public boolean onMenuItemClick(MenuItem menuItem) {\r\n                        if (menuItem.getItemId() == R.id.rename) {\r\n                            menu.dismiss();\r\n                            showRenameDialog(filesArrayList.get(holder.getAdapterPosition()).getFile(), holder.getAdapterPosition());\r\n                            return true;\r\n                        } else if (menuItem.getItemId() == R.id.share) {\r\n                            shareFile(filesArrayList.get(holder.getAdapterPosition()).getFile());\r\n                            menu.dismiss();\r\n                            return true;\r\n                        } else if (menuItem.getItemId() == R.id.delete) {\r\n                            showDeleteFileDialog(filesArrayList.get(holder.getAdapterPosition()).getFile(), holder.getAdapterPosition());\r\n                            menu.dismiss();\r\n                            return true;\r\n                        } else if (menuItem.getItemId() == R.id.moveToFolder) {\r\n                            showAllFolderDialog(filesArrayList.get(holder.getAdapterPosition()).getFile(), holder.getAdapterPosition());\r\n                            menu.dismiss();\r\n                            return true;\r\n                        } else if (menuItem.getItemId() == R.id.convertPdf) {\r\n                            convertFile(filesArrayList.get(holder.getAdapterPosition()).getFile());\r\n                            menu.dismiss();\r\n                            return true;\r\n                        }\r\n                        return false;\r\n                    }\r\n                });\r\n                menu.show();\r\n            }\r\n\r\n        });\r\n\r\n        holder.rootLayout.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                if(context instanceof SearchPdfFileActivity){\r\n                    Intent intent = new Intent();\r\n                    intent.putExtra(\"path\", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());\r\n\r\n                    ((SearchPdfFileActivity) context).setResult(Constants.OPEN_SEARCH_REQUEST_CODE,intent);\r\n                    ((SearchPdfFileActivity) context).finish();\r\n\r\n                }else {\r\n                    if (context instanceof MainActivity) {\r\n                        Fragment fragment = ((MainActivity) context).tabsadapter.getItem(((MainActivity) context).viewPager.getCurrentItem());\r\n                        if (fragment instanceof FileFragment) {\r\n                            if (((FileFragment) fragment).isMultiSelect) {\r\n                                holder.selectedItem(filesArrayList.get(holder.getAdapterPosition()));\r\n                                return;\r\n                            }\r\n                        }\r\n                    }\r\n                    try {\r\n\r\n                        if (holder.fileTypeTv.getText().toString().equals(\"E\")) {\r\n                            Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());\r\n                        } else if (holder.fileTypeTv.getText().toString().equals(\"T\")) {\r\n                            Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());\r\n                        } else if (holder.fileTypeTv.getText().toString().equals(\"W\")) {\r\n\r\n                            Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());\r\n                        } else if (holder.fileTypeTv.getText().toString().equals(\"P\")) {\r\n                            Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);\r\n                            intent.putExtra(\"path\", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());\r\n                            context.startActivity(intent);\r\n                        }\r\n                    } catch (Exception e) {\r\n                        Log.d(\"exxx\", \"\" + e.getMessage());\r\n                    }\r\n                }\r\n            }\r\n\r\n\r\n        });\r\n\r\n\r\n        if (holder.checkBox.getVisibility() == View.VISIBLE) {\r\n            if (filesArrayList.get(holder.getAdapterPosition()).getSelect()) {\r\n                holder.checkBox.setChecked(true);\r\n            } else {\r\n                holder.checkBox.setChecked(false);\r\n            }\r\n\r\n        }\r\n\r\n\r\n    }\r\n\r\n    public ArrayList<FileInfoModel> getFilesArrayList() {\r\n        return checkBoxArray;\r\n    }\r\n\r\n    public ArrayList<FileInfoModel> getRealArray() {\r\n        return filesArrayList;\r\n    }\r\n\r\n    private boolean isVisible() {\r\n        return context instanceof MainActivity && ((MainActivity) context).viewPager.getCurrentItem() == 0;\r\n    }\r\n\r\n    private void convertFile(File file) {\r\n        String ext = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(\".\"));\r\n        if (ext.contains(Constants.excelExtension) || ext.contains(Constants.excelWorkbookExtension)) {\r\n            File pdfFile = mDirectory.createExcelToPdf(file);\r\n            if (pdfFile != null) {\r\n                refreshArray(pdfFile);\r\n            }\r\n        } else if (ext.contains(Constants.docExtension) || ext.contains(Constants.docxExtension)\r\n                || ext.contains(Constants.textExtension)) {\r\n            if (callback != null) {\r\n                callback.callback(file);\r\n            }\r\n        }\r\n\r\n\r\n    }\r\n\r\n    public void refreshArray(File pdfFile) {\r\n        String[] names = pdfFile.getName().split(\"\\\\.\");\r\n        FileInfoModel model = new FileInfoModel(names[0],\r\n                pdfFile.getAbsolutePath().substring(pdfFile.getAbsolutePath().lastIndexOf(\".\")).replace(\".\", \"\"),\r\n                pdfFile, false);\r\n        ArrayList<FileInfoModel> arrayList = filesArrayList;\r\n        arrayList.add(filesArrayList.size(), model);\r\n        setData(arrayList);\r\n        if (recyclerView != null)\r\n            recyclerView.smoothScrollToPosition(filesArrayList.size());\r\n    }\r\n\r\n    private void shareFile(File file) {\r\n        Constants.shareFile(context, file);\r\n    }\r\n\r\n    private void showDeleteFileDialog(final File file, final int pos) {\r\n        AlertDialogHelper.showAlert(context, new AlertDialogHelper.Callback() {\r\n            @Override\r\n            public void onSucess(int t) {\r\n                if (t == 0) {\r\n                    if (mDirectory.deleteFile(file)) {\r\n                        Toast.makeText(context, \"File deleted\", Toast.LENGTH_SHORT).show();\r\n                        filesArrayList.remove(pos);\r\n                        notifyItemRemoved(pos);\r\n                    } else {\r\n                        Toast.makeText(context, \"File not deleted\", Toast.LENGTH_SHORT).show();\r\n                    }\r\n                }\r\n            }\r\n        }, \"Delete\", \"Are you really want to delete this file?\");\r\n    }\r\n\r\n    private void showRenameDialog(final File file, final int pos) {\r\n        CreateFolderDialog dialog = new CreateFolderDialog(context, new GenericCallback() {\r\n            @Override\r\n            public void callback(Object o) {\r\n                if (mDirectory.renameFile(file, (String) o)) {\r\n                    Toast.makeText(context, \"File is renamed\", Toast.LENGTH_SHORT).show();\r\n                    FileInfoModel model = getItem(pos);\r\n                    model.setFileName((String) o);\r\n                    notifyDataSetChanged();\r\n                } else {\r\n                    Toast.makeText(context, \"File renamed failed\", Toast.LENGTH_SHORT).show();\r\n                }\r\n            }\r\n        }, false);\r\n        dialog.setSaveBtn(\"Rename File\");\r\n        dialog.setTitle(\"Enter New File Name\");\r\n        dialog.show();\r\n    }\r\n\r\n    public void refrechList() {\r\n        for (FileInfoModel model : filesArrayList) {\r\n            model.setSelect(false);\r\n        }\r\n        notifyDataSetChanged();\r\n    }\r\n\r\n    public void filterList(ArrayList<FileInfoModel> filterdNames) {\r\n        this.filesArrayList = filterdNames;\r\n        notifyDataSetChanged();\r\n    }\r\n\r\n    public FileInfoModel getItem(int position) {\r\n        return filesArrayList.get(position);\r\n    }\r\n\r\n    public void showAllFolderDialog(File moveFile, final int pos) {\r\n        new MoveFileDialog(context, moveFile, new GenericCallback() {\r\n            @Override\r\n            public void callback(Object o) {\r\n                if ((boolean) o) {\r\n                    Toast.makeText(context, \"File move to folder\", Toast.LENGTH_SHORT).show();\r\n                    filesArrayList.remove(pos);\r\n                    notifyItemRemoved(pos);\r\n                } else {\r\n                    Toast.makeText(context, \"File not move\", Toast.LENGTH_SHORT).show();\r\n                }\r\n            }\r\n        }).show();\r\n    }\r\n\r\n    @Override\r\n    public int getItemCount() {\r\n        return filesArrayList.size();\r\n    }\r\n\r\n    public class MyFilesHolder extends RecyclerView.ViewHolder {\r\n        RelativeLayout fileTypeRl;\r\n        TextView fileTypeTv, fileNameTv, sizeTv, dateTv;\r\n        ImageView moreImg;\r\n        ConstraintLayout rootLayout;\r\n        CheckBox checkBox;\r\n\r\n        public MyFilesHolder(@NonNull View itemView) {\r\n            super(itemView);\r\n            fileTypeRl = itemView.findViewById(R.id.fileTypeRl);\r\n            fileTypeTv = itemView.findViewById(R.id.fileTypeTv);\r\n            fileNameTv = itemView.findViewById(R.id.fileNameTv);\r\n            sizeTv = itemView.findViewById(R.id.sizeTv);\r\n            dateTv = itemView.findViewById(R.id.dateTv);\r\n            moreImg = itemView.findViewById(R.id.moreImg);\r\n            rootLayout = itemView.findViewById(R.id.rootLayout);\r\n            checkBox = itemView.findViewById(R.id.checkbox);\r\n            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {\r\n                @Override\r\n                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {\r\n                    FileInfoModel model = filesArrayList.get(getAdapterPosition());\r\n                    if (b) {\r\n                        if (model.getSelect())\r\n                            return;\r\n                        else {\r\n                            model.setSelect(true);\r\n                            checkBoxArray.add(model);\r\n                        }\r\n\r\n                    } else {\r\n                        if (!model.getSelect()) {\r\n                            return;\r\n                        } else {\r\n                            model.setSelect(false);\r\n                            checkBoxArray.remove(model);\r\n                        }\r\n                    }\r\n                    notifyDataSetChanged();\r\n                }\r\n            });\r\n        }\r\n\r\n        public void selectedItem(FileInfoModel model) {\r\n            for (FileInfoModel model1 : filesArrayList) {\r\n                model1.setSelect(model.getFileName().equals(model1.getFileName()));\r\n            }\r\n            notifyDataSetChanged();\r\n        }\r\n\r\n\r\n        public void setViewsAllignment() {\r\n            ConstraintLayout constraintLayout = rootLayout;\r\n            ConstraintSet constraintSet = new ConstraintSet();\r\n            constraintSet.clone(constraintLayout);\r\n            constraintSet.connect(R.id.fileNameTv, ConstraintSet.END, R.id.checkbox, ConstraintSet.START, 0);\r\n            constraintSet.connect(R.id.dateTv, ConstraintSet.END, R.id.checkbox, ConstraintSet.START, context.getResources().getDimensionPixelSize(R.dimen._10sdp));\r\n            constraintSet.applyTo(constraintLayout);\r\n            moreImg.setVisibility(View.GONE);\r\n            checkBox.setVisibility(View.VISIBLE);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/techlogix/pdftime/adapters/AllFilesAdapter.java	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
++++ app/src/main/java/com/techlogix/pdftime/adapters/AllFilesAdapter.java	(date 1606730191068)
+@@ -61,6 +61,8 @@
+         checkBoxArray = new ArrayList<>();
+     }
+ 
++
++
+     @Override
+     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+         super.onAttachedToRecyclerView(recyclerView);
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_11_23_2020_8_40_PM__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_11_23_2020_8_40_PM__Default_Changelist_.xml	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_11_23_2020_8_40_PM__Default_Changelist_.xml	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_11_23_2020_8_40_PM_[Default_Changelist]" date="1606146041513" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_23_2020_8_40_PM_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 11/23/2020 8:40 PM [Default Changelist]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_11_24_2020_12_40_AM__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_11_24_2020_12_40_AM__Default_Changelist_.xml	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_11_24_2020_12_40_AM__Default_Changelist_.xml	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_11_24_2020_12_40_AM_[Default_Changelist]" date="1606160440644" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_24_2020_12_40_AM_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 11/24/2020 12:40 AM [Default Changelist]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_11_23_2020_8_40_PM_[Default_Changelist]/shelved.patch
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_11_23_2020_8_40_PM_[Default_Changelist]/shelved.patch	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_11_23_2020_8_40_PM_[Default_Changelist]/shelved.patch	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
+@@ -1,64 +0,0 @@
+-Index: .idea/vcs.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/vcs.xml	(date 1605026122862)
+-+++ .idea/vcs.xml	(date 1605026122862)
+-@@ -0,0 +1,6 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="VcsDirectoryMappings">
+-+    <mapping directory="" vcs="Git" />
+-+  </component>
+-+</project>
+-\ No newline at end of file
+-Index: .idea/gradle.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/gradle.xml	(revision c4e5a9523c9bda4ee7b48f82a0c62be4e3d0f95f)
+-+++ .idea/gradle.xml	(date 1605026122838)
+-@@ -15,6 +15,7 @@
+-           </set>
+-         </option>
+-         <option name="resolveModulePerSourceSet" value="false" />
+-+        <option name="useQualifiedModuleNames" value="true" />
+-       </GradleProjectSettings>
+-     </option>
+-   </component>
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_7\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/misc.xml	(revision c4e5a9523c9bda4ee7b48f82a0c62be4e3d0f95f)
+-+++ .idea/misc.xml	(date 1605026122854)
+-@@ -1,6 +1,6 @@
+- <?xml version="1.0" encoding="UTF-8"?>
+- <project version="4">
+--  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+-+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+-     <output url="file://$PROJECT_DIR$/build/classes" />
+-   </component>
+-   <component name="ProjectType">
+-Index: .idea/compiler.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/compiler.xml	(date 1605026122870)
+-+++ .idea/compiler.xml	(date 1605026122870)
+-@@ -0,0 +1,6 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="CompilerConfiguration">
+-+    <bytecodeTargetLevel target="1.8" />
+-+  </component>
+-+</project>
+-\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_11_24_2020_12_40_AM_[Default_Changelist]/shelved.patch
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_11_24_2020_12_40_AM_[Default_Changelist]/shelved.patch	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_11_24_2020_12_40_AM_[Default_Changelist]/shelved.patch	(revision 493206c77ff5d31874d9f5ecd40dc89a6f3077ef)
+@@ -1,103 +0,0 @@
+-Index: .idea/jarRepositories.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/jarRepositories.xml	(date 1606146029599)
+-+++ .idea/jarRepositories.xml	(date 1606146029599)
+-@@ -0,0 +1,30 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="RemoteRepositoriesConfiguration">
+-+    <remote-repository>
+-+      <option name="id" value="central" />
+-+      <option name="name" value="Maven Central repository" />
+-+      <option name="url" value="https://repo1.maven.org/maven2" />
+-+    </remote-repository>
+-+    <remote-repository>
+-+      <option name="id" value="jboss.community" />
+-+      <option name="name" value="JBoss Community repository" />
+-+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+-+    </remote-repository>
+-+    <remote-repository>
+-+      <option name="id" value="BintrayJCenter" />
+-+      <option name="name" value="BintrayJCenter" />
+-+      <option name="url" value="https://jcenter.bintray.com/" />
+-+    </remote-repository>
+-+    <remote-repository>
+-+      <option name="id" value="maven" />
+-+      <option name="name" value="maven" />
+-+      <option name="url" value="https://jitpack.io" />
+-+    </remote-repository>
+-+    <remote-repository>
+-+      <option name="id" value="Google" />
+-+      <option name="name" value="Google" />
+-+      <option name="url" value="https://dl.google.com/dl/android/maven2/" />
+-+    </remote-repository>
+-+  </component>
+-+</project>
+-\ No newline at end of file
+-Index: .idea/gradle.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/gradle.xml	(revision 9d7191ba8d79873b9102ed65f51c3ff4c6a618f8)
+-+++ .idea/gradle.xml	(date 1606146040854)
+-@@ -15,6 +15,7 @@
+-           </set>
+-         </option>
+-         <option name="resolveModulePerSourceSet" value="false" />
+-+        <option name="useQualifiedModuleNames" value="true" />
+-       </GradleProjectSettings>
+-     </option>
+-   </component>
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_7\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/misc.xml	(revision 9d7191ba8d79873b9102ed65f51c3ff4c6a618f8)
+-+++ .idea/misc.xml	(date 1606146040866)
+-@@ -1,6 +1,6 @@
+- <?xml version="1.0" encoding="UTF-8"?>
+- <project version="4">
+--  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+-+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+-     <output url="file://$PROJECT_DIR$/build/classes" />
+-   </component>
+-   <component name="ProjectType">
+-Index: .idea/vcs.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/vcs.xml	(date 1606146040832)
+-+++ .idea/vcs.xml	(date 1606146040832)
+-@@ -0,0 +1,6 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="VcsDirectoryMappings">
+-+    <mapping directory="" vcs="Git" />
+-+  </component>
+-+</project>
+-\ No newline at end of file
+-Index: .idea/compiler.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/compiler.xml	(date 1606146040876)
+-+++ .idea/compiler.xml	(date 1606146040876)
+-@@ -0,0 +1,6 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="CompilerConfiguration">
+-+    <bytecodeTargetLevel target="1.8" />
+-+  </component>
+-+</project>
+-\ No newline at end of file

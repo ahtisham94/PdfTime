@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -51,7 +52,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
     AllFolderAdapter adapter;
     DirectoryUtils mDirectory;
     TextView filterTv, emptyView;
-
+    ImageView creatFolder;
     public FolderFragment() {
         // Required empty public constructor
     }
@@ -73,6 +74,8 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
         mDirectory = new DirectoryUtils(getContext());
         baseActivity = (BaseActivity) getActivity();
         foldersArray = new ArrayList<>();
+        creatFolder=view.findViewById(R.id.createFolderBtn2);
+        creatFolder.setOnClickListener(this);
         foldersRecycler = view.findViewById(R.id.foldersRecycler);
         foldersRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         noFolderLayout = view.findViewById(R.id.noFolderLayout);
@@ -98,8 +101,11 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
         if (foldersArray != null && foldersArray.size() > 0) {
             adapter.setFolderArray(foldersArray);
             noFolderLayout.setVisibility(View.GONE);
+            creatFolder.setVisibility(View.VISIBLE);
         } else {
             noFolderLayout.setVisibility(View.VISIBLE);
+            creatFolder.setVisibility(View.GONE);
+
             if (adapter != null && adapter.getItemCount() > 0) {
                 adapter.setFolderArray(new ArrayList<File>());
             }
@@ -108,7 +114,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.createFolderBtn) {
+        if (view.getId() == R.id.createFolderBtn || view.getId() == R.id.createFolderBtn2) {
             createFolder();
         } else if (view.getId() == R.id.filterTv) {
             showSortMenu();
@@ -122,6 +128,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
                 foldersArray.add((File) o);
                 adapter.setFolderArray(foldersArray);
                 noFolderLayout.setVisibility(View.GONE);
+                creatFolder.setVisibility(View.VISIBLE);
             }
         }, true).show();
     }

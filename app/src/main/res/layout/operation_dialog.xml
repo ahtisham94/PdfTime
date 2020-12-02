@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/edittext_white_bg">
+
+    <TextView
+        android:id="@+id/titleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:text="Select operation"
+        android:textColor="@color/colorBlack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+
+
+    <Button
+        android:id="@+id/convertBtn"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_35sdp"
+        android:background="@drawable/blue_color_btn"
+        android:elevation="@dimen/_5sdp"
+        android:imeOptions="actionDone"
+        android:text="Convert"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/_16sdp"
+        app:layout_constraintEnd_toStartOf="@id/openBtn"
+        android:layout_marginEnd="@dimen/_8sdp"
+        />
+
+    <Button
+        android:id="@+id/openBtn"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_35sdp"
+        android:background="@drawable/blue_color_btn"
+        android:elevation="@dimen/_5sdp"
+        android:imeOptions="actionDone"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:text="Open"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/convertBtn"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

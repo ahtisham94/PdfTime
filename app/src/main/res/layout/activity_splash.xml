@@ -15,8 +15,8 @@
 
     <ImageView
         android:id="@+id/logoIv"
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_150sdp"
+        android:layout_width="@dimen/_90sdp"
+        android:layout_height="@dimen/_90sdp"
         android:src="@drawable/ic_spalsh_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

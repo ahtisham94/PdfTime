@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,7 +53,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class HomeFragment extends Fragment implements PermissionCallback, CurrentFragment,
-        GenericCallback, OnTextToPdfInterface, SingleSelectToggleGroup.OnCheckedChangeListener, View.OnClickListener {
+        GenericCallback, OnTextToPdfInterface, View.OnClickListener {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -62,9 +63,8 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     ProgressDialog dialog;
     private TextToPDFOptions.Builder mBuilder;
     String mPath;
-    SingleSelectToggleGroup singleSelectToggleGroup;
     boolean lastModified = false;
-    Button tryNowBtn;
+    Button tryNowBtn,edittedBtn,recentlyBtn;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -149,8 +149,10 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
         dialog.setTitle("Please wait");
         dialog.setMessage("Creating pdf file");
         mBuilder = new TextToPDFOptions.Builder(getContext());
-        singleSelectToggleGroup = view.findViewById(R.id.singleSelectedToggleGroup);
-        singleSelectToggleGroup.setOnCheckedChangeListener(this);
+        edittedBtn=view.findViewById(R.id.edittedBtn);
+        recentlyBtn=view.findViewById(R.id.recentlyBtn);
+        edittedBtn.setOnClickListener(this);
+        recentlyBtn.setOnClickListener(this);
         tryNowBtn = view.findViewById(R.id.tryNowBtn);
         tryNowBtn.setOnClickListener(this);
     }
@@ -211,7 +213,7 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
             StringUtils.getInstance().showSnackbar(getActivity(), "Failed to create pfd file");
         }
     }
-
+/*
     @Override
     public void onCheckedChanged(SingleSelectToggleGroup group, int checkedId) {
         if (checkedId == R.id.recentlyBtn) {
@@ -231,12 +233,37 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
             }
 
         }
-    }
+    }*/
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.tryNowBtn) {
             baseActivity.startActivity(PremiumScreen.class, null);
+        }else if(view.getId() == R.id.recentlyBtn){
+
+            edittedBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.edittext_white_bg));
+            recentlyBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.bg_circle_toggle));
+            edittedBtn.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorBlack));
+            recentlyBtn.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorWhite));
+
+            if (PermissionUtils.hasPermissionGranted(getContext(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+                lastModified = false;
+                getFiles();
+            } else {
+                PermissionUtils.checkAndRequestPermissions(requireActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+            }
+        }else if(view.getId() == R.id.edittedBtn){
+            edittedBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.bg_circle_toggle));
+            recentlyBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.edittext_white_bg));
+            edittedBtn.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorWhite));
+            recentlyBtn.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorBlack));
+            if (PermissionUtils.hasPermissionGranted(getContext(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+                lastModified = true;
+                getFiles();
+            } else {
+                PermissionUtils.checkAndRequestPermissions(requireActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+
+            }
         }
     }
 }

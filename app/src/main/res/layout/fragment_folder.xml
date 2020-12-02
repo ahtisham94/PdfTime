@@ -75,5 +75,29 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <androidx.cardview.widget.CardView
+        android:layout_gravity="center_horizontal"
+        app:cardElevation="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cardCornerRadius="50dp"
+        android:background="@android:color/transparent"
+        android:layout_margin="@dimen/_16sdp"
+        app:layout_constraintBottom_toTopOf="@id/bannerLayout"
+        >
+        <ImageView
+            android:id="@+id/createFolderBtn2"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:src="@drawable/ic_add_folder_bg"
+            android:background="@drawable/image_shadow"
+            android:elevation="@dimen/_10sdp"
+
+            />
+
+    </androidx.cardview.widget.CardView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

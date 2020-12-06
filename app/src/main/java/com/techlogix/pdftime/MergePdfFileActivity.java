@@ -36,6 +36,7 @@ import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileUtils;
 import com.techlogix.pdftime.utilis.GetFilesUtility;
 import com.techlogix.pdftime.utilis.MergePdf;
+import com.techlogix.pdftime.utilis.NormalUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
 import com.techlogix.pdftime.utilis.RealPathUtil;
 import com.techlogix.pdftime.utilis.StringUtils;
@@ -255,6 +256,8 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
                             startActivity(intent);
                         }
                     }).show();
+
+            NormalUtils.getInstance().showSuccessDialog(MergePdfFileActivity.this,"Success");
 
         } else
             StringUtils.getInstance().showSnackbar(MergePdfFileActivity.this, R.string.file_access_error);

@@ -354,23 +354,23 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         if (viewPager.getCurrentItem() == 0) {
             serachImg.setVisibility(View.VISIBLE);
             premiumImg.setVisibility(View.VISIBLE);
-            giftImg.setVisibility(View.VISIBLE);
+//            giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
         } else if (viewPager.getCurrentItem() == 1 || viewPager.getCurrentItem() == 4) {
             serachImg.setVisibility(View.VISIBLE);
             premiumImg.setVisibility(View.VISIBLE);
-            giftImg.setVisibility(View.VISIBLE);
+//            giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
         } else if (viewPager.getCurrentItem() == 2) {
             serachImg.setVisibility(View.GONE);
             premiumImg.setVisibility(View.VISIBLE);
-            giftImg.setVisibility(View.VISIBLE);
+//            giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
         }
         else if (viewPager.getCurrentItem() == 3) {
             serachImg.setVisibility(View.GONE);
             premiumImg.setVisibility(View.VISIBLE);
-            giftImg.setVisibility(View.VISIBLE);
+//            giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
         }
     }

@@ -148,7 +148,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
 
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
-                .setPinchTextScalable(true) // set flag to make text scalable when pinch
+                .setPinchTextScalable(true)
+                // set flag to make text scalable when pinch
                 //.setDefaultTextTypeface(mTextRobotoTf)
                 //.setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build(); // build photo editor sdk
@@ -363,7 +364,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                             @Override
                             public void onSuccess(@NonNull String path) {
 
-                                showSnackbar("PDF Created Successfully");
+                                showSnackbar("Image Saved Successfully");
                                 mSaveImageUri = Uri.fromFile(new File(path));
                                 mPhotoEditorView.getSource().setImageURI(mSaveImageUri);
                                 imagePath = path;

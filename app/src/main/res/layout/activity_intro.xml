@@ -11,6 +11,7 @@
 
     <include
         android:id="@+id/bannerLayout"
+        android:visibility="invisible"
         layout="@layout/banner_layout" />
 
     <include
@@ -18,6 +19,7 @@
         layout="@layout/banner_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
+        android:visibility="invisible"
         android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +43,6 @@
         android:layout_height="@dimen/_35sdp"
         android:background="@drawable/white_color_btn"
         android:elevation="@dimen/_5sdp"
-        android:enabled="false"
         android:text="Back"
         android:textColor="@color/colorGrayDark"
         app:layout_constraintBottom_toBottomOf="parent"

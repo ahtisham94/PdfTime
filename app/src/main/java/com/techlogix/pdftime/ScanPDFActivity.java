@@ -283,9 +283,10 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
                             startActivity(intent);
                         }
                     }).show();
+            finish();
         } else {
             StringUtils.getInstance().showSnackbar(ScanPDFActivity.this, getString(R.string.convert_error));
-
+            finish();
         }
 
     }

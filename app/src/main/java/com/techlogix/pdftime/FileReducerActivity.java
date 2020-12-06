@@ -36,6 +36,7 @@ import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileUtils;
 import com.techlogix.pdftime.utilis.GetFilesUtility;
+import com.techlogix.pdftime.utilis.NormalUtils;
 import com.techlogix.pdftime.utilis.PDFUtils;
 import com.techlogix.pdftime.utilis.RealPathUtil;
 import com.techlogix.pdftime.utilis.StringUtils;
@@ -315,6 +316,9 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
                 adapter.refrechList();
                 adapter.getFilesArrayList().clear();
                 fileCount = -1;
+
+
+                NormalUtils.getInstance().showSuccessDialog(FileReducerActivity.this,"Success");
             }
 
         } else {

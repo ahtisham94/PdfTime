@@ -160,6 +160,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
         inflater.inflate(R.menu.pdf_menu, menu);
         menu.findItem(R.id.premiumImg).setVisible(false);
         menu.findItem(R.id.giftImg).setVisible(false);
+        menu.findItem(R.id.moveToFolder).setVisible(false);
         return true;
     }
 

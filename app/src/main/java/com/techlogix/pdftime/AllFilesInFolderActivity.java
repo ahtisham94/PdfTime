@@ -73,6 +73,9 @@ public class AllFilesInFolderActivity extends BaseActivity implements View.OnCli
         allFilesRecycler.setLayoutManager(new LinearLayoutManager(AllFilesInFolderActivity.this));
         adapter = new AllFilesAdapter(AllFilesInFolderActivity.this, fileInfoModelArrayList);
         getFiles();
+
+        showButtonAnmination(importFilesBtn);
+
     }
 
     @Override

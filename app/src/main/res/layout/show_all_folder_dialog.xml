@@ -19,7 +19,7 @@
         android:layout_below="@+id/folderImage"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/_5sdp"
-        android:text="All Folders"
+        android:text="Move to folder"
         android:textColor="@color/colorBlack"
         android:textSize="18sp"
         android:textStyle="bold" />

@@ -59,6 +59,7 @@
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/_15sdp"
         android:padding="@dimen/_2sdp"
+        android:visibility="gone"
         android:src="@drawable/ic_video_gift_ic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/addFolderImg"

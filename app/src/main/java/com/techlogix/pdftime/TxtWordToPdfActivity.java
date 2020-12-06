@@ -39,6 +39,7 @@ import com.techlogix.pdftime.utilis.Constants;
 import com.techlogix.pdftime.utilis.DirectoryUtils;
 import com.techlogix.pdftime.utilis.FileUtils;
 import com.techlogix.pdftime.utilis.GetFilesUtility;
+import com.techlogix.pdftime.utilis.NormalUtils;
 import com.techlogix.pdftime.utilis.PageSizeUtils;
 import com.techlogix.pdftime.utilis.PermissionUtils;
 import com.techlogix.pdftime.utilis.StringUtils;
@@ -316,6 +317,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
                 showCreateFileNameDialog();
             } else {
                 adapter.refrechList();
+                NormalUtils.getInstance().showSuccessDialog(TxtWordToPdfActivity.this,"Success");
 
             }
         }

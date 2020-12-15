@@ -8,24 +8,32 @@
     android:padding="@dimen/_20sdp"
     tools:context=".IntroActivity">
 
-
-    <include
-        android:id="@+id/bannerLayout"
-        android:visibility="invisible"
-        layout="@layout/banner_layout" />
-
-    <include
-        android:id="@+id/bannerLayout1"
-        layout="@layout/banner_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/adlayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:visibility="invisible"
-        android:layout_marginTop="@dimen/_10sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bannerLayout" />
+        android:layout_height="@dimen/_150sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <com.facebook.ads.NativeAdLayout
+            android:id="@+id/native_ad_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            />
 
-    <com.techlogix.pdftime.customViews.viewpager.NonSwipeableViewPager
+        <FrameLayout
+            android:id="@+id/admobNativeView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <com.example.pdfreader.customViews.viewpager.NonSwipeableViewPager
         android:id="@+id/introViewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -34,7 +42,7 @@
         app:layout_constraintBottom_toTopOf="@+id/dotsTabsLL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bannerLayout1" />
+        app:layout_constraintTop_toBottomOf="@+id/adlayout" />
 
 
     <Button

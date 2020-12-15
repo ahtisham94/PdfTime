@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PdfTime</string>
+    <string name="app_name">PDF Reader 2021</string>
     <string name="loading">loading</string>
     <string name="pdf_reader">pdf <b>reader</b></string>
     <string name="home">Home</string>
@@ -101,7 +101,8 @@
     <string name="msg_save_image">Are you want to exit without saving image ?</string>
     <string name="app_intent_name">PhotoEditor</string>
     <string name="msg_save_image_to_share">Please save image to share</string>
-    <string name="msg_share_image">Share Image</string>>
+    <string name="msg_share_image">Share Image</string>
+    <string name="privact_text">This application utilizes External Storage Read and Write consent and camera to scan documents. We are not utilizing these consent to store information it\'s only for users to utilize application capacities</string>
 
 
 </resources>

@@ -8,7 +8,7 @@
     android:background="@color/colorWhite"
     tools:context=".fragments.dashboardFragments.SharedFragment">
 
-    <com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup
+    <com.example.pdfreader.customViews.toggleButton.SingleSelectToggleGroup
         android:id="@+id/singleSelectedToggleGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tbgChildSpacing="@dimen/_5sdp">
 
-        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+        <com.example.pdfreader.customViews.toggleButton.LabelToggle
             android:id="@+id/shareByme"
             android:layout_width="@dimen/_120sdp"
             android:layout_height="@dimen/_35sdp"
@@ -27,7 +27,7 @@
             android:text="@string/share_by_me"
             android:textSize="12sp" />
 
-        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+        <com.example.pdfreader.customViews.toggleButton.LabelToggle
             android:id="@+id/shareWithMe"
             android:layout_width="@dimen/_120sdp"
             android:layout_height="@dimen/_35sdp"
@@ -35,7 +35,7 @@
             android:text="@string/share_with_me"
             android:textSize="12sp" />
 
-    </com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup>
+    </com.example.pdfreader.customViews.toggleButton.SingleSelectToggleGroup>
 
 
     <TextView
@@ -81,7 +81,7 @@
         android:id="@+id/sharedFilesRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/adlayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTv" />
 
@@ -98,13 +98,26 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <include
-        android:id="@+id/bannderLayout"
-        layout="@layout/banner_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/adlayout"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/_80sdp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        >
+
+        <com.facebook.ads.NativeAdLayout
+            android:id="@+id/native_ad_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            />
+
+        <RelativeLayout
+            android:id="@+id/admobBanner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

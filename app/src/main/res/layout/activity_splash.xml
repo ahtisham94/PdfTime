@@ -7,11 +7,26 @@
     android:background="@color/colorWhite"
     tools:context=".SplashActivity">
 
-    <include
-        layout="@layout/banner_layout"
+
+    <com.facebook.ads.NativeAdLayout
+        android:id="@+id/native_ad_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/logoIv"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="@dimen/_16sdp"
+        />
+
+    <FrameLayout
+        android:id="@+id/admobNativeView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/logoIv"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="@dimen/_16sdp"
+        android:visibility="gone"
+        />
 
 
     <ImageView
@@ -19,6 +34,7 @@
         android:layout_width="@dimen/_90sdp"
         android:layout_height="@dimen/_90sdp"
         android:src="@drawable/ic_spalsh_logo"
+        app:layout_constraintVertical_bias="0.6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <TextView
+  <!--  <TextView
         android:id="@+id/loadingTitleTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,5 +81,46 @@
         app:tashieloader_dotsRadius="8dp"
         app:tashieloader_interpolator="@android:anim/accelerate_interpolator"
         app:tashieloader_noOfDots="10" />
+-->
+    <Button
+        android:id="@+id/continueBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_32sdp"
+        android:layout_marginRight="@dimen/_32sdp"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:background="@drawable/blue_color_btn"
+        android:enabled="false"
+        android:text="Continue"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        />
+
+
+    <CheckBox
+        android:id="@+id/checkboxnew"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:checked="false"
+        app:layout_constraintBottom_toTopOf="@id/continueBtn"
+        app:layout_constraintStart_toStartOf="@id/continueBtn"
+        app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+    <TextView
+        android:id="@+id/privacytext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_12sdp"
+        android:text="I Accept the Privacy Policy"
+        android:textColor="#676666"
+        android:textSize="@dimen/_16sdp"
+        app:layout_constraintBottom_toBottomOf="@id/checkboxnew"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/checkboxnew"
+        app:layout_constraintTop_toTopOf="@id/checkboxnew" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

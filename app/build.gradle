@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.0"
@@ -9,8 +12,8 @@ android {
         applicationId "com.pdfreader.pdfviewer.pdfeditor.pdfcreator.securepdf"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk{
@@ -23,11 +26,43 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            resValue "string", "billing_id", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApz781N9AuiZRNUfQ8bpOnf1LohDCqmzZiTNicLr3j8xZCtbOmYbxYcQAFJbp1ZbHFIRzmW2b2NBqc2OV485qm6KxRhuE5Dy2zAEJ91j5uNIBqBtgqvdzqkP6TA4OSgkc/BhbfGJc9YsKBGT+oSE3JOdvsO4SKedLz2FI8oQznud0lyWHz+m+hWvAu98zbM02da+cH0wn3kWSlWQ5d/gzdE3LZy57+7FNX/tijhYQQC/E7hH64SsXVK7JCTq3yYlboG0E1dXx/w6h5khRykriwNRxStAng7I9a+UA6ec10tdkHZaF6Z8YQ0ERGrGmWMO7G9LJFm86bCf6fOay12JyfQIDAQAB"
+            resValue "string", "product_key", "pdfapp"
+
+            resValue "string", "admob_app_id", "ca-app-pub-7461973117883281~2678602259"
+            resValue "string", "admob_banner", "ca-app-pub-7461973117883281/3416968857"
+            resValue "string", "admob_interstitial", "ca-app-pub-7461973117883281/5472286556"
+            resValue "string", "admob_native", "ca-app-pub-7461973117883281/7264730431"
+
+
+            resValue "string", "fb_banner", "218784773018614_218786526351772"
+            resValue "string", "fb_rectangle", "218784773018614_218787269685031"
+            resValue "string", "fb_interstitial", "218784773018614_218786776351747"
+            resValue "string", "fb_native", "218784773018614_218785539685204"
+            resValue "string", "fb_native_banner", "218784773018614_218787656351659"
+
         }
         debug {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            resValue "string", "billing_id", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApz781N9AuiZRNUfQ8bpOnf1LohDCqmzZiTNicLr3j8xZCtbOmYbxYcQAFJbp1ZbHFIRzmW2b2NBqc2OV485qm6KxRhuE5Dy2zAEJ91j5uNIBqBtgqvdzqkP6TA4OSgkc/BhbfGJc9YsKBGT+oSE3JOdvsO4SKedLz2FI8oQznud0lyWHz+m+hWvAu98zbM02da+cH0wn3kWSlWQ5d/gzdE3LZy57+7FNX/tijhYQQC/E7hH64SsXVK7JCTq3yYlboG0E1dXx/w6h5khRykriwNRxStAng7I9a+UA6ec10tdkHZaF6Z8YQ0ERGrGmWMO7G9LJFm86bCf6fOay12JyfQIDAQAB"
+            resValue "string", "product_key", "pdfapp"
+
+            resValue "string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713"
+            resValue "string", "admob_banner", "ca-app-pub-3940256099942544/6300978111"
+            resValue "string", "admob_interstitial", "ca-app-pub-3940256099942544/1033173712"
+            resValue "string", "admob_native", "ca-app-pub-3940256099942544/2247696110"
+
+            resValue "string", "fb_banner", "IMG_16_9_APP_INSTALL#218784773018614_218786526351772"
+            resValue "string", "fb_rectangle", "IMG_16_9_APP_INSTALL#218784773018614_218787269685031"
+            resValue "string", "fb_interstitial", "IMG_16_9_APP_INSTALL#218784773018614_218786776351747"
+            resValue "string", "fb_native", "IMG_16_9_APP_INSTALL#218784773018614_218785539685204"
+            resValue "string", "fb_native_banner", "IMG_16_9_APP_INSTALL#218784773018614_218787656351659"
+
+
         }
     }
 }
@@ -38,6 +73,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -73,5 +109,13 @@ dependencies {
     implementation 'com.daimajia.androidanimations:library:2.4@aar'
 
     implementation 'com.github.1singhmanmeet:CircularDialogs:v1.0.1'
+
+
+    implementation 'com.google.android.gms:play-services-ads:19.5.0'
+
+    implementation 'com.anjlab.android.iab.v3:library:1.1.0'
+
+    implementation 'com.facebook.android:audience-network-sdk:6.+'
+    implementation 'com.google.firebase:firebase-config:20.0.0'
 
 }

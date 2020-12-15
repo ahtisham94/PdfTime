@@ -8,7 +8,7 @@
     tools:context=".fragments.dashboardFragments.FileFragment">
 
 
-    <com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup
+    <com.example.pdfreader.customViews.toggleButton.SingleSelectToggleGroup
         android:id="@+id/singleSelectedToggleGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tbgChildSpacing="auto">
 
-        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+        <com.example.pdfreader.customViews.toggleButton.LabelToggle
             android:id="@+id/pdfLabel"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             android:text="PDF"
             android:textSize="12sp" />
 
-        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+        <com.example.pdfreader.customViews.toggleButton.LabelToggle
             android:id="@+id/wordLabel"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             android:text="Word"
             android:textSize="12sp" />
 
-        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+        <com.example.pdfreader.customViews.toggleButton.LabelToggle
             android:id="@+id/excelLabel"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:text="Excel"
             android:textSize="12sp" />
 
-        <com.techlogix.pdftime.customViews.toggleButton.LabelToggle
+        <com.example.pdfreader.customViews.toggleButton.LabelToggle
             android:id="@+id/textLabel"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             android:text="Text"
             android:textSize="12sp" />
 
-    </com.techlogix.pdftime.customViews.toggleButton.SingleSelectToggleGroup>
+    </com.example.pdfreader.customViews.toggleButton.SingleSelectToggleGroup>
 
 
     <TextView
@@ -97,7 +97,7 @@
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bannderLayout"
+        app:layout_constraintBottom_toTopOf="@+id/adlayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTv">
 
@@ -115,17 +115,30 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-
-
-    <include
-        android:id="@+id/bannderLayout"
-        layout="@layout/banner_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/adlayout"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/_80sdp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        >
+
+        <com.facebook.ads.NativeAdLayout
+            android:id="@+id/native_ad_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            />
+
+        <RelativeLayout
+            android:id="@+id/admobBanner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <include
         android:id="@+id/noFileLayout"

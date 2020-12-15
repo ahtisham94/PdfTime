@@ -15,6 +15,7 @@
         android:layout_alignParentEnd="true"
         android:gravity="center"
         android:maxLines="1"
+        android:maxLength="20"
         android:paddingStart="@dimen/_4sdp"
         android:paddingEnd="@dimen/_4sdp"
         android:ellipsize="end"

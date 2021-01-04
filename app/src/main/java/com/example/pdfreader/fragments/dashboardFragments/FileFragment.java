@@ -2,7 +2,9 @@ package com.example.pdfreader.fragments.dashboardFragments;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -29,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.pdfreader.BaseActivity;
+import com.example.pdfreader.PDFViewerAcitivity;
 import com.example.pdfreader.R;
 import com.example.pdfreader.SharePrefData;
 import com.example.pdfreader.adapters.AllFilesAdapter;
@@ -37,14 +40,21 @@ import com.example.pdfreader.dialogs.AlertDialogHelper;
 import com.example.pdfreader.dialogs.MoveFileDialog;
 import com.example.pdfreader.interfaces.CurrentFragment;
 import com.example.pdfreader.interfaces.GenericCallback;
+import com.example.pdfreader.interfaces.OnTextToPdfInterface;
 import com.example.pdfreader.interfaces.PermissionCallback;
 import com.example.pdfreader.models.FileInfoModel;
 import com.example.pdfreader.utilis.BannerAds;
 import com.example.pdfreader.utilis.Constants;
 import com.example.pdfreader.utilis.DirectoryUtils;
+import com.example.pdfreader.utilis.FileUtils;
 import com.example.pdfreader.utilis.GetFilesUtility;
+import com.example.pdfreader.utilis.PageSizeUtils;
 import com.example.pdfreader.utilis.PermissionUtils;
 import com.example.pdfreader.utilis.RecyclerItemClickListener;
+import com.example.pdfreader.utilis.StringUtils;
+import com.example.pdfreader.utilis.TextToPDFOptions;
+import com.example.pdfreader.utilis.TextToPDFUtils;
+import com.example.pdfreader.utilis.TextToPdfAsync;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AdOptionsView;
@@ -62,7 +72,7 @@ import java.util.Objects;
 public class FileFragment extends Fragment implements PermissionCallback, SingleSelectToggleGroup.OnCheckedChangeListener,
         CurrentFragment, View.OnClickListener, ActionMode.Callback,
         RecyclerItemClickListener.OnItemClickListener, GenericCallback,
-        SwipeRefreshLayout.OnRefreshListener, GetFilesUtility.getFilesCallback {
+        SwipeRefreshLayout.OnRefreshListener, GetFilesUtility.getFilesCallback, OnTextToPdfInterface {
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
@@ -79,6 +89,9 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     SwipeRefreshLayout swipRefreshLayout;
 
     NativeAdLayout nativeAdContainer;
+    String mPath;
+    private TextToPDFOptions.Builder mBuilder;
+    View adlayout2;
 
     public FileFragment() {
         // Required empty public constructor
@@ -99,6 +112,8 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
     }
 
     private void initViews(View view) {
+        adlayout2=view.findViewById(R.id.adlayout2);
+        mBuilder = new TextToPDFOptions.Builder(getContext());
         nativeAdContainer = view.findViewById(R.id.native_ad_container);
         baseActivity = (BaseActivity) requireActivity();
         fileInfoModelArrayList = new ArrayList<>();
@@ -113,12 +128,12 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         filterTv = view.findViewById(R.id.filterTv);
         filterTv.setOnClickListener(this);
         emptyView = view.findViewById(R.id.empty_view);
-        filesRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), filesAdapter, filesRecyclerView, this));
+//        filesRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), filesAdapter, filesRecyclerView, this));
         moveToFolderFAB = view.findViewById(R.id.moveToFolderFAB);
         moveToFolderFAB.setOnClickListener(this);
         dialog = new ProgressDialog(getContext());
         dialog.setTitle("Please wait");
-        dialog.setMessage("Moving files to folder");
+        dialog.setMessage("Opening file");
         swipRefreshLayout = view.findViewById(R.id.swipRefreshLayout);
         swipRefreshLayout.setOnRefreshListener(this);
         RelativeLayout admobbanner=  (RelativeLayout)view.findViewById(R.id.admobBanner);
@@ -126,12 +141,15 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         if(SharePrefData.getInstance().getIsAdmobFile().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
             admobbanner.setVisibility(View.VISIBLE);
             BannerAds.Companion.loadAdmob(getContext(),"large",admobbanner);
+            adlayout2.setVisibility(View.GONE);
+            adlayout.setBackground(null);
         }else if (SharePrefData.getInstance().getIsAdmobFile().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
             admobbanner.setVisibility(View.GONE);
             loadNativeAd();
         } else {
             nativeAdContainer.setVisibility(View.GONE);
             adlayout.setVisibility(View.GONE);
+            adlayout2.setVisibility(View.GONE);
         }
     }
 
@@ -172,7 +190,9 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
 
     @Override
     public void currentFrag() {
+        if(singleSelectToggleGroup!=null)
         singleSelectToggleGroup.check(R.id.pdfLabel);
+
     }
 
     @Override
@@ -337,27 +357,39 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
 
     @Override
     public void callback(Object o) {
-        if (o instanceof File) {
-            dialog.show();
-            for (FileInfoModel model : multiSelectArray) {
-                mDirectoryUtils.moveFile(model.getFile().getAbsolutePath(), model.getFile().getName(), ((File) o).getAbsolutePath() + "/");
-            }
-            if (singleSelectToggleGroup.getCheckedId() == R.id.pdfLabel)
-                new GetFilesUtility(baseActivity, this).execute(Constants.pdfExtension + "," + Constants.pdfExtension);
-//            new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
-            else if (singleSelectToggleGroup.getCheckedId() == R.id.wordLabel)
-                new GetFilesUtility(baseActivity, this).execute(Constants.docExtension + "," + Constants.docxExtension);
-//            new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
-            else if (singleSelectToggleGroup.getCheckedId() == R.id.excelLabel)
-                new GetFilesUtility(baseActivity, this).execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
-//            new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
-            else if (singleSelectToggleGroup.getCheckedId() == R.id.textLabel)
-                new GetFilesUtility(baseActivity, this).execute(Constants.textExtension + "," + Constants.textExtension);
-//            new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
+//        if (o instanceof File) {
+//            dialog.show();
+//            for (FileInfoModel model : multiSelectArray) {
+//                mDirectoryUtils.moveFile(model.getFile().getAbsolutePath(), model.getFile().getName(), ((File) o).getAbsolutePath() + "/");
+//            }
+//            if (singleSelectToggleGroup.getCheckedId() == R.id.pdfLabel)
+//                new GetFilesUtility(baseActivity, this).execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+////            new GetFiles().execute(Constants.pdfExtension + "," + Constants.pdfExtension);
+//            else if (singleSelectToggleGroup.getCheckedId() == R.id.wordLabel)
+//                new GetFilesUtility(baseActivity, this).execute(Constants.docExtension + "," + Constants.docxExtension);
+////            new GetFiles().execute(Constants.docExtension + "," + Constants.docxExtension);
+//            else if (singleSelectToggleGroup.getCheckedId() == R.id.excelLabel)
+//                new GetFilesUtility(baseActivity, this).execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+////            new GetFiles().execute(Constants.excelExtension + "," + Constants.excelWorkbookExtension);
+//            else if (singleSelectToggleGroup.getCheckedId() == R.id.textLabel)
+//                new GetFilesUtility(baseActivity, this).execute(Constants.textExtension + "," + Constants.textExtension);
+////            new GetFiles().execute(Constants.textExtension + "," + Constants.textExtension);
+//
+//            onDestroyActionMode(mActionMode);
+//            dialog.dismiss();
+//        }
 
-            onDestroyActionMode(mActionMode);
-            dialog.dismiss();
-        }
+        File file = (File) o;
+        String fileExt = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("."));
+        mPath = DirectoryUtils.getDownloadFolderPath();
+        mPath = mPath + "/" + FileUtils.getFileNameWithoutExtension(file.getAbsolutePath()) + Constants.pdfExtension;
+        TextToPDFOptions options = mBuilder.setFileName(FileUtils.getFileNameWithoutExtension(file.getAbsolutePath()))
+                .setPageSize(PageSizeUtils.mPageSize)
+                .setInFileUri(Uri.fromFile(file))
+                .build();
+        TextToPDFUtils fileUtil = new TextToPDFUtils(getActivity());
+        new TextToPdfAsync(fileUtil, options, fileExt,
+                this).execute();
     }
 
     @Override
@@ -371,7 +403,7 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         swipRefreshLayout.setRefreshing(false);
 
         Log.d("count", arrayList.size() + "");
-        if (arrayList.size() > 0) {
+        if (arrayList.size() > 0 && fileInfoModelArrayList!=null) {
             titleTv.setText(arrayList.size() + " Files");
             noFileLayout.setVisibility(View.GONE);
             fileInfoModelArrayList.clear();
@@ -387,10 +419,16 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
                 }
             }
             filesAdapter = new AllFilesAdapter(getContext(), fileInfoModelArrayList);
+            filesAdapter.setCallback(this);
             filesRecyclerView.setAdapter(filesAdapter);
         } else {
             noFileLayout.setVisibility(View.VISIBLE);
+            if(filesAdapter!=null)
             filesAdapter.setData(new ArrayList<FileInfoModel>());
+            else{
+                filesAdapter=new AllFilesAdapter(getContext(),new ArrayList<FileInfoModel>());
+                filesAdapter.setData(new ArrayList<FileInfoModel>());
+            }
         }
     }
 
@@ -433,6 +471,7 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
             @Override
             public void onError(Ad ad, AdError adError) {
 
+                adlayout2.setVisibility(View.GONE);
 //                binding.admobNativeView.setVisibility(View.VISIBLE);
                 nativeAdContainer.setVisibility(View.GONE);
 //                admobNativeView.setVisibility(View.GONE);
@@ -444,6 +483,8 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
                 if (fbNativead == null || fbNativead != ad) {
                     return;
                 }
+
+                adlayout2.setVisibility(View.GONE);
 
 //                admobNativeView.setVisibility(View.GONE);
                 nativeAdContainer.setVisibility(View.VISIBLE);
@@ -514,5 +555,32 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         );
 
 
+    }
+
+    @Override
+    public void onPDFCreationStarted() {
+        dialog.show();
+    }
+
+    @Override
+    public void onPDFCreated(boolean success) {
+        dialog.dismiss();
+        if (success) {
+//            filesAdapter.refreshArray(new File(mPath));
+//            filesRecyclerView.smoothScrollToPosition(fileInfoModelArrayList.size());
+//            StringUtils.getInstance().getSnackbarwithAction(getActivity(), R.string.file_created).setAction("View File", new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(getContext(), PDFViewerAcitivity.class);
+//                    intent.putExtra("path", mPath);
+//                    startActivity(intent);
+//                }
+//            });
+            Intent intent = new Intent(getActivity(), PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("path", mPath);
+            startActivity(intent);
+        } else {
+            StringUtils.getInstance().showSnackbar(getActivity(), "Failed to create pfd file");
+        }
     }
 }

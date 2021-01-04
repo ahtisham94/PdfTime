@@ -30,6 +30,7 @@ import com.example.pdfreader.utilis.BannerAds;
 import com.example.pdfreader.utilis.Constants;
 import com.example.pdfreader.utilis.DirectoryUtils;
 import com.example.pdfreader.utilis.GetFilesUtility;
+import com.example.pdfreader.utilis.InterstitalAdsInner;
 import com.example.pdfreader.utilis.MergePdf;
 import com.example.pdfreader.utilis.NormalUtils;
 import com.example.pdfreader.utilis.StringUtils;
@@ -60,6 +61,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
     AllFilesAdapter adapter;
     TextView filterTv, emptyView,titleTv;
     NativeAdLayout nativeAdContainer;
+    View adlayout2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         toolbar = findViewById(R.id.toolbar);
+        adlayout2=findViewById(R.id.adlayout2);
         nativeAdContainer = findViewById(R.id.native_ad_container);
         toolbar.setTitle("Merge PDF");
         setSupportActionBar(toolbar);
@@ -96,12 +99,15 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         if(SharePrefData.getInstance().getIsAdmobMerge().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
             admobbanner.setVisibility(View.VISIBLE);
             BannerAds.Companion.loadAdmob(this,"large",admobbanner);
+            adlayout2.setVisibility(View.GONE);
+            adlayout.setBackground(null);
         }else if (SharePrefData.getInstance().getIsAdmobMerge().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
             admobbanner.setVisibility(View.GONE);
             loadNativeAd();
         } else {
             nativeAdContainer.setVisibility(View.GONE);
             adlayout.setVisibility(View.GONE);
+            adlayout2.setVisibility(View.GONE);
         }
 
     }
@@ -243,7 +249,14 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            InterstitalAdsInner adsInner=new InterstitalAdsInner();
+            if(SharePrefData.getInstance().getIsAdmobMergeInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                adsInner.adMobShowCloseOnly(this);
+            }else if (SharePrefData.getInstance().getIsAdmobMergeInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+                adsInner.showFbClose(this);
+            }else{
+                finish();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -251,7 +264,14 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        InterstitalAdsInner adsInner=new InterstitalAdsInner();
+        if(SharePrefData.getInstance().getIsAdmobMergeInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+            adsInner.adMobShowCloseOnly(this);
+        }else if (SharePrefData.getInstance().getIsAdmobMergeInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+            adsInner.showFbClose(this);
+        }else{
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -302,7 +322,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
 
             @Override
             public void onError(Ad ad, AdError adError) {
-
+                adlayout2.setVisibility(View.GONE);
 //                binding.admobNativeView.setVisibility(View.VISIBLE);
                 nativeAdContainer.setVisibility(View.GONE);
 //                admobNativeView.setVisibility(View.GONE);
@@ -314,7 +334,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
                 if (fbNativead == null || fbNativead != ad) {
                     return;
                 }
-
+                adlayout2.setVisibility(View.GONE);
 //                admobNativeView.setVisibility(View.GONE);
                 nativeAdContainer.setVisibility(View.VISIBLE);
                 // Inflate Native Ad into Container

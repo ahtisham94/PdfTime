@@ -1,6 +1,7 @@
 package com.example.pdfreader;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ShareCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -12,6 +13,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pdfreader.dialogs.ExitDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.example.pdfreader.adapters.MainDrawerAdapter;
 import com.example.pdfreader.adapters.MainTabsAdapter;
@@ -179,14 +183,14 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             setToolboorImagesVisibility();
             setTitle("All Files");
             ((FileFragment) fragment).currentFrag();
-        } else if (fragment instanceof FolderFragment && folderCurrentFrag!=null) {
+        } else if (fragment instanceof FolderFragment && folderCurrentFrag != null) {
             setToolboorImagesVisibility();
             setTitle("Folders");
             folderCurrentFrag.currentFrag();
         } else if (fragment instanceof ToolsFragment) {
             setToolboorImagesVisibility();
             setTitle("Tools");
-        } else if (fragment instanceof SharedFragment && sharedFragmentCallback!=null) {
+        } else if (fragment instanceof SharedFragment && sharedFragmentCallback != null) {
             setToolboorImagesVisibility();
             setTitle("Shared");
             sharedFragmentCallback.currentFrag();
@@ -205,7 +209,13 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         }
         if (viewPager.getCurrentItem() == 0) {
             setToolboorImagesVisibility();
-            super.onBackPressed();
+            ExitDialog dialog = new ExitDialog(this);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+            Window window = dialog.getWindow();
+            window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+
         } else if (viewPager.getCurrentItem() == 1) {
             setToolboorImagesVisibility();
             setTitle("PDF Reader");
@@ -223,7 +233,14 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             setTitle("Tools");
             viewPager.setCurrentItem(3, true);
         } else {
-            super.onBackPressed();
+
+            ExitDialog dialog = new ExitDialog(this);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+            Window window = dialog.getWindow();
+            window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+
         }
     }
 
@@ -302,11 +319,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                 } else if (whereTo.equals(getResources().getString(R.string.word_pdf))) {
                     Intent intent = new Intent(MainActivity.this, TxtWordToPdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                }
-                else if (whereTo.equals(getResources().getString(R.string.remove_ads))) {
+                } else if (whereTo.equals(getResources().getString(R.string.remove_ads))) {
                     startActivity(new Intent(MainActivity.this, PremiumScreen.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                }
-                else if (whereTo.equals(getResources().getString(R.string.merge_pdf))) {
+                } else if (whereTo.equals(getResources().getString(R.string.merge_pdf))) {
                     Intent intent = new Intent(MainActivity.this, MergePdfFileActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 } else if (whereTo.equals(getResources().getString(R.string.file_reducer))) {
@@ -339,7 +354,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                     startActivity(new Intent(MainActivity.this, SecurePdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 } else if (whereTo.equals("premiumBtn")) {
                     startActivity(new Intent(MainActivity.this, PremiumScreen.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                }else if (whereTo.equals(getString(R.string.privacy))) {
+                } else if (whereTo.equals(getString(R.string.privacy))) {
                     startActivity(new Intent(MainActivity.this, PrivacyActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 }
             }
@@ -363,8 +378,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             premiumImg.setVisibility(View.VISIBLE);
 //            giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
-        }
-        else if (viewPager.getCurrentItem() == 3) {
+        } else if (viewPager.getCurrentItem() == 3) {
             serachImg.setVisibility(View.GONE);
             premiumImg.setVisibility(View.VISIBLE);
 //            giftImg.setVisibility(View.VISIBLE);

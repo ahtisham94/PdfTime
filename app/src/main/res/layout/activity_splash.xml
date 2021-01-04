@@ -12,21 +12,30 @@
         android:id="@+id/native_ad_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="@dimen/_16sdp"
+        android:background="@drawable/ad_bg"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/logoIv"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="@dimen/_16sdp"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/admobNativeView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/logoIv"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="@dimen/_16sdp"
+        android:background="@drawable/ad_bg"
         android:visibility="gone"
-        />
+        app:layout_constraintBottom_toTopOf="@id/logoIv"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/adlayout"
+        layout="@layout/ad_loading"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/_16sdp"
+        app:layout_constraintBottom_toTopOf="@id/logoIv"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageView
@@ -34,54 +43,54 @@
         android:layout_width="@dimen/_90sdp"
         android:layout_height="@dimen/_90sdp"
         android:src="@drawable/ic_spalsh_logo"
-        app:layout_constraintVertical_bias="0.6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6" />
 
     <TextView
         android:id="@+id/titleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
         android:text="@string/pdf_reader"
         android:textAllCaps="true"
-        app:layout_constraintTop_toBottomOf="@+id/logoIv"
-        app:layout_constraintStart_toStartOf="@+id/logoIv"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/logoIv"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:textSize="20sp"
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintStart_toStartOf="@+id/logoIv"
+        app:layout_constraintTop_toBottomOf="@+id/logoIv" />
 
-  <!--  <TextView
-        android:id="@+id/loadingTitleTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:text="@string/loading"
-        android:textAllCaps="true"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/loadingPro"
-        app:layout_constraintEnd_toEndOf="@+id/loadingPro"
-        app:layout_constraintStart_toStartOf="@+id/loadingPro" />
+    <!--  <TextView
+          android:id="@+id/loadingTitleTv"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/_10sdp"
+          android:text="@string/loading"
+          android:textAllCaps="true"
+          android:textSize="20sp"
+          android:textStyle="bold"
+          app:layout_constraintBottom_toTopOf="@+id/loadingPro"
+          app:layout_constraintEnd_toEndOf="@+id/loadingPro"
+          app:layout_constraintStart_toStartOf="@+id/loadingPro" />
 
-    <com.agrawalsuneet.dotsloader.loaders.TashieLoader
-        android:id="@+id/loadingPro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_20sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:tashieloader_animDelay="400"
-        app:tashieloader_animDur="500"
-        app:tashieloader_dotsColor="@color/colorBlue"
-        app:tashieloader_dotsDist="3dp"
-        app:tashieloader_dotsRadius="8dp"
-        app:tashieloader_interpolator="@android:anim/accelerate_interpolator"
-        app:tashieloader_noOfDots="10" />
--->
+      <com.agrawalsuneet.dotsloader.loaders.TashieLoader
+          android:id="@+id/loadingPro"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/_20sdp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:tashieloader_animDelay="400"
+          app:tashieloader_animDur="500"
+          app:tashieloader_dotsColor="@color/colorBlue"
+          app:tashieloader_dotsDist="3dp"
+          app:tashieloader_dotsRadius="8dp"
+          app:tashieloader_interpolator="@android:anim/accelerate_interpolator"
+          app:tashieloader_noOfDots="10" />
+  -->
     <Button
         android:id="@+id/continueBtn"
         android:layout_width="0dp"
@@ -90,13 +99,12 @@
         android:layout_marginRight="@dimen/_32sdp"
         android:layout_marginBottom="@dimen/_16sdp"
         android:background="@drawable/blue_color_btn"
-        android:enabled="false"
         android:text="Continue"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
+        android:visibility="gone"
         />
 
 
@@ -106,9 +114,9 @@
         android:layout_height="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_12sdp"
         android:checked="false"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/continueBtn"
-        app:layout_constraintStart_toStartOf="@id/continueBtn"
-        app:layout_constraintTop_toBottomOf="@id/guideline" />
+        app:layout_constraintStart_toStartOf="@id/continueBtn" />
 
     <TextView
         android:id="@+id/privacytext"
@@ -118,9 +126,31 @@
         android:text="I Accept the Privacy Policy"
         android:textColor="#676666"
         android:textSize="@dimen/_16sdp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/checkboxnew"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/checkboxnew"
         app:layout_constraintTop_toTopOf="@id/checkboxnew" />
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:spb_colors="@array/rainbow"
+        app:spb_mirror_mode="false"
+        app:spb_progressiveStart_activated="true"
+        app:spb_progressiveStart_speed="1.5"
+        app:spb_progressiveStop_speed="3.4"
+        app:spb_reversed="false"
+        app:spb_sections_count="4"
+        app:spb_speed="2.0"
+        app:spb_stroke_separator_length="4dp"
+        app:spb_stroke_width="4dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

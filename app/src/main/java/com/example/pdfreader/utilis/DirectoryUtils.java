@@ -21,7 +21,11 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -414,9 +418,10 @@ public class DirectoryUtils {
                 pdfFile.createNewFile();
             }
             FileInputStream stream = new FileInputStream(file);
-            POIFSFileSystem myFileSystem = new POIFSFileSystem(stream);
-            HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
-            HSSFSheet mySheet = myWorkBook.getSheetAt(0);
+//            POIFSFileSystem myFileSystem = new POIFSFileSystem(stream);
+//            HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
+            Workbook factory = WorkbookFactory.create(file);
+            Sheet mySheet =  factory.getSheetAt(0);
             Iterator<Row> rowIter = mySheet.rowIterator();
             OutputStream outputStream = new FileOutputStream(pdfFile);
             Document document = null;
@@ -435,13 +440,23 @@ public class DirectoryUtils {
             PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            for (int i = 0; i <= mySheet.getLastRowNum(); i++) {
-                HSSFRow row = mySheet.getRow(i);
-                for (int j = 0; j < row.getLastCellNum(); j++) {
-                    HSSFCell cell = row.getCell(j);
-                    PdfPCell pdfPCell = new PdfPCell(new Phrase(cell.toString(), font));
+            for (int i = 0; i < mySheet.getLastRowNum(); i++) {
+                if (mySheet.getRow(i) != null) {
 
-                    table.addCell(pdfPCell);
+                    Row row =  mySheet.getRow(i);
+                    for (int j = 0; j < row.getLastCellNum(); j++) {
+                        if (row.getCell(j) != null) {
+                            Cell cell = row.getCell(j);
+                            PdfPCell pdfPCell = new PdfPCell(new Phrase(cell.toString(), font));
+                            table.addCell(pdfPCell);
+                        } else {
+                            PdfPCell pdfPCell = new PdfPCell(new Phrase("-", font));
+                            table.addCell(pdfPCell);
+
+                        }
+
+
+                    }
                 }
 
             }

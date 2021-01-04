@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -154,6 +155,10 @@ public class AllFilesInFolderActivity extends BaseActivity implements View.OnCli
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == mFileSelectCode && data != null) {
             String filePath = RealPathUtil.getInstance().getRealPath(AllFilesInFolderActivity.this, data.getData());
+            if(filePath==null){
+                showToast("This file cannot be moved", this);
+                return;
+            }
             File moveFile = new File(filePath);
             boolean isMoved = mDirectoryUtils.moveFile(moveFile.getAbsolutePath(), moveFile.getName(), folderFile.getAbsolutePath() + "/");
             if (isMoved) {

@@ -34,6 +34,7 @@ import com.example.pdfreader.utilis.CreatePdfAsync;
 import com.example.pdfreader.utilis.DirectoryUtils;
 import com.example.pdfreader.utilis.ImageToPDFOptions;
 import com.example.pdfreader.utilis.ImageUtils;
+import com.example.pdfreader.utilis.InterstitalAdsInner;
 import com.example.pdfreader.utilis.PageSizeUtils;
 import com.example.pdfreader.utilis.PermissionUtils;
 import com.example.pdfreader.utilis.StringUtils;
@@ -274,10 +275,24 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
                             startActivity(intent);
                         }
                     }).show();
-            finish();
+            InterstitalAdsInner adsInner=new InterstitalAdsInner();
+            if(SharePrefData.getInstance().getIsAdmobScanpdfInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                adsInner.adMobShowCloseOnly(this);
+            }else if (SharePrefData.getInstance().getIsAdmobScanpdfInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+                adsInner.showFbClose(this);
+            }else{
+                finish();
+            }
         } else {
             StringUtils.getInstance().showSnackbar(ScanPDFActivity.this, getString(R.string.convert_error));
-            finish();
+            InterstitalAdsInner adsInner=new InterstitalAdsInner();
+            if(SharePrefData.getInstance().getIsAdmobScanpdfInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                adsInner.adMobShowCloseOnly(this);
+            }else if (SharePrefData.getInstance().getIsAdmobScanpdfInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+                adsInner.showFbClose(this);
+            }else{
+                finish();
+            }
         }
 
     }

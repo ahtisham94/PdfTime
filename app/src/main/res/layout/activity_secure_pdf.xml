@@ -106,6 +106,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_80sdp"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="@dimen/_8sdp"
+        android:background="@drawable/ad_bg"
         >
 
         <com.facebook.ads.NativeAdLayout
@@ -121,6 +123,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
+            />
+
+        <include
+            android:id="@+id/adlayout2"
+            layout="@layout/ad_loading2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,9 @@
 <defaultsMap>
     <entry>
 
+        <key>isadmobsplashinter</key>
+        <value>true</value>
+
         <key>isadmobsplash</key>
         <value>true</value>
 
@@ -33,6 +36,25 @@
 
         <key>isadmobreduce</key>
         <value>true</value>
+
+        <key>isadmobcreateinter</key>
+        <value>true</value>
+
+        <key>isadmobwordinter</key>
+        <value>true</value>
+
+        <key>isadmobimgpdfinter</key>
+        <value>true</value>
+
+        <key>isadmobmergeinter</key>
+        <value>true</value>
+
+        <key>isadmobscanpdfinter</key>
+        <value>true</value>
+
+        <key>isadmobpdfinter</key>
+        <value>true</value>
+
 
     </entry>
 

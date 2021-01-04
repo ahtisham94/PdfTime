@@ -35,4 +35,9 @@
     <color name="gray_div3">#F4F4F4</color>
     <color name="gray_div_4">#B4B4B4</color>
 
+    <array name="rainbow">
+        <item>@color/colorPrimary</item>
+        <item>@color/colorBlue</item>
+    </array>
+
 </resources>

@@ -38,6 +38,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.ChangeBounds;
 import androidx.transition.TransitionManager;
 
+import com.example.pdfreader.utilis.BannerAds;
+import com.example.pdfreader.utilis.InterstitalAdsInner;
 import com.example.pdfreader.utilis.NormalUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.example.pdfreader.adapters.EditingToolsAdapter;
@@ -111,9 +113,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     String imagePath = "";
     private ImageToPDFOptions mPdfOptions;
     ArrayList<String> imagesUri;
-    Button cameraBtn,galleryBtn;
+    Button cameraBtn, galleryBtn;
     final Calendar myCalendar = Calendar.getInstance();
 
+    ImageView backBtnn,shareImg;
+    Button saveBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +130,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mWonderFont = Typeface.createFromAsset(getAssets(), "beyond_wonderland.ttf");
 
         mPropertiesBSFragment = new PropertiesBSFragment();
-        mPropertiesOnlyBSFragment=new PropertiesOnlyBSFragment();
+        mPropertiesOnlyBSFragment = new PropertiesOnlyBSFragment();
         mEmojiBSFragment = new EmojiBSFragment();
         mStickerBSFragment = new StickerBSFragment();
         mStickerBSFragment.setStickerListener(this);
@@ -183,8 +187,14 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         ImageView imgClose;
         ImageView imgShare;
 
-        cameraBtn=findViewById(R.id.cameraBtn);
-        galleryBtn=findViewById(R.id.galleryBtn);
+        shareImg=findViewById(R.id.shareImg);
+        shareImg.setOnClickListener(this);
+        backBtnn=findViewById(R.id.backbtnn);
+        backBtnn.setOnClickListener(this);
+        saveBtn=findViewById(R.id.saveBtn);
+        saveBtn.setOnClickListener(this);
+        cameraBtn = findViewById(R.id.cameraBtn);
+        galleryBtn = findViewById(R.id.galleryBtn);
         cameraBtn.setOnClickListener(this);
         galleryBtn.setOnClickListener(this);
         mPhotoEditorView = findViewById(R.id.photoEditorView);
@@ -214,13 +224,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         imgShare = findViewById(R.id.imgShare);
         imgShare.setOnClickListener(this);
 
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("New PDF");
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+//        toolbar = findViewById(R.id.toolbar);
+//        toolbar.setTitle("New PDF");
+//        setSupportActionBar(toolbar);
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        }
 
     }
 
@@ -240,12 +250,12 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.edit_file_menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.edit_file_menu, menu);
+//        return true;
+//    }
 
     @Override
     public void onEditTextChangeListener(final View rootView, String text, int colorCode) {
@@ -319,24 +329,91 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST);
                 break;
+
+            case R.id.saveBtn:
+                saveImage();
+                break;
+
+            case R.id.backbtnn:
+                InterstitalAdsInner adsInner=new InterstitalAdsInner();
+                if(SharePrefData.getInstance().getIsAdmobCreateInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                    adsInner.adMobShowCloseOnly(this);
+                }else if (SharePrefData.getInstance().getIsAdmobCreateInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+                    adsInner.showFbClose(this);
+                }else{
+                    finish();
+                }
+
+//                onBackPressed();
+                break;
+
+            case R.id.shareImg:
+                shareImage();
+                break;
+
         }
     }
+
+
 
     private void openCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
 
+    @SuppressLint("MissingPermission")
     private void shareImage() {
         if (mSaveImageUri == null) {
-            StringUtils.getInstance().showSnackbar(EditImageActivity.this, getString(R.string.msg_save_image_to_share));
-            return;
-        }
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_STREAM, Constants.fileUri(this, new File(imagePath)));
-        startActivity(Intent.createChooser(intent, getString(R.string.msg_share_image)));
+            if (PermissionUtils.hasPermissionGranted(EditImageActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+
+                final File file = new File(Environment.getExternalStorageDirectory()
+                        + File.separator + ""
+                        + "newfile" + ".png");
+                try {
+                    file.createNewFile();
+
+                    SaveSettings saveSettings = new SaveSettings.Builder()
+                            .setClearViewsEnabled(true)
+                            .setTransparencyEnabled(true)
+                            .build();
+
+                    mPhotoEditor.saveAsFile(file.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
+                        @Override
+                        public void onSuccess(@NonNull String path) {
+
+                            showSnackbar("Image Saved Successfully");
+                            mSaveImageUri = Uri.fromFile(new File(path));
+                            mPhotoEditorView.getSource().setImageURI(mSaveImageUri);
+                            imagePath = path;
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("image/*");
+                            intent.putExtra(Intent.EXTRA_STREAM, Constants.fileUri(EditImageActivity.this, new File(imagePath)));
+                            startActivity(Intent.createChooser(intent, getString(R.string.msg_share_image)));
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            hideLoading();
+                            showSnackbar("Failed to save Image");
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    hideLoading();
+                    showSnackbar(e.getMessage());
+                }
+
+
+            }
+        } else {
+
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, Constants.fileUri(this, new File(imagePath)));
+            startActivity(Intent.createChooser(intent, getString(R.string.msg_share_image)));
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -523,7 +600,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
 
 //                mTxtCurrentTool.setText(R.string.label_filter);
-               // showFilter(true);
+                // showFilter(true);
                /* Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -588,7 +665,14 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         } else if (!mPhotoEditor.isCacheEmpty()) {
             showSaveDialog();
         } else {
-            super.onBackPressed();
+            InterstitalAdsInner adsInner=new InterstitalAdsInner();
+            if(SharePrefData.getInstance().getIsAdmobCreateInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                adsInner.adMobShowCloseOnly(this);
+            }else if (SharePrefData.getInstance().getIsAdmobCreateInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+                adsInner.showFbClose(this);
+            }else{
+                super.onBackPressed();
+            }
         }
     }
 
@@ -602,10 +686,18 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         hideLoading();
         if (success) {
 //            showSnackbar("Image Saved Successfully");
+            InterstitalAdsInner adsInner=new InterstitalAdsInner();
+            if(SharePrefData.getInstance().getIsAdmobCreateInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                adsInner.adMobShowCloseOnly(this);
+            }else if (SharePrefData.getInstance().getIsAdmobCreateInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+                adsInner.showFb(this);
+            }
+
+
 
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("result","success");
-            setResult(Activity.RESULT_OK,returnIntent);
+            returnIntent.putExtra("result", "success");
+            setResult(Activity.RESULT_OK, returnIntent);
             finish();
         }
     }
@@ -628,7 +720,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
-        styleBuilder.withTextColor(ContextCompat.getColor(this,R.color.colorBlack));
+        styleBuilder.withTextColor(ContextCompat.getColor(this, R.color.colorBlack));
 
         mPhotoEditor.addText(sdf.format(myCalendar.getTime()), styleBuilder);
     }

@@ -4,8 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +36,13 @@ import com.example.pdfreader.utilis.DirectoryUtils;
 import com.example.pdfreader.utilis.PDFUtils;
 import com.example.pdfreader.utilis.StringUtils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener, GenericCallback,
@@ -72,6 +85,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
                 toolbar.setTitle(file.getName().substring(0, file.getName().lastIndexOf(".")));
             } else {
                 uri = Uri.parse(getIntent().getStringExtra("uri"));
+                saveFile(this,"abc",uri, Environment.getExternalStorageDirectory().getAbsolutePath(),"asdsadas.pdf");
             }
             dialog.show();
             loadPDFFile(file == null ? uri : file, "");
@@ -120,8 +134,14 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
     @Override
     public boolean onOptionsItemSelected(@NonNull final MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            InterstitalAdsInner ads=new InterstitalAdsInner();
-            ads.ShowAdMob(this);
+            InterstitalAdsInner adsInner=new InterstitalAdsInner();
+            if(SharePrefData.getInstance().getIsAdmobPdfInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                adsInner.adMobShowCloseOnly(this);
+            }else if (SharePrefData.getInstance().getIsAdmobPdfInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+                adsInner.showFbClose(this);
+            }else{
+                finish();
+            }
             return true;
         } else if (item.getItemId() == R.id.share) {
             Constants.shareFile(PDFViewerAcitivity.this, file);
@@ -143,8 +163,14 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
 
     @Override
     public void onBackPressed() {
-        InterstitalAdsInner ads=new InterstitalAdsInner();
-        ads.ShowAdMob(this);
+        InterstitalAdsInner adsInner=new InterstitalAdsInner();
+        if(SharePrefData.getInstance().getIsAdmobPdfInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+            adsInner.adMobShowCloseOnly(this);
+        }else if (SharePrefData.getInstance().getIsAdmobPdfInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+            adsInner.showFbClose(this);
+        }else{
+            finish();
+        }
     }
 
     @Override
@@ -238,4 +264,120 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
             }
         }
     }
+
+
+    public boolean saveFile(Context context, String name, Uri sourceuri, String destinationDir, String destFileName) {
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        InputStream input = null;
+        boolean hasError = false;
+
+        try {
+            if (isVirtualFile(context, sourceuri)) {
+                input = getInputStreamForVirtualFile(context, sourceuri, getMimeType(name));
+            } else {
+                input = context.getContentResolver().openInputStream(sourceuri);
+            }
+
+            boolean directorySetupResult;
+            File destDir = new File(destinationDir);
+            if (!destDir.exists()) {
+                directorySetupResult = destDir.mkdirs();
+            } else if (!destDir.isDirectory()) {
+                directorySetupResult = replaceFileWithDir(destinationDir);
+            } else {
+                directorySetupResult = true;
+            }
+
+            if (!directorySetupResult) {
+                hasError = true;
+            } else {
+                String destination = destinationDir + File.separator + destFileName;
+                int originalsize = input.available();
+
+                bis = new BufferedInputStream(input);
+                bos = new BufferedOutputStream(new FileOutputStream(destination));
+                byte[] buf = new byte[originalsize];
+                bis.read(buf);
+                do {
+                    bos.write(buf);
+                } while (bis.read(buf) != -1);
+
+                file=destDir;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            hasError = true;
+        } finally {
+            try {
+                if (bos != null) {
+                    bos.flush();
+                    bos.close();
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        return !hasError;
+    }
+
+    private static boolean replaceFileWithDir(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            if (file.mkdirs()) {
+                return true;
+            }
+        } else if (file.delete()) {
+            File folder = new File(path);
+            if (folder.mkdirs()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isVirtualFile(Context context, Uri uri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (!DocumentsContract.isDocumentUri(context, uri)) {
+                return false;
+            }
+            Cursor cursor = context.getContentResolver().query(
+                    uri,
+                    new String[]{DocumentsContract.Document.COLUMN_FLAGS},
+                    null, null, null);
+            int flags = 0;
+            if (cursor.moveToFirst()) {
+                flags = cursor.getInt(0);
+            }
+            cursor.close();
+            return (flags & DocumentsContract.Document.FLAG_VIRTUAL_DOCUMENT) != 0;
+        } else {
+            return false;
+        }
+    }
+
+    private static InputStream getInputStreamForVirtualFile(Context context, Uri uri, String mimeTypeFilter)
+            throws IOException {
+
+        ContentResolver resolver = context.getContentResolver();
+        String[] openableMimeTypes = resolver.getStreamTypes(uri, mimeTypeFilter);
+        if (openableMimeTypes == null || openableMimeTypes.length < 1) {
+            throw new FileNotFoundException();
+        }
+        return resolver
+                .openTypedAssetFileDescriptor(uri, openableMimeTypes[0], null)
+                .createInputStream();
+    }
+
+    private static String getMimeType(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
+
 }

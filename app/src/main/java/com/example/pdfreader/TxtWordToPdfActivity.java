@@ -39,6 +39,7 @@ import com.example.pdfreader.utilis.Constants;
 import com.example.pdfreader.utilis.DirectoryUtils;
 import com.example.pdfreader.utilis.FileUtils;
 import com.example.pdfreader.utilis.GetFilesUtility;
+import com.example.pdfreader.utilis.InterstitalAdsInner;
 import com.example.pdfreader.utilis.NormalUtils;
 import com.example.pdfreader.utilis.PageSizeUtils;
 import com.example.pdfreader.utilis.StringUtils;
@@ -77,6 +78,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     int filesCount = -1;
     EditText searchEt;
     NativeAdLayout nativeAdContainer;
+    View adlayout2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         toolbar = findViewById(R.id.toolbar);
         searchEt = findViewById(R.id.searchEd);
+        adlayout2=findViewById(R.id.adlayout2);
         nativeAdContainer = findViewById(R.id.native_ad_container);
         titleTv=findViewById(R.id.titleTv);
         searchEt.addTextChangedListener(this);
@@ -117,12 +120,15 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         if(SharePrefData.getInstance().getIsAdmobWord().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
             admobbanner.setVisibility(View.VISIBLE);
             BannerAds.Companion.loadAdmob(this,"large",admobbanner);
+            adlayout2.setVisibility(View.GONE);
+            adlayout.setBackground(null);
         }else if (SharePrefData.getInstance().getIsAdmobWord().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
             admobbanner.setVisibility(View.GONE);
             loadNativeAd();
         } else {
             nativeAdContainer.setVisibility(View.GONE);
             adlayout.setVisibility(View.GONE);
+            adlayout2.setVisibility(View.GONE);
         }
 
     }
@@ -160,7 +166,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.convertPdf) {
-            if (adapter.getFilesArrayList().size() > 0) {
+            if (adapter!=null && adapter.getFilesArrayList().size() > 0) {
                 showCreateFileNameDialog();
             } else {
                 StringUtils.getInstance().showSnackbar(TxtWordToPdfActivity.this, "Please select at least one file");
@@ -298,7 +304,16 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+
+            InterstitalAdsInner adsInner=new InterstitalAdsInner();
+            if(SharePrefData.getInstance().getIsAdmobWordInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                adsInner.adMobShowCloseOnly(this);
+            }else if (SharePrefData.getInstance().getIsAdmobWordInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+                adsInner.showFbClose(this);
+            }else{
+                finish();
+            }
+
             return true;
         } else if (item.getItemId() == R.id.searchFile) {
             searchEt.setVisibility(View.VISIBLE);
@@ -316,7 +331,14 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        InterstitalAdsInner adsInner=new InterstitalAdsInner();
+        if(SharePrefData.getInstance().getIsAdmobWordInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+            adsInner.adMobShowCloseOnly(this);
+        }else if (SharePrefData.getInstance().getIsAdmobWordInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+            adsInner.showFbClose(this);
+        }else{
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -417,7 +439,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
 
             @Override
             public void onError(Ad ad, AdError adError) {
-
+                adlayout2.setVisibility(View.GONE);
 //                binding.admobNativeView.setVisibility(View.VISIBLE);
                 nativeAdContainer.setVisibility(View.GONE);
 //                admobNativeView.setVisibility(View.GONE);
@@ -429,7 +451,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
                 if (fbNativead == null || fbNativead != ad) {
                     return;
                 }
-
+                adlayout2.setVisibility(View.GONE);
 //                admobNativeView.setVisibility(View.GONE);
                 nativeAdContainer.setVisibility(View.VISIBLE);
                 // Inflate Native Ad into Container

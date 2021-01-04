@@ -30,6 +30,7 @@ import com.example.pdfreader.utilis.CreatePdfAsync;
 import com.example.pdfreader.utilis.GifSizeFilter;
 import com.example.pdfreader.utilis.ImageToPDFOptions;
 import com.example.pdfreader.utilis.ImageUtils;
+import com.example.pdfreader.utilis.InterstitalAdsInner;
 import com.example.pdfreader.utilis.PageSizeUtils;
 import com.example.pdfreader.utilis.PermissionUtils;
 import com.example.pdfreader.utilis.StringUtils;
@@ -112,7 +113,7 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
 
 
                     }
-                }, "Image To PDF").show();
+                }, "Image To PDF","Save PDF").show();
             } else {
                 StringUtils.getInstance().showSnackbar(ImageToPdfActivity.this, "Please select file");
             }
@@ -201,7 +202,14 @@ public class ImageToPdfActivity extends BaseActivity implements View.OnClickList
                         imgesPathArray.clear();
                         getImagesFromGalary();
                     } else {
-                        finish();
+                        InterstitalAdsInner adsInner=new InterstitalAdsInner();
+                        if(SharePrefData.getInstance().getIsAdmobImgpdfInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                            adsInner.adMobShowCloseOnly(ImageToPdfActivity.this);
+                        }else if (SharePrefData.getInstance().getIsAdmobImgpdfInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+                            adsInner.showFbClose(ImageToPdfActivity.this);
+                        }else{
+                            finish();
+                        }
                     }
                 }
             }, "Image to pdf", "Do you want to create more pdf files?");

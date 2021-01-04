@@ -49,6 +49,36 @@ public class InputFeildDialog extends Dialog {
         });
     }
 
+    public InputFeildDialog(@NonNull Context context, GenericCallback callbac, String title, String btnText) {
+        super(context);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setCancelable(true);
+        setContentView(R.layout.input_dialog);
+        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        this.callback = callbac;
+        titleTv = findViewById(R.id.titleTv);
+
+        if (!title.isEmpty())
+            titleTv.setText(title);
+        saveBtn = findViewById(R.id.saveBtn);
+        saveBtn.setText(btnText);
+        enterFileNameEd = findViewById(R.id.enterFileNameEd);
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (enterFileNameEd.getText().toString().isEmpty()) {
+                    enterFileNameEd.setError("Please enter valid entry");
+                    enterFileNameEd.requestFocus();
+                } else {
+                    callback.callback(enterFileNameEd.getText().toString());
+                    dismiss();
+                }
+            }
+        });
+    }
+
     public void forpasswordSettings(String enterFileTv) {
         saveBtn.setText("Done");
         enterFileNameEd.setHint("Please enter password");

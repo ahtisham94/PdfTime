@@ -30,8 +30,10 @@ import com.facebook.ads.AdOptionsView;
 import com.facebook.ads.NativeAd;
 import com.facebook.ads.NativeAdLayout;
 import com.facebook.ads.NativeAdListener;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
@@ -43,6 +45,8 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+
 public class SplashActivity extends BaseActivity {
 
     Button continueBtn;
@@ -52,6 +56,9 @@ public class SplashActivity extends BaseActivity {
 
     FrameLayout admobNativeView;
     NativeAdLayout nativeAdContainer;
+    View adlayout;
+
+    SmoothProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +70,9 @@ public class SplashActivity extends BaseActivity {
 
         admobNativeView = findViewById(R.id.admobNativeView);
         nativeAdContainer = findViewById(R.id.native_ad_container);
+        adlayout = findViewById(R.id.adlayout);
+        progressBar=findViewById(R.id.progressBar);
+
 
         setUpRemoteConfig();
 
@@ -91,47 +101,46 @@ public class SplashActivity extends BaseActivity {
 
         if (SharePrefData.getInstance().getIntroScreenVisibility()) {
             checkBox.setChecked(true);
-            continueBtn.setEnabled(true);
+//            continueBtn.setEnabled(true);
         } else {
             checkBox.setChecked(false);
-            continueBtn.setEnabled(false);
+//            continueBtn.setEnabled(false);
         }
 
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (checkBox.isChecked()) {
-                    InterstitalAdsInner ads=new InterstitalAdsInner();
+                    InterstitalAdsInner ads = new InterstitalAdsInner();
                     if (!SharePrefData.getInstance().getIntroScreenVisibility()) {
-//                        startActivity(IntroActivity.class, null);
-                        ads.adMobShoeClose(SplashActivity.this, new Intent(SplashActivity.this, IntroActivity.class));
-                    }else {
+                        if (SharePrefData.getInstance().getIsAdmobSplashInter().equals("true")) {
+                            ads.adMobShoeClose(SplashActivity.this, new Intent(SplashActivity.this, IntroActivity.class));
+                        } else {
+                            startActivity(IntroActivity.class, null);
+
+                        }
+                    } else {
 
                         Intent intent = new Intent(SplashActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                    /* if (getIntent().getData() != null) {
                         intent.setData(getIntent().getData());
                     }*/
-//                        startActivity(intent);
-                        ads.adMobShoeClose(SplashActivity.this, intent);
 
+
+                        if (SharePrefData.getInstance().getIsAdmobSplashInter().equals("true")) {
+                            ads.adMobShoeClose(SplashActivity.this, intent);
+                        } else {
+                            startActivity(intent);
+
+                        }
                     }
                     finish();
-                }else{
-                    showToast("Please check our Privacy Policy in order to continue",SplashActivity.this);
+                } else {
+                    showToast("Please check our Privacy Policy in order to continue", SplashActivity.this);
                 }
             }
         });
 
-      /*  checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    continueBtn.setEnabled(true);
-                }else{
-                    continueBtn.setEnabled(false);
-                }
-            }
-        });*/
 
         privacyText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,8 +166,6 @@ public class SplashActivity extends BaseActivity {
         }
 
 
-
-
     }
 
 
@@ -178,12 +185,13 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onComplete(@NonNull Task<Boolean> task) {
 
-                if (task.isSuccessful()&& !BuildConfig.DEBUG) {
+                if (task.isSuccessful() && !BuildConfig.DEBUG) {
 
                     remoteConfig.activate();
                     FirebaseRemoteConfig.getInstance().activate();
                     remoteConfig.activate();
 
+                    SharePrefData.getInstance().setIsAdmobSplashInter(remoteConfig.getString("isadmobsplashinter"));
                     SharePrefData.getInstance().setIsAdmobSplash(remoteConfig.getString("isadmobsplash"));
                     SharePrefData.getInstance().setIsAdmobHome(remoteConfig.getString("isadmobhome"));
                     SharePrefData.getInstance().setIsAdmobFile(remoteConfig.getString("isadmobfile"));
@@ -194,11 +202,18 @@ public class SplashActivity extends BaseActivity {
                     SharePrefData.getInstance().setIsAdmobMerge(remoteConfig.getString("isadmobmerge"));
                     SharePrefData.getInstance().setIsAdmobWord(remoteConfig.getString("isadmobword"));
                     SharePrefData.getInstance().setIsAdmobReduce(remoteConfig.getString("isadmobreduce"));
+                    SharePrefData.getInstance().setIsAdmobCreateInter(remoteConfig.getString("isadmobcreateinter"));
+                    SharePrefData.getInstance().setIsAdmobWordInter(remoteConfig.getString("isadmobwordinter"));
+                    SharePrefData.getInstance().setIsAdmobImgpdfInter(remoteConfig.getString("isadmobimgpdfinter"));
+                    SharePrefData.getInstance().setIsAdmobMergeInter(remoteConfig.getString("isadmobmergeinter"));
+                    SharePrefData.getInstance().setIsAdmobScanpdfInter(remoteConfig.getString("isadmobscanpdfinter"));
+                    SharePrefData.getInstance().setIsAdmobPdfInter(remoteConfig.getString("isadmobpdfinter"));
 
 
                 } else {
 
-                    SharePrefData.getInstance().setIsAdmobSplash("false");
+                    SharePrefData.getInstance().setIsAdmobSplashInter("true");
+                    SharePrefData.getInstance().setIsAdmobSplash("true");
                     SharePrefData.getInstance().setIsAdmobHome("true");
                     SharePrefData.getInstance().setIsAdmobFile("true");
                     SharePrefData.getInstance().setIsAdmobFolder("true");
@@ -208,18 +223,30 @@ public class SplashActivity extends BaseActivity {
                     SharePrefData.getInstance().setIsAdmobMerge("true");
                     SharePrefData.getInstance().setIsAdmobWord("true");
                     SharePrefData.getInstance().setIsAdmobReduce("true");
+                    SharePrefData.getInstance().setIsAdmobCreateInter("true");
+                    SharePrefData.getInstance().setIsAdmobWordInter("true");
+                    SharePrefData.getInstance().setIsAdmobImgpdfInter("true");
+                    SharePrefData.getInstance().setIsAdmobMergeInter("true");
+                    SharePrefData.getInstance().setIsAdmobScanpdfInter("true");
+                    SharePrefData.getInstance().setIsAdmobPdfInter("true");
+
 
                 }
 
                 InterstitalAdsInner.Companion.loadInterstitialAd(SplashActivity.this);
 
-                if(SharePrefData.getInstance().getIsAdmobSplash().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+                if (SharePrefData.getInstance().getIsAdmobSplash().equals("true") && !SharePrefData.getInstance().getADS_PREFS()) {
                     loadAdmobNativeAd();
-                }else if(SharePrefData.getInstance().getIsAdmobSplash().equals("false") && !SharePrefData.getInstance().getADS_PREFS()){
+                } else if (SharePrefData.getInstance().getIsAdmobSplash().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
                     loadNativeAd();
-                }else{
+                } else {
                     admobNativeView.setVisibility(View.GONE);
                     nativeAdContainer.setVisibility(View.GONE);
+                    adlayout.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                    checkBox.setVisibility(View.VISIBLE);
+                    privacyText.setVisibility(View.VISIBLE);
+                    continueBtn.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -245,6 +272,14 @@ public class SplashActivity extends BaseActivity {
 //                binding.admobNativeView.setVisibility(View.VISIBLE);
                 nativeAdContainer.setVisibility(View.GONE);
                 admobNativeView.setVisibility(View.GONE);
+                adlayout.setVisibility(View.GONE);
+
+
+                progressBar.setVisibility(View.GONE);
+                checkBox.setVisibility(View.VISIBLE);
+                privacyText.setVisibility(View.VISIBLE);
+                continueBtn.setVisibility(View.VISIBLE);
+
 //                loadAdmobNativeAd();
             }
 
@@ -253,11 +288,17 @@ public class SplashActivity extends BaseActivity {
                 if (fbNativead == null || fbNativead != ad) {
                     return;
                 }
-
+                adlayout.setVisibility(View.GONE);
                 admobNativeView.setVisibility(View.GONE);
                 nativeAdContainer.setVisibility(View.VISIBLE);
                 // Inflate Native Ad into Container
                 inflateAd(fbNativead);
+
+
+                progressBar.setVisibility(View.GONE);
+                checkBox.setVisibility(View.VISIBLE);
+                privacyText.setVisibility(View.VISIBLE);
+                continueBtn.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -271,8 +312,8 @@ public class SplashActivity extends BaseActivity {
 
         fbNativead.loadAd(
                 fbNativead.buildLoadAdConfig()
-                .withAdListener(nativeAdListener)
-                .build());
+                        .withAdListener(nativeAdListener)
+                        .build());
     }
 
 
@@ -342,7 +383,7 @@ public class SplashActivity extends BaseActivity {
                     nativeAd.destroy();
                 }
 
-
+                adlayout.setVisibility(View.GONE);
                 admobNativeView.setVisibility(View.VISIBLE);
                 nativeAdContainer.setVisibility(View.GONE);
                 nativeAd = unifiedNativeAd;
@@ -351,9 +392,26 @@ public class SplashActivity extends BaseActivity {
                 admobNativeView.removeAllViews();
                 admobNativeView.addView(adView);
 
+
+                progressBar.setVisibility(View.GONE);
+                checkBox.setVisibility(View.VISIBLE);
+                privacyText.setVisibility(View.VISIBLE);
+                continueBtn.setVisibility(View.VISIBLE);
+
             }
 
 
+        });
+
+        builder.withAdListener(new AdListener(){
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                progressBar.setVisibility(View.GONE);
+                checkBox.setVisibility(View.VISIBLE);
+                privacyText.setVisibility(View.VISIBLE);
+                continueBtn.setVisibility(View.VISIBLE);
+            }
         });
 
 
@@ -406,7 +464,6 @@ public class SplashActivity extends BaseActivity {
         adView.setNativeAd(nativeAd);
 
     }
-
 
 
 }

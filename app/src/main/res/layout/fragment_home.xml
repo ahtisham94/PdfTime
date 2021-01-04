@@ -18,6 +18,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/close"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:src="@drawable/ic_close_24"
+            android:scaleType="centerInside"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            />
+
+        <ImageView
             android:id="@+id/settingImg"
             android:layout_width="@dimen/_70sdp"
             android:layout_height="wrap_content"
@@ -125,7 +135,7 @@
         android:id="@+id/filesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/adlayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toggleLayout" />
@@ -141,28 +151,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/filesRecyclerView"
         app:layout_constraintTop_toTopOf="@+id/filesRecyclerView"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/adlayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
-        <com.facebook.ads.NativeAdLayout
-            android:id="@+id/native_ad_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"
-            />
 
-        <FrameLayout
-            android:id="@+id/admobNativeView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"
-            />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

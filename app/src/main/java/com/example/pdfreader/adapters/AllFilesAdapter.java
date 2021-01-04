@@ -76,9 +76,11 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
     }
 
     public void setData(ArrayList<FileInfoModel> filesArrayList) {
-        this.filesArrayList = new ArrayList<>();
-        this.filesArrayList = filesArrayList;
-        notifyDataSetChanged();
+        if(filesArrayList!=null) {
+            this.filesArrayList = new ArrayList<>();
+            this.filesArrayList = filesArrayList;
+            notifyDataSetChanged();
+        }
     }
 
     public void setShowCheckbox(boolean showMoreBtn) {
@@ -176,12 +178,14 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
                     try {
 
                         if (holder.fileTypeTv.getText().toString().equals("E")) {
-                            Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+//                            Constants.excelIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                            convertFile(filesArrayList.get(holder.getAdapterPosition()).getFile());
                         } else if (holder.fileTypeTv.getText().toString().equals("T")) {
-                            Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+//                            Constants.textFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                            convertFile(filesArrayList.get(holder.getAdapterPosition()).getFile());
                         } else if (holder.fileTypeTv.getText().toString().equals("W")) {
-
-                            Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
+                            convertFile(filesArrayList.get(holder.getAdapterPosition()).getFile());
+//                            Constants.doxFileIntent(context, filesArrayList.get(holder.getAdapterPosition()).getFile());
                         } else if (holder.fileTypeTv.getText().toString().equals("P")) {
                             Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.putExtra("path", filesArrayList.get(holder.getAdapterPosition()).getFile().getAbsolutePath());
@@ -226,12 +230,16 @@ public class AllFilesAdapter extends RecyclerView.Adapter<AllFilesAdapter.MyFile
         if (ext.contains(Constants.excelExtension) || ext.contains(Constants.excelWorkbookExtension)) {
             File pdfFile = mDirectory.createExcelToPdf(file);
             if (pdfFile != null) {
-                refreshArray(pdfFile);
+//                refreshArray(pdfFile);
+                Intent intent = new Intent(context, PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("path", pdfFile.getAbsolutePath());
+                context.startActivity(intent);
             }
         } else if (ext.contains(Constants.docExtension) || ext.contains(Constants.docxExtension)
                 || ext.contains(Constants.textExtension)) {
             if (callback != null) {
                 callback.callback(file);
+
             }
         }
 

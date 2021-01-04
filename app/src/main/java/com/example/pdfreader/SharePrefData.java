@@ -17,10 +17,13 @@ public class SharePrefData {
     private static final String RET_ACCOUNT_TITLE = "ret_account_title";
     private static final String ADS_PREFS = "adprefs", ADMOB_BANNER="admobbanner", ADMOB_NATIVE="admobnative"
             , ADMOB_INTER="admobinter", FB_BANNER="fbbanner", FB_RECTANGLE="fbrectangle", FB_NATIVE="fbnative"
-            , FB_INTER="fbinter", FB_NATIVE_BANNER="fbnativebanner", IS_ADMOB_SPLASH="splash"
+            , FB_INTER="fbinter", FB_NATIVE_BANNER="fbnativebanner", IS_ADMOB_SPLASH="splash", IS_ADMOB_SPLASH_INTER="splashinter"
             , IS_ADMOB_HOME="home", IS_ADMOB_FILE="file", IS_ADMOB_FOLDER="folder", IS_ADMOB_TOOLS="tools"
             , IS_ADMOB_SHARE="share", IS_ADMOB_SECURE="secure", IS_ADMOB_MERGE="merge"
-            , IS_ADMOB_WORD="word", IS_ADMOB_REDUCE="reduce";
+            , IS_ADMOB_WORD="word", IS_ADMOB_REDUCE="reduce"
+            , IS_ADMOB_CREATE_INTER="createinter", IS_ADMOB_WORD_INTER="wordinter"
+            , IS_ADMOB_IMGPDF_INTER="imgpdfinter", IS_ADMOB_MERGE_INTER="mergeinter"
+            , IS_ADMOB_SCANPDF_INTER="scanpdfinter", IS_ADMOB_PDF_INTER="pdfinter";
     private SharedPreferences sp;
     private SharedPreferences.Editor spEditor;
 
@@ -76,7 +79,16 @@ public class SharePrefData {
         this.spEditor.apply();
         return true;
     }
+    public void setIsAdmobPdfInter(String isadmob) {
+        spEditor = sp.edit();
+        spEditor.putString(IS_ADMOB_PDF_INTER, isadmob);
+        spEditor.apply();
+        spEditor.commit();
+    }
 
+    public String getIsAdmobPdfInter() {
+        return sp.getString(IS_ADMOB_PDF_INTER, "true");
+    }
 
 
     public void setIsAdmobHome(String isadmob) {
@@ -88,6 +100,16 @@ public class SharePrefData {
 
     public String getIsAdmobHome() {
         return sp.getString(IS_ADMOB_HOME, "true");
+    }
+
+    public void setIsAdmobSplashInter(String isadmob) {
+        spEditor = sp.edit();
+        spEditor.putString(IS_ADMOB_SPLASH_INTER, isadmob);
+        spEditor.apply();
+        spEditor.commit();
+    }
+    public String getIsAdmobSplashInter() {
+        return sp.getString(IS_ADMOB_SPLASH_INTER, "true");
     }
 
     public void setIsAdmobSplash(String isadmob) {
@@ -184,6 +206,61 @@ public class SharePrefData {
     public void setIsAdmobReduce(String isadmob) {
         spEditor = sp.edit();
         spEditor.putString(IS_ADMOB_REDUCE, isadmob);
+        spEditor.apply();
+        spEditor.commit();
+    }
+
+    public String getIsAdmobCreateInter() {
+        return sp.getString(IS_ADMOB_CREATE_INTER, "true");
+    }
+
+    public void setIsAdmobCreateInter(String isadmob) {
+        spEditor = sp.edit();
+        spEditor.putString(IS_ADMOB_CREATE_INTER, isadmob);
+        spEditor.apply();
+        spEditor.commit();
+    }
+
+    public String getIsAdmobWordInter() {
+        return sp.getString(IS_ADMOB_WORD_INTER, "true");
+    }
+
+    public void setIsAdmobWordInter(String isadmob) {
+        spEditor = sp.edit();
+        spEditor.putString(IS_ADMOB_WORD_INTER, isadmob);
+        spEditor.apply();
+        spEditor.commit();
+    }
+
+    public String getIsAdmobImgpdfInter() {
+        return sp.getString(IS_ADMOB_IMGPDF_INTER, "true");
+    }
+
+    public void setIsAdmobImgpdfInter(String isadmob) {
+        spEditor = sp.edit();
+        spEditor.putString(IS_ADMOB_IMGPDF_INTER, isadmob);
+        spEditor.apply();
+        spEditor.commit();
+    }
+
+    public String getIsAdmobMergeInter() {
+        return sp.getString(IS_ADMOB_MERGE_INTER, "true");
+    }
+
+    public void setIsAdmobMergeInter(String isadmob) {
+        spEditor = sp.edit();
+        spEditor.putString(IS_ADMOB_MERGE_INTER, isadmob);
+        spEditor.apply();
+        spEditor.commit();
+    }
+
+    public String getIsAdmobScanpdfInter() {
+        return sp.getString(IS_ADMOB_SCANPDF_INTER, "true");
+    }
+
+    public void setIsAdmobScanpdfInter(String isadmob) {
+        spEditor = sp.edit();
+        spEditor.putString(IS_ADMOB_SCANPDF_INTER, isadmob);
         spEditor.apply();
         spEditor.commit();
     }

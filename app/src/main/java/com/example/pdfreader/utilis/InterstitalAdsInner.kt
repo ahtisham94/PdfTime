@@ -9,7 +9,10 @@ import androidx.core.content.ContextCompat
 import com.example.pdfreader.AppContro
 import com.example.pdfreader.R
 import com.example.pdfreader.SharePrefData
+import com.facebook.ads.Ad
+import com.facebook.ads.AdError
 import com.facebook.ads.AdSettings
+import com.facebook.ads.InterstitialAdListener
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -350,109 +353,7 @@ public class InterstitalAdsInner {
         }
     }
 
-    fun startActivityMadiationClose(context: Activity, newIntent: Intent) {
-        if (!SharePrefData.getInstance().adS_PREFS && interstitialAd_fb != null && interstitialAd_fb!!.isAdLoaded && !interstitialAd_fb!!.isAdInvalidated) {
-            interstitialAd_fb!!.show()
 
-            var interstitialAdListener: InterstitialAdListener = object : InterstitialAdListener {
-                override fun onInterstitialDisplayed(ad: Ad) {
-                    // Interstitial ad displayed callback
-                    Log.e("FacebookAdsLog1", "Interstitial ad displayed.")
-                }
-
-                override fun onInterstitialDismissed(ad: Ad) {
-
-//                if (pref.getBoolean("ads", true)) {
-//                    interstitialAd_fb!!.loadAd()
-
-//                interstitialAd_fb = null
-//                }
-                    if (!SharePrefData.getInstance().adS_PREFS) {
-                        interstitialAd_fb!!.loadAd()
-                    }
-                    try {
-                        context.startActivity(newIntent)
-                    } catch (e: ActivityNotFoundException) {
-                        e.printStackTrace()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-//                context.finish()
-
-
-                    // Interstitial dismissed callback
-                    Log.e("FacebookAdsLog1", "Interstitial ad dismissed.")
-                }
-
-                override fun onError(ad: Ad, adError: AdError) {
-                    // Ad error callback
-                    Log.e(
-                        "FacebookAdsLog1",
-                        "Interstitial ad failed to load: " + adError.getErrorMessage()
-                    )
-                }
-
-                override fun onAdLoaded(ad: Ad) {
-                    // Interstitial ad is loaded and ready to be displayed
-                    Log.d("FacebookAdsLog1", "Interstitial ad is loaded and ready to be displayed!")
-                    // Show the ad
-
-                }
-
-                override fun onAdClicked(ad: Ad) {
-                    // Ad clicked callback
-                    Log.d("FacebookAdsLog1", "Interstitial ad clicked!")
-                }
-
-                override fun onLoggingImpression(ad: Ad) {
-                    // Ad impression logged callback
-                    Log.d("FacebookAdsLog1", "Interstitial ad impression logged!")
-                }
-            }
-
-            interstitialAd_fb?.buildLoadAdConfig()?.withAdListener(interstitialAdListener)
-
-
-        } else {
-
-            if (mInterstitialAd != null && mInterstitialAd!!.isLoaded && !SharePrefData.getInstance().adS_PREFS) {
-                mInterstitialAd!!.show()
-
-                mInterstitialAd?.adListener = object : AdListener() {
-                    override fun onAdClosed() {
-
-                        if (!SharePrefData.getInstance().adS_PREFS) {
-                            mInterstitialAd!!.loadAd(AdRequest.Builder().build())
-                        }
-
-                        try {
-                            context.startActivity(newIntent)
-                        } catch (e: ActivityNotFoundException) {
-                            e.printStackTrace()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-//                    context.finish()
-
-                    }
-                }
-
-            } else {
-                try {
-                    context.startActivity(newIntent)
-                } catch (e: ActivityNotFoundException) {
-                    e.printStackTrace()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-//                context.finish()
-            }
-
-        }
-
-
-    }
 
     fun showFb(context: Activity) {
         if (!SharePrefData.getInstance().adS_PREFS && interstitialAd_fb != null && interstitialAd_fb!!.isAdLoaded && !interstitialAd_fb!!.isAdInvalidated) {
@@ -681,6 +582,170 @@ public class InterstitalAdsInner {
 
     }
 
+
+    fun ShowAdMobNoFinish(context: Activity) {
+        if (mInterstitialAd != null && mInterstitialAd!!.isLoaded && !SharePrefData.getInstance().adS_PREFS) {
+            mInterstitialAd!!.show()
+            mInterstitialAd!!.adListener = object : AdListener() {
+                override fun onAdClosed() {
+                    if (!SharePrefData.getInstance().adS_PREFS) {
+                        mInterstitialAd!!.loadAd(AdRequest.Builder().build())
+                    }
+//                    context.startActivity(newIntent)
+                 //   context.finish()
+
+                }
+            }
+        } else {
+//            context.startActivity(newIntent)
+       //     context.finish()
+        }
+
+    }
+
+
+    fun showFbClose(context: Activity) {
+        if (!SharePrefData.getInstance().adS_PREFS && interstitialAd_fb != null && interstitialAd_fb!!.isAdLoaded && !interstitialAd_fb!!.isAdInvalidated) {
+            interstitialAd_fb!!.show()
+
+            var interstitialAdListener: InterstitialAdListener = object : InterstitialAdListener {
+                override fun onInterstitialDisplayed(ad: Ad) {
+                    // Interstitial ad displayed callback
+                    Log.e("FacebookAdsLog1", "Interstitial ad displayed.")
+                }
+
+                override fun onInterstitialDismissed(ad: Ad) {
+
+//                if (pref.getBoolean("ads", true)) {
+//                    interstitialAd_fb!!.loadAd()
+
+//                interstitialAd_fb = null
+//                }
+                    if (!SharePrefData.getInstance().adS_PREFS) {
+                        interstitialAd_fb!!.loadAd()
+                    }
+//                    try {
+//                        context.startActivity(newIntent)
+//                    } catch (e: ActivityNotFoundException) {
+//                        e.printStackTrace()
+//                    } catch (e: Exception) {
+//                        e.printStackTrace()
+//                    }
+                context.finish()
+
+
+                    // Interstitial dismissed callback
+                    Log.e("FacebookAdsLog1", "Interstitial ad dismissed.")
+                }
+
+                override fun onError(ad: Ad, adError: AdError) {
+                    // Ad error callback
+                    Log.e(
+                            "FacebookAdsLog1",
+                            "Interstitial ad failed to load: " + adError.getErrorMessage()
+                    )
+                }
+
+                override fun onAdLoaded(ad: Ad) {
+                    // Interstitial ad is loaded and ready to be displayed
+                    Log.d("FacebookAdsLog1", "Interstitial ad is loaded and ready to be displayed!")
+                    // Show the ad
+
+                }
+
+                override fun onAdClicked(ad: Ad) {
+                    // Ad clicked callback
+                    Log.d("FacebookAdsLog1", "Interstitial ad clicked!")
+                }
+
+                override fun onLoggingImpression(ad: Ad) {
+                    // Ad impression logged callback
+                    Log.d("FacebookAdsLog1", "Interstitial ad impression logged!")
+                }
+            }
+
+            interstitialAd_fb?.buildLoadAdConfig()?.withAdListener(interstitialAdListener)
+
+
+        } else {
+            context.finish()
+
+        }
+
+
+    }
+
+    fun showFb(context: Activity) {
+        if (!SharePrefData.getInstance().adS_PREFS && interstitialAd_fb != null && interstitialAd_fb!!.isAdLoaded && !interstitialAd_fb!!.isAdInvalidated) {
+            interstitialAd_fb!!.show()
+
+            var interstitialAdListener: InterstitialAdListener = object : InterstitialAdListener {
+                override fun onInterstitialDisplayed(ad: Ad) {
+                    // Interstitial ad displayed callback
+                    Log.e("FacebookAdsLog1", "Interstitial ad displayed.")
+                }
+
+                override fun onInterstitialDismissed(ad: Ad) {
+
+//                if (pref.getBoolean("ads", true)) {
+//                    interstitialAd_fb!!.loadAd()
+
+//                interstitialAd_fb = null
+//                }
+                    if (!SharePrefData.getInstance().adS_PREFS) {
+                        interstitialAd_fb!!.loadAd()
+                    }
+//                    try {
+//                        context.startActivity(newIntent)
+//                    } catch (e: ActivityNotFoundException) {
+//                        e.printStackTrace()
+//                    } catch (e: Exception) {
+//                        e.printStackTrace()
+//                    }
+//                    context.finish()
+
+
+                    // Interstitial dismissed callback
+                    Log.e("FacebookAdsLog1", "Interstitial ad dismissed.")
+                }
+
+                override fun onError(ad: Ad, adError: AdError) {
+                    // Ad error callback
+                    Log.e(
+                            "FacebookAdsLog1",
+                            "Interstitial ad failed to load: " + adError.getErrorMessage()
+                    )
+                }
+
+                override fun onAdLoaded(ad: Ad) {
+                    // Interstitial ad is loaded and ready to be displayed
+                    Log.d("FacebookAdsLog1", "Interstitial ad is loaded and ready to be displayed!")
+                    // Show the ad
+
+                }
+
+                override fun onAdClicked(ad: Ad) {
+                    // Ad clicked callback
+                    Log.d("FacebookAdsLog1", "Interstitial ad clicked!")
+                }
+
+                override fun onLoggingImpression(ad: Ad) {
+                    // Ad impression logged callback
+                    Log.d("FacebookAdsLog1", "Interstitial ad impression logged!")
+                }
+            }
+
+            interstitialAd_fb?.buildLoadAdConfig()?.withAdListener(interstitialAdListener)
+
+
+        } else {
+//            context.finish()
+
+        }
+
+
+    }
+
     /* fun ShowSplashAdMob(context: Activity, newIntent: Intent) {
          if (splashInterstita!!.isLoaded && !AppUtils.getBillingStatus()) {
              splashInterstita!!.show()
@@ -764,22 +829,23 @@ public class InterstitalAdsInner {
     fun adMobShowCloseOnly(context: Activity) {
 
 
-        if (mInterstitialAd!!.isLoaded && !SharePrefData.getInstance().adS_PREFS) {
+        if (mInterstitialAd!=null && mInterstitialAd!!.isLoaded && !SharePrefData.getInstance().adS_PREFS) {
             mInterstitialAd!!.show()
+            mInterstitialAd!!.adListener = object : AdListener() {
+                override fun onAdClosed() {
+                    if (!SharePrefData.getInstance().adS_PREFS) {
+                        mInterstitialAd!!.loadAd(AdRequest.Builder().build())
+                    }
+
+                    context.finish()
+
+                }
+            }
         } else {
 
             context.finish()
         }
-        mInterstitialAd!!.adListener = object : AdListener() {
-            override fun onAdClosed() {
-                if (!SharePrefData.getInstance().adS_PREFS) {
-                    mInterstitialAd!!.loadAd(AdRequest.Builder().build())
-                }
 
-                context.finish()
-
-            }
-        }
     }
 
 

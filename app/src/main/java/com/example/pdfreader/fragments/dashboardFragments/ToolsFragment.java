@@ -44,7 +44,7 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
     RelativeLayout wordPdfRl, imagePdfRl, mergePdfRl, scanPdfRl, fileReducerPdfRl, createPDFRl;
     ConstraintLayout securePdfRl;
     NativeAdLayout nativeAdContainer;
-
+    View adlayout2;
     public ToolsFragment() {
         // Required empty public constructor
     }
@@ -68,6 +68,7 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initViews(View view) {
+        adlayout2=view.findViewById(R.id.adlayout2);
         nativeAdContainer = view.findViewById(R.id.native_ad_container);
         wordPdfRl = view.findViewById(R.id.wordPdfRl);
         imagePdfRl = view.findViewById(R.id.imagePdfRl);
@@ -90,12 +91,15 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
         if(SharePrefData.getInstance().getIsAdmobTools().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
             admobbanner.setVisibility(View.VISIBLE);
             BannerAds.Companion.loadAdmob(getContext(),"large",admobbanner);
+            adlayout2.setVisibility(View.GONE);
+            adlayout.setBackground(null);
         }else if (SharePrefData.getInstance().getIsAdmobTools().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
             admobbanner.setVisibility(View.GONE);
             loadNativeAd();
         } else {
             nativeAdContainer.setVisibility(View.GONE);
             adlayout.setVisibility(View.GONE);
+            adlayout2.setVisibility(View.GONE);
         }
     }
 
@@ -153,7 +157,7 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onError(Ad ad, AdError adError) {
-
+                adlayout2.setVisibility(View.GONE);
 //                binding.admobNativeView.setVisibility(View.VISIBLE);
                 nativeAdContainer.setVisibility(View.GONE);
 //                admobNativeView.setVisibility(View.GONE);
@@ -165,7 +169,7 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
                 if (fbNativead == null || fbNativead != ad) {
                     return;
                 }
-
+                adlayout2.setVisibility(View.GONE);
 //                admobNativeView.setVisibility(View.GONE);
                 nativeAdContainer.setVisibility(View.VISIBLE);
                 // Inflate Native Ad into Container
@@ -189,51 +193,52 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
 
 
     private void inflateAd(NativeAd nativeAd) {
-        nativeAd.unregisterView();
-        fbNativeAdlayout = getView().findViewById(R.id.native_ad_container);
-        fbAdview =
-                (ConstraintLayout) getLayoutInflater().inflate(R.layout.fb_native, fbNativeAdlayout, false);
-        fbNativeAdlayout.addView(fbAdview);
+        if(getView()!=null) {
+            nativeAd.unregisterView();
+            fbNativeAdlayout = getView().findViewById(R.id.native_ad_container);
+            fbAdview =
+                    (ConstraintLayout) getLayoutInflater().inflate(R.layout.fb_native, fbNativeAdlayout, false);
+            fbNativeAdlayout.addView(fbAdview);
 
-        LinearLayout adChoicesContainer = fbAdview.findViewById(R.id.ad_choices_container);
-        AdOptionsView adOptionsView = new AdOptionsView(getActivity(), nativeAd, fbNativeAdlayout);
-        adOptionsView.setIconColor(Color.parseColor("#271337"));
-        adChoicesContainer.removeAllViews();
-        adChoicesContainer.addView(adOptionsView, 0);
+            LinearLayout adChoicesContainer = fbAdview.findViewById(R.id.ad_choices_container);
+            AdOptionsView adOptionsView = new AdOptionsView(getActivity(), nativeAd, fbNativeAdlayout);
+            adOptionsView.setIconColor(Color.parseColor("#271337"));
+            adChoicesContainer.removeAllViews();
+            adChoicesContainer.addView(adOptionsView, 0);
 
 
-        com.facebook.ads.MediaView nativeAdIcon = fbAdview.findViewById(R.id.native_ad_icon);
-        TextView nativeAdTitle = fbAdview.findViewById(R.id.native_ad_title);
-        TextView nativeAdBody = fbAdview.findViewById(R.id.native_ad_body);
-        TextView sponsoredLabel = fbAdview.findViewById(R.id.native_ad_sponsored_label);
-        TextView nativeAdSocialContext = fbAdview.findViewById(R.id.native_ad_social_context);
-        Button nativeAdCallToAction = fbAdview.findViewById(R.id.native_ad_call_to_action);
-        ConstraintLayout contentsFb = fbAdview.findViewById(R.id.contentfb);
+            com.facebook.ads.MediaView nativeAdIcon = fbAdview.findViewById(R.id.native_ad_icon);
+            TextView nativeAdTitle = fbAdview.findViewById(R.id.native_ad_title);
+            TextView nativeAdBody = fbAdview.findViewById(R.id.native_ad_body);
+            TextView sponsoredLabel = fbAdview.findViewById(R.id.native_ad_sponsored_label);
+            TextView nativeAdSocialContext = fbAdview.findViewById(R.id.native_ad_social_context);
+            Button nativeAdCallToAction = fbAdview.findViewById(R.id.native_ad_call_to_action);
+            ConstraintLayout contentsFb = fbAdview.findViewById(R.id.contentfb);
 
 //        com.facebook.ads.MediaView nativeAdMedia = fbAdview.findViewById(R.id.native_ad_media);
 
-        nativeAdTitle.setText(nativeAd.getAdvertiserName());
-        nativeAdBody.setText(nativeAd.getAdBodyText());
-        nativeAdSocialContext.setText(nativeAd.getAdSocialContext());
-        if (nativeAd.hasCallToAction()) {
-            nativeAdCallToAction.setVisibility(View.VISIBLE);
-        } else {
-            nativeAdCallToAction.setVisibility(View.INVISIBLE);
+            nativeAdTitle.setText(nativeAd.getAdvertiserName());
+            nativeAdBody.setText(nativeAd.getAdBodyText());
+            nativeAdSocialContext.setText(nativeAd.getAdSocialContext());
+            if (nativeAd.hasCallToAction()) {
+                nativeAdCallToAction.setVisibility(View.VISIBLE);
+            } else {
+                nativeAdCallToAction.setVisibility(View.INVISIBLE);
+            }
+            nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
+            sponsoredLabel.setText(nativeAd.getSponsoredTranslation());
+
+            List<View> clickableViews = new ArrayList<>();
+
+            clickableViews.add(nativeAdCallToAction);
+
+
+            nativeAd.registerViewForInteraction(
+                    fbAdview,
+                    nativeAdIcon,
+                    clickableViews
+            );
+
         }
-        nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
-        sponsoredLabel.setText(nativeAd.getSponsoredTranslation());
-
-        List<View> clickableViews = new ArrayList<>();
-
-        clickableViews.add(nativeAdCallToAction);
-
-
-        nativeAd.registerViewForInteraction(
-                fbAdview,
-                nativeAdIcon,
-                clickableViews
-        );
-
-
     }
 }

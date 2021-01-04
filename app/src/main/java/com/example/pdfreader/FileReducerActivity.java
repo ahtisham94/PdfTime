@@ -74,6 +74,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
     int fileCount = -1;
     EditText searchEt;
     NativeAdLayout nativeAdContainer;
+    View adlayout2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getResources().getColor(R.color.colorGrayDark));
         toolbar = findViewById(R.id.toolbar);
+        adlayout2=findViewById(R.id.adlayout2);
         nativeAdContainer = findViewById(R.id.native_ad_container);
         toolbar.setTitle("Compress  PDF");
         searchEt=findViewById(R.id.searchEd);
@@ -113,12 +115,15 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
         if(SharePrefData.getInstance().getIsAdmobReduce().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
             admobbanner.setVisibility(View.VISIBLE);
             BannerAds.Companion.loadAdmob(this,"large",admobbanner);
+            adlayout2.setVisibility(View.GONE);
+            adlayout.setBackground(null);
         }else if (SharePrefData.getInstance().getIsAdmobReduce().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
             admobbanner.setVisibility(View.GONE);
             loadNativeAd();
         } else {
             nativeAdContainer.setVisibility(View.GONE);
             adlayout.setVisibility(View.GONE);
+            adlayout2.setVisibility(View.GONE);
         }
     }
 
@@ -400,7 +405,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onError(Ad ad, AdError adError) {
-
+                adlayout2.setVisibility(View.GONE);
 //                binding.admobNativeView.setVisibility(View.VISIBLE);
                 nativeAdContainer.setVisibility(View.GONE);
 //                admobNativeView.setVisibility(View.GONE);
@@ -412,7 +417,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
                 if (fbNativead == null || fbNativead != ad) {
                     return;
                 }
-
+                adlayout2.setVisibility(View.GONE);
 //                admobNativeView.setVisibility(View.GONE);
                 nativeAdContainer.setVisibility(View.VISIBLE);
                 // Inflate Native Ad into Container

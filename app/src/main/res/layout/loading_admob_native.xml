@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.gms.ads.formats.UnifiedNativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="8dp"
@@ -82,19 +83,18 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
         <com.google.android.gms.ads.formats.MediaView
             android:id="@+id/ad_media"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/_12sdp"
             android:layout_marginTop="@dimen/_12sdp"
-            android:layout_marginRight="@dimen/_12sdp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/contentads"
 
-            />
-
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_editor_absoluteX="-88dp" />
 
         <Button
             android:id="@+id/ad_call_to_action"

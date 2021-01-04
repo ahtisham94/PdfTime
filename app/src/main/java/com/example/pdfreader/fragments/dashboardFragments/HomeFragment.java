@@ -34,7 +34,7 @@ import com.example.pdfreader.PremiumScreen;
 import com.example.pdfreader.R;
 import com.example.pdfreader.SecurePdfActivity;
 import com.example.pdfreader.SharePrefData;
-import com.example.pdfreader.adapters.AllFilesAdapter;
+import com.example.pdfreader.adapters.AllFilesAdAdapter;
 import com.example.pdfreader.interfaces.CurrentFragment;
 import com.example.pdfreader.interfaces.GenericCallback;
 import com.example.pdfreader.interfaces.OnTextToPdfInterface;
@@ -72,8 +72,8 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     RecyclerView filesRecyclerView;
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
-    AllFilesAdapter filesAdapter;
-    RelativeLayout noFileLayout;
+    AllFilesAdAdapter filesAdapter;
+    RelativeLayout noFileLayout,bannerLayout;
     ArrayList<FileInfoModel> fileInfoModelArrayList;
     ProgressDialog dialog;
     private TextToPDFOptions.Builder mBuilder;
@@ -84,6 +84,8 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     FrameLayout admobNativeView;
     NativeAdLayout nativeAdContainer;
     ConstraintLayout adlayout;
+    View adlayout2;
+    ImageView close;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -109,7 +111,7 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
                 }
             }, 3000);
         }
-
+        adlayout2=view.findViewById(R.id.adlayout2);
         admobNativeView = view.findViewById(R.id.admobNativeView);
         nativeAdContainer = view.findViewById(R.id.native_ad_container);
         adlayout=view.findViewById(R.id.adlayout);
@@ -118,29 +120,48 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
             loadAdmobNativeAd();
         }else if(SharePrefData.getInstance().getIsAdmobHome().equals("false") && !SharePrefData.getInstance().getADS_PREFS()){
             loadNativeAd();
-        }else{
-            admobNativeView.setVisibility(View.GONE);
-            nativeAdContainer.setVisibility(View.GONE);
-            adlayout.setVisibility(View.GONE);
         }
+//        else{
+//            admobNativeView.setVisibility(View.GONE);
+//            nativeAdContainer.setVisibility(View.GONE);
+//            adlayout.setVisibility(View.GONE);
+//            adlayout2.setVisibility(View.GONE);
+//        }
+
+//        admobNativeView.setVisibility(View.GONE);
+//        nativeAdContainer.setVisibility(View.GONE);
+//        adlayout.setVisibility(View.GONE);
+//        adlayout2.setVisibility(View.GONE);
     }
 
     private void getFiles() {
         ArrayList<File> arrayList = mDirectoryUtils.searchDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
         mDirectoryUtils.clearSelectedArray();
-        Log.d("count", arrayList.size() + "");
-        if (arrayList.size() > 0) {
-            fileInfoModelArrayList = new ArrayList<>();
-            for (File file : arrayList) {
-                if (lastModified) {
-                    Date modifiedDate = null;
-                    Date currentDate = new Date();
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(currentDate);
-                    cal.add(Calendar.HOUR, -24);
-                    Date alertDate = cal.getTime();
-                    modifiedDate = new Date(file.lastModified());
-                    if (modifiedDate != null && alertDate.before(modifiedDate)) {
+        if(arrayList!= null) {
+            Log.d("count", arrayList.size() + "");
+            if (arrayList.size() > 0) {
+                fileInfoModelArrayList = new ArrayList<>();
+                for (File file : arrayList) {
+                    if (lastModified) {
+                        Date modifiedDate = null;
+                        Date currentDate = new Date();
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(currentDate);
+                        cal.add(Calendar.HOUR, -24);
+                        Date alertDate = cal.getTime();
+                        modifiedDate = new Date(file.lastModified());
+                        if (modifiedDate != null && alertDate.before(modifiedDate)) {
+                            String[] fileInfo = file.getName().split("\\.");
+                            if (fileInfo.length == 2)
+                                fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
+                            else {
+                                fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
+                                        file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
+                                        file, false));
+                            }
+                        }
+
+                    } else {
                         String[] fileInfo = file.getName().split("\\.");
                         if (fileInfo.length == 2)
                             fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
@@ -151,23 +172,13 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
                         }
                     }
 
-                } else {
-                    String[] fileInfo = file.getName().split("\\.");
-                    if (fileInfo.length == 2)
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0], fileInfo[1], file, false));
-                    else {
-                        fileInfoModelArrayList.add(new FileInfoModel(fileInfo[0],
-                                file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")).replace(".", ""),
-                                file, false));
-                    }
                 }
-
+                filesAdapter = new AllFilesAdAdapter(getContext(), fileInfoModelArrayList);
+                filesAdapter.setCallback(this);
+                filesRecyclerView.setAdapter(filesAdapter);
+            } else {
+                noFileLayout.setVisibility(View.VISIBLE);
             }
-            filesAdapter = new AllFilesAdapter(getContext(), fileInfoModelArrayList);
-            filesAdapter.setCallback(this);
-            filesRecyclerView.setAdapter(filesAdapter);
-        } else {
-            noFileLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -175,6 +186,9 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
         baseActivity = (BaseActivity) getActivity();
         mDirectoryUtils = new DirectoryUtils(getContext());
         fileInfoModelArrayList = new ArrayList<>();
+        close=view.findViewById(R.id.close);
+        bannerLayout=view.findViewById(R.id.bannderLayout);
+        close.setOnClickListener(this);
         filesRecyclerView = view.findViewById(R.id.filesRecyclerView);
         filesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         noFileLayout = view.findViewById(R.id.noFileLayout);
@@ -232,16 +246,19 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     public void onPDFCreated(boolean success) {
         dialog.dismiss();
         if (success) {
-            filesAdapter.refreshArray(new File(mPath));
-            filesRecyclerView.smoothScrollToPosition(fileInfoModelArrayList.size());
-            StringUtils.getInstance().getSnackbarwithAction(getActivity(), R.string.file_created).setAction("View File", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getContext(), PDFViewerAcitivity.class);
-                    intent.putExtra("path", mPath);
-                    startActivity(intent);
-                }
-            });
+//            filesAdapter.refreshArray(new File(mPath));
+//            filesRecyclerView.smoothScrollToPosition(fileInfoModelArrayList.size());
+//            StringUtils.getInstance().getSnackbarwithAction(getActivity(), R.string.file_created).setAction("View File", new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(getContext(), PDFViewerAcitivity.class);
+//                    intent.putExtra("path", mPath);
+//                    startActivity(intent);
+//                }
+//            });
+            Intent intent = new Intent(getActivity(), PDFViewerAcitivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("path", mPath);
+            startActivity(intent);
         } else {
             StringUtils.getInstance().showSnackbar(getActivity(), "Failed to create pfd file");
         }
@@ -273,7 +290,11 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
         if (view.getId() == R.id.tryNowBtn) {
             startActivity(new Intent(getContext(), SecurePdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 //            baseActivity.startActivity(PremiumScreen.class, null);
-        }else if(view.getId() == R.id.recentlyBtn){
+        }
+        else if(view.getId() == R.id.close){
+            bannerLayout.setVisibility(View.GONE);
+        }
+        else if(view.getId() == R.id.recentlyBtn){
 
             edittedBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.edittext_white_bg));
             recentlyBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.bg_circle_toggle));
@@ -318,8 +339,9 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
             public void onError(Ad ad, AdError adError) {
 
 //                binding.admobNativeView.setVisibility(View.VISIBLE);
-                nativeAdContainer.setVisibility(View.GONE);
-                admobNativeView.setVisibility(View.GONE);
+//                nativeAdContainer.setVisibility(View.GONE);
+//                admobNativeView.setVisibility(View.GONE);
+//                adlayout2.setVisibility(View.GONE);
 //                loadAdmobNativeAd();
             }
 
@@ -329,10 +351,15 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
                     return;
                 }
 
-                admobNativeView.setVisibility(View.GONE);
-                nativeAdContainer.setVisibility(View.VISIBLE);
-                // Inflate Native Ad into Container
-                inflateAd(fbNativead);
+                if(filesAdapter!=null){
+                    filesAdapter.setAd(null,fbNativead);
+                }
+
+//                adlayout2.setVisibility(View.GONE);
+//                admobNativeView.setVisibility(View.GONE);
+//                nativeAdContainer.setVisibility(View.VISIBLE);
+//                // Inflate Native Ad into Container
+//                inflateAd(fbNativead);
             }
 
             @Override
@@ -417,14 +444,18 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
                     nativeAd.destroy();
                 }
 
+                if(filesAdapter!=null){
+                    filesAdapter.setAd(unifiedNativeAd,null);
+                }
 
-                admobNativeView.setVisibility(View.VISIBLE);
-                nativeAdContainer.setVisibility(View.GONE);
-                nativeAd = unifiedNativeAd;
-                UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater().inflate(R.layout.loading_admob_native, null);
-                populateUnifiedNativeAdView(nativeAd, adView);
-                admobNativeView.removeAllViews();
-                admobNativeView.addView(adView);
+//                adlayout2.setVisibility(View.GONE);
+//                admobNativeView.setVisibility(View.VISIBLE);
+//                nativeAdContainer.setVisibility(View.GONE);
+//                nativeAd = unifiedNativeAd;
+//                UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater().inflate(R.layout.loading_admob_native, null);
+//                populateUnifiedNativeAdView(nativeAd, adView);
+//                admobNativeView.removeAllViews();
+//                admobNativeView.addView(adView);
 
             }
 

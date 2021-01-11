@@ -126,17 +126,19 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
     }
 
     private void getAllFolders() {
-        foldersArray = mDirectory.getAllFolders();
-        if (foldersArray != null && foldersArray.size() > 0) {
-            adapter.setFolderArray(foldersArray);
-            noFolderLayout.setVisibility(View.GONE);
-            creatFolder.setVisibility(View.VISIBLE);
-        } else {
-            noFolderLayout.setVisibility(View.VISIBLE);
-            creatFolder.setVisibility(View.GONE);
+        if(mDirectory.getAllFolders()!=null) {
+            foldersArray = mDirectory.getAllFolders();
+            if (foldersArray != null && foldersArray.size() > 0) {
+                adapter.setFolderArray(foldersArray);
+                noFolderLayout.setVisibility(View.GONE);
+                creatFolder.setVisibility(View.VISIBLE);
+            } else {
+                noFolderLayout.setVisibility(View.VISIBLE);
+                creatFolder.setVisibility(View.GONE);
 
-            if (adapter != null && adapter.getItemCount() > 0) {
-                adapter.setFolderArray(new ArrayList<File>());
+                if (adapter != null && adapter.getItemCount() > 0) {
+                    adapter.setFolderArray(new ArrayList<File>());
+                }
             }
         }
     }
@@ -331,7 +333,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener, Pe
             List<View> clickableViews = new ArrayList<>();
 
             clickableViews.add(nativeAdCallToAction);
-
+            clickableViews.add(nativeAdIcon);
 
             nativeAd.registerViewForInteraction(
                     fbAdview,

@@ -171,6 +171,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
 
             }
         });
+        if(adapter!=null)
         adapter.notifyDataSetChanged();
     }
 
@@ -395,6 +396,7 @@ public class MergePdfFileActivity extends BaseActivity implements View.OnClickLi
         List<View> clickableViews = new ArrayList<>();
 
         clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(nativeAdIcon);
 
 
         nativeAd.registerViewForInteraction(

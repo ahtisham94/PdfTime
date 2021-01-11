@@ -2,6 +2,9 @@
 <defaultsMap>
     <entry>
 
+        <key>isadmobpermission</key>
+        <value>true</value>
+
         <key>isadmobsplashinter</key>
         <value>true</value>
 

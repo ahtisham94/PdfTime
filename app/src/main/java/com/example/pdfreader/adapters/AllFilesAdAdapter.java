@@ -228,7 +228,9 @@ public class AllFilesAdAdapter extends RecyclerView.Adapter<AllFilesAdAdapter.My
 
         }
 
-        if(position!=0 && position %4==0 && !SharePrefData.getInstance().getADS_PREFS()){
+
+
+        if(position==4 && !SharePrefData.getInstance().getADS_PREFS()){
 
             holder.adlayout.setVisibility(View.VISIBLE);
             if(googlead!=null){
@@ -453,19 +455,22 @@ public class AllFilesAdAdapter extends RecyclerView.Adapter<AllFilesAdAdapter.My
     }
 
     public void setAd(UnifiedNativeAd mUnifiedNativeAd, NativeAd mNativeAd){
-        if(mUnifiedNativeAd!=null){
-            googlead=mUnifiedNativeAd;
-            myFilesHolder.adlayout2.setVisibility(View.GONE);
-            myFilesHolder.nativeAdContainer.setVisibility(View.GONE);
-            myFilesHolder.admobNativeView.setVisibility(View.VISIBLE);
+        if(myFilesHolder!=null && myFilesHolder.adlayout2!=null &&
+                myFilesHolder.nativeAdContainer!=null && myFilesHolder.admobNativeView!=null) {
+            if (mUnifiedNativeAd != null) {
+                googlead = mUnifiedNativeAd;
+//                myFilesHolder.adlayout2.setVisibility(View.GONE);
+//                myFilesHolder.nativeAdContainer.setVisibility(View.GONE);
+//                myFilesHolder.admobNativeView.setVisibility(View.VISIBLE);
 //            populateUnifiedNativeAdView(mUnifiedNativeAd);
-        }else if(mNativeAd!=null){
-            fbad=mNativeAd;
-            myFilesHolder.adlayout2.setVisibility(View.GONE);
-            myFilesHolder.nativeAdContainer.setVisibility(View.VISIBLE);
-            myFilesHolder.admobNativeView.setVisibility(View.GONE);
+            } else if (mNativeAd != null) {
+                fbad = mNativeAd;
+//                myFilesHolder.adlayout2.setVisibility(View.GONE);
+//                myFilesHolder.nativeAdContainer.setVisibility(View.VISIBLE);
+//                myFilesHolder.admobNativeView.setVisibility(View.GONE);
 //            inflateAd(mNativeAd);
 
+            }
         }
         notifyDataSetChanged();
     }
@@ -508,6 +513,8 @@ public class AllFilesAdAdapter extends RecyclerView.Adapter<AllFilesAdAdapter.My
         List<View> clickableViews = new ArrayList<>();
 
         clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(nativeAdMedia);
+        clickableViews.add(nativeAdIcon);
 
 
         nativeAd.registerViewForInteraction(
@@ -519,7 +526,7 @@ public class AllFilesAdAdapter extends RecyclerView.Adapter<AllFilesAdAdapter.My
 
 
     }
-
+    UnifiedNativeAdView adView;
     private void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd) {
 
         UnifiedNativeAdView adView= (UnifiedNativeAdView)LayoutInflater.from(context).inflate(R.layout.loading_admob_native, null);

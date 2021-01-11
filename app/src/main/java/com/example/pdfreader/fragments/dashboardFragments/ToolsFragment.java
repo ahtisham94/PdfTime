@@ -231,6 +231,7 @@ public class ToolsFragment extends Fragment implements View.OnClickListener {
             List<View> clickableViews = new ArrayList<>();
 
             clickableViews.add(nativeAdCallToAction);
+            clickableViews.add(nativeAdIcon);
 
 
             nativeAd.registerViewForInteraction(

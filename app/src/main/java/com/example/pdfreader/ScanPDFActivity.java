@@ -143,7 +143,7 @@ public class ScanPDFActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == OPEN_CAMERA && data != null) {
+        if (requestCode == OPEN_CAMERA && data != null && data.getExtras()!=null && data.getExtras().get("data")!=null) {
             bitmap = (Bitmap) data.getExtras().get("data");
             Glide.with(ScanPDFActivity.this).load(toGrayscale(bitmap)).centerCrop().into(grayScaleImage);
             imagesUri.add(savaImageToGrayScale(toGrayscale(bitmap)));

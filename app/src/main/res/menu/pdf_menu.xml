@@ -16,9 +16,9 @@
         android:icon="@drawable/ic_premium_ic"
         android:title="@string/move_to_folder"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/giftImg"
-        android:icon="@drawable/ic_video_gift_ic"
-        android:title="@string/move_to_folder"
-        app:showAsAction="always" />
+<!--    <item-->
+<!--        android:id="@+id/giftImg"-->
+<!--        android:icon="@drawable/doc_icon_ad"-->
+<!--        android:title="@string/move_to_folder"-->
+<!--        app:showAsAction="always" />-->
 </menu>

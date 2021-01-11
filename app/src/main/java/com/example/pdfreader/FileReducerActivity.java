@@ -292,6 +292,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
 
             }
         });
+        if(adapter!=null)
         adapter.notifyDataSetChanged();
     }
 
@@ -386,6 +387,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
         }
 
         //calling a method of the adapter class and passing the filtered list
+        if(adapter!=null)
         adapter.filterList(filterdNames);
     }
 
@@ -478,6 +480,7 @@ public class FileReducerActivity extends BaseActivity implements View.OnClickLis
         List<View> clickableViews = new ArrayList<>();
 
         clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(nativeAdIcon);
 
 
         nativeAd.registerViewForInteraction(

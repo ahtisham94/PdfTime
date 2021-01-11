@@ -221,6 +221,8 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
         List<View> clickableViews = new ArrayList<>();
 
         clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(nativeAdMedia);
+        clickableViews.add(nativeAdIcon);
 
 
         nativeAd.registerViewForInteraction(

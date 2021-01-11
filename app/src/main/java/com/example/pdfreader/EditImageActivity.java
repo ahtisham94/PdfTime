@@ -590,7 +590,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 });
                 break;
             case UNDU:
-                mPhotoEditor.brushEraser();
+                mPhotoEditor.undo();
 //                mTxtCurrentTool.setText(R.string.label_eraser_mode);
                 break;
             case CALENDAR:

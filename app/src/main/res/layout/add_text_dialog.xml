@@ -31,8 +31,13 @@
         android:layout_below="@+id/add_text_done_tv"
         android:background="@null"
         android:gravity="center"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:hint="Click here to enter text"
+        android:textColorHint="#888888"
+        android:textColor="@color/red_color_picker"
         android:inputType="textMultiLine"
-        android:textSize="40sp" />
+        android:textSize="30sp" />
 
     <RelativeLayout
         android:id="@+id/add_text_color_picker_relative_layout"

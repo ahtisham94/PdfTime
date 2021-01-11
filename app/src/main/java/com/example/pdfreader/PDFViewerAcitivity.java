@@ -85,13 +85,13 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
                 toolbar.setTitle(file.getName().substring(0, file.getName().lastIndexOf(".")));
             } else {
                 uri = Uri.parse(getIntent().getStringExtra("uri"));
-                saveFile(this,"abc",uri, Environment.getExternalStorageDirectory().getAbsolutePath(),"asdsadas.pdf");
+                saveFile(this, "abc", uri, Environment.getExternalStorageDirectory().getAbsolutePath(), "new_pdf.pdf");
             }
             dialog.show();
             loadPDFFile(file == null ? uri : file, "");
-        }else if(getIntent().getData()!=null){
+        } else if (getIntent().getData() != null) {
             Uri uri = (Uri) getIntent().getData();
-            String stringUri=uri.toString();
+            String stringUri = uri.toString();
             uri = Uri.parse(stringUri);
             loadPDFFile(file == null ? uri : file, "");
         }
@@ -134,17 +134,22 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
     @Override
     public boolean onOptionsItemSelected(@NonNull final MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            InterstitalAdsInner adsInner=new InterstitalAdsInner();
-            if(SharePrefData.getInstance().getIsAdmobPdfInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+            InterstitalAdsInner adsInner = new InterstitalAdsInner();
+            if (SharePrefData.getInstance().getIsAdmobPdfInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()) {
                 adsInner.adMobShowCloseOnly(this);
-            }else if (SharePrefData.getInstance().getIsAdmobPdfInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+            } else if (SharePrefData.getInstance().getIsAdmobPdfInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
                 adsInner.showFbClose(this);
-            }else{
+            } else {
                 finish();
             }
             return true;
         } else if (item.getItemId() == R.id.share) {
-            Constants.shareFile(PDFViewerAcitivity.this, file);
+            if (file != null) {
+                Constants.shareFile(PDFViewerAcitivity.this, file);
+            } else if (destDir != null) {
+                File shareFile = new File(Environment.getExternalStorageDirectory() + File.pathSeparator + "new_pdf.pdf");
+                Constants.shareFile(PDFViewerAcitivity.this, shareFile);
+            }
             return true;
         } else if (item.getItemId() == R.id.moveToFolder) {
             new MoveFileDialog(PDFViewerAcitivity.this, file, new GenericCallback() {
@@ -163,12 +168,12 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
 
     @Override
     public void onBackPressed() {
-        InterstitalAdsInner adsInner=new InterstitalAdsInner();
-        if(SharePrefData.getInstance().getIsAdmobPdfInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+        InterstitalAdsInner adsInner = new InterstitalAdsInner();
+        if (SharePrefData.getInstance().getIsAdmobPdfInter().equals("true") && !SharePrefData.getInstance().getADS_PREFS()) {
             adsInner.adMobShowCloseOnly(this);
-        }else if (SharePrefData.getInstance().getIsAdmobPdfInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+        } else if (SharePrefData.getInstance().getIsAdmobPdfInter().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
             adsInner.showFbClose(this);
-        }else{
+        } else {
             finish();
         }
     }
@@ -178,30 +183,35 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.pdf_menu, menu);
         menu.findItem(R.id.premiumImg).setVisible(false);
-        menu.findItem(R.id.giftImg).setVisible(false);
+//        menu.findItem(R.id.giftImg).setVisible(false);
         menu.findItem(R.id.moveToFolder).setVisible(false);
         return true;
     }
 
     @Override
     public void onError(Throwable t) {
-        dialog.dismiss();
-        if (t.getMessage().contains("Password required or incorrect password")) {
-            final InputFeildDialog dialog = new InputFeildDialog(PDFViewerAcitivity.this, this, "PDF File Password");
-            dialog.forpasswordSettings("Enter password");
-            if (firstTry) {
-                dialog.show();
-                firstTry = false;
-            } else {
-                StringUtils.getInstance().getSnackbarwithAction(PDFViewerAcitivity.this, R.string.incorrect_password)
-                        .setAction("Try Again", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                dialog.show();
-                            }
-                        }).show();
-            }
+        try {
 
+            dialog.dismiss();
+            if (t.getMessage().contains("Password required or incorrect password")) {
+                final InputFeildDialog dialog = new InputFeildDialog(PDFViewerAcitivity.this, this, "PDF File Password");
+                dialog.forpasswordSettings("Enter password");
+                if (firstTry) {
+                    dialog.show();
+                    firstTry = false;
+                } else {
+                    StringUtils.getInstance().getSnackbarwithAction(PDFViewerAcitivity.this, R.string.incorrect_password)
+                            .setAction("Try Again", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    dialog.show();
+                                }
+                            }).show();
+                }
+
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
         }
     }
 
@@ -214,12 +224,16 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
 
     @Override
     public void loadComplete(int nbPages) {
-        dialog.dismiss();
-        if (pdfView.getPageCount() > 0 && pdfView.getPageCount() < 7) {
-            pagerNumberLL.setVisibility(View.VISIBLE);
-            addPageNumbers();
-        } else {
-            pagerNumberLL.setVisibility(View.GONE);
+        try {
+            dialog.dismiss();
+            if (pdfView.getPageCount() > 0 && pdfView.getPageCount() < 7) {
+                pagerNumberLL.setVisibility(View.VISIBLE);
+                addPageNumbers();
+            } else {
+                pagerNumberLL.setVisibility(View.GONE);
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
         }
 
     }
@@ -227,7 +241,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
     private void addPageNumbers() {
         for (int i = 0; i < pdfView.getPageCount(); i++) {
             TextView textView = new TextView(this);
-            textView.setText((i+1)+ "");
+            textView.setText((i + 1) + "");
             textView.setBackgroundResource(R.drawable.left_right_swipe_bg);
             LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -265,6 +279,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
         }
     }
 
+    File destDir;
 
     public boolean saveFile(Context context, String name, Uri sourceuri, String destinationDir, String destFileName) {
 
@@ -281,7 +296,7 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
             }
 
             boolean directorySetupResult;
-            File destDir = new File(destinationDir);
+            destDir = new File(destinationDir);
             if (!destDir.exists()) {
                 directorySetupResult = destDir.mkdirs();
             } else if (!destDir.isDirectory()) {
@@ -304,9 +319,11 @@ public class PDFViewerAcitivity extends BaseActivity implements OnErrorListener,
                     bos.write(buf);
                 } while (bis.read(buf) != -1);
 
-                file=destDir;
 
             }
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            hasError = true;
         } catch (Exception e) {
             e.printStackTrace();
             hasError = true;

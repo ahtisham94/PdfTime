@@ -60,7 +60,7 @@
         android:layout_marginEnd="@dimen/_15sdp"
         android:padding="@dimen/_2sdp"
         android:visibility="gone"
-        android:src="@drawable/ic_video_gift_ic"
+        android:src="@drawable/doc_icon_ad"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/addFolderImg"
         app:layout_constraintTop_toTopOf="parent" />

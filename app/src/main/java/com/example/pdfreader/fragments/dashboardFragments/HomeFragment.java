@@ -73,13 +73,13 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     BaseActivity baseActivity;
     DirectoryUtils mDirectoryUtils;
     AllFilesAdAdapter filesAdapter;
-    RelativeLayout noFileLayout,bannerLayout;
+    RelativeLayout noFileLayout, bannerLayout;
     ArrayList<FileInfoModel> fileInfoModelArrayList;
     ProgressDialog dialog;
     private TextToPDFOptions.Builder mBuilder;
     String mPath;
     boolean lastModified = false;
-    Button tryNowBtn,edittedBtn,recentlyBtn;
+    Button tryNowBtn, edittedBtn, recentlyBtn;
 
     FrameLayout admobNativeView;
     NativeAdLayout nativeAdContainer;
@@ -101,24 +101,28 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        if (PermissionUtils.hasPermissionGranted(getContext(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
-            getFiles();
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    PermissionUtils.checkAndRequestPermissions(requireActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
-                }
-            }, 3000);
+        if (getContext() != null) {
+            if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+                getFiles();
+            } else {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (getActivity() != null) {
+                            PermissionUtils.checkAndRequestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+                        }
+                    }
+                }, 3000);
+            }
         }
-        adlayout2=view.findViewById(R.id.adlayout2);
+        adlayout2 = view.findViewById(R.id.adlayout2);
         admobNativeView = view.findViewById(R.id.admobNativeView);
         nativeAdContainer = view.findViewById(R.id.native_ad_container);
-        adlayout=view.findViewById(R.id.adlayout);
+        adlayout = view.findViewById(R.id.adlayout);
 
-        if(SharePrefData.getInstance().getIsAdmobHome().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+        if (SharePrefData.getInstance().getIsAdmobHome().equals("true") && !SharePrefData.getInstance().getADS_PREFS()) {
             loadAdmobNativeAd();
-        }else if(SharePrefData.getInstance().getIsAdmobHome().equals("false") && !SharePrefData.getInstance().getADS_PREFS()){
+        } else if (SharePrefData.getInstance().getIsAdmobHome().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
             loadNativeAd();
         }
 //        else{
@@ -137,7 +141,7 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     private void getFiles() {
         ArrayList<File> arrayList = mDirectoryUtils.searchDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
         mDirectoryUtils.clearSelectedArray();
-        if(arrayList!= null) {
+        if (arrayList != null) {
             Log.d("count", arrayList.size() + "");
             if (arrayList.size() > 0) {
                 fileInfoModelArrayList = new ArrayList<>();
@@ -173,9 +177,11 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
                     }
 
                 }
-                filesAdapter = new AllFilesAdAdapter(getContext(), fileInfoModelArrayList);
-                filesAdapter.setCallback(this);
-                filesRecyclerView.setAdapter(filesAdapter);
+                if (getContext() != null) {
+                    filesAdapter = new AllFilesAdAdapter(getContext(), fileInfoModelArrayList);
+                    filesAdapter.setCallback(this);
+                    filesRecyclerView.setAdapter(filesAdapter);
+                }
             } else {
                 noFileLayout.setVisibility(View.VISIBLE);
             }
@@ -183,37 +189,46 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     }
 
     private void initViews(View view) {
-        baseActivity = (BaseActivity) getActivity();
-        mDirectoryUtils = new DirectoryUtils(getContext());
-        fileInfoModelArrayList = new ArrayList<>();
-        close=view.findViewById(R.id.close);
-        bannerLayout=view.findViewById(R.id.bannderLayout);
-        close.setOnClickListener(this);
-        filesRecyclerView = view.findViewById(R.id.filesRecyclerView);
-        filesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        noFileLayout = view.findViewById(R.id.noFileLayout);
-        dialog = new ProgressDialog(getContext());
-        dialog.setTitle("Please wait");
-        dialog.setMessage("Creating pdf file");
-        mBuilder = new TextToPDFOptions.Builder(getContext());
-        edittedBtn=view.findViewById(R.id.edittedBtn);
-        recentlyBtn=view.findViewById(R.id.recentlyBtn);
-        edittedBtn.setOnClickListener(this);
-        recentlyBtn.setOnClickListener(this);
-        tryNowBtn = view.findViewById(R.id.tryNowBtn);
-        tryNowBtn.setOnClickListener(this);
+
+        if (getContext() != null) {
+            baseActivity = (BaseActivity) getActivity();
+            mDirectoryUtils = new DirectoryUtils(getContext());
+            fileInfoModelArrayList = new ArrayList<>();
+            close = view.findViewById(R.id.close);
+            bannerLayout = view.findViewById(R.id.bannderLayout);
+            close.setOnClickListener(this);
+            filesRecyclerView = view.findViewById(R.id.filesRecyclerView);
+            filesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            noFileLayout = view.findViewById(R.id.noFileLayout);
+            dialog = new ProgressDialog(getContext());
+            dialog.setTitle("Please wait");
+            dialog.setMessage("Creating pdf file");
+            mBuilder = new TextToPDFOptions.Builder(getContext());
+            edittedBtn = view.findViewById(R.id.edittedBtn);
+            recentlyBtn = view.findViewById(R.id.recentlyBtn);
+            edittedBtn.setOnClickListener(this);
+            recentlyBtn.setOnClickListener(this);
+            tryNowBtn = view.findViewById(R.id.tryNowBtn);
+            tryNowBtn.setOnClickListener(this);
+        }
+
+
     }
 
     @Override
     public void granted() {
-        baseActivity.showToast("Permission granted", getContext());
-        getFiles();
+        if (getContext() != null) {
+            baseActivity.showToast("Permission granted", getContext());
+            getFiles();
+        }
     }
 
     @Override
     public void denied() {
-        baseActivity.showToast("Permission not granted", getContext());
-        requireActivity().finish();
+        if (getContext() != null && getActivity() != null) {
+            baseActivity.showToast("Permission not granted", getContext());
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -288,36 +303,43 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.tryNowBtn) {
-            startActivity(new Intent(getContext(), SecurePdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-//            baseActivity.startActivity(PremiumScreen.class, null);
-        }
-        else if(view.getId() == R.id.close){
-            bannerLayout.setVisibility(View.GONE);
-        }
-        else if(view.getId() == R.id.recentlyBtn){
-
-            edittedBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.edittext_white_bg));
-            recentlyBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.bg_circle_toggle));
-            edittedBtn.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorBlack));
-            recentlyBtn.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorWhite));
-
-            if (PermissionUtils.hasPermissionGranted(getContext(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
-                lastModified = false;
-                getFiles();
-            } else {
-                PermissionUtils.checkAndRequestPermissions(requireActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+            if (getContext() != null) {
+                startActivity(new Intent(getContext(), SecurePdfActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
-        }else if(view.getId() == R.id.edittedBtn){
-            edittedBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.bg_circle_toggle));
-            recentlyBtn.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.edittext_white_bg));
-            edittedBtn.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorWhite));
-            recentlyBtn.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorBlack));
-            if (PermissionUtils.hasPermissionGranted(getContext(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
-                lastModified = true;
-                getFiles();
-            } else {
-                PermissionUtils.checkAndRequestPermissions(requireActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+            //            baseActivity.startActivity(PremiumScreen.class, null);
+        } else if (view.getId() == R.id.close) {
+            bannerLayout.setVisibility(View.GONE);
+        } else if (view.getId() == R.id.recentlyBtn) {
 
+            edittedBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.edittext_white_bg));
+            recentlyBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_circle_toggle));
+            edittedBtn.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlack));
+            recentlyBtn.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorWhite));
+
+            if (getContext() != null) {
+                if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+                    lastModified = false;
+                    getFiles();
+                } else {
+                    if (getActivity() != null) {
+                        PermissionUtils.checkAndRequestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+                    }
+                }
+            }
+        } else if (view.getId() == R.id.edittedBtn) {
+            edittedBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_circle_toggle));
+            recentlyBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.edittext_white_bg));
+            edittedBtn.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorWhite));
+            recentlyBtn.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlack));
+            if (getContext() != null) {
+                if (PermissionUtils.hasPermissionGranted(getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+                    lastModified = true;
+                    getFiles();
+                } else {
+                    if (getActivity() != null) {
+                        PermissionUtils.checkAndRequestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.READ_EXTERNAL_STORAGE);
+                    }
+                }
             }
         }
     }
@@ -351,8 +373,11 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
                     return;
                 }
 
-                if(filesAdapter!=null){
-                    filesAdapter.setAd(null,fbNativead);
+                if (filesAdapter != null && getContext()!=null) {
+                    filesAdapter = new AllFilesAdAdapter(getContext(), fileInfoModelArrayList);
+                    filesAdapter.setCallback(HomeFragment.this);
+                    filesRecyclerView.setAdapter(filesAdapter);
+                    filesAdapter.setAd(null, fbNativead);
                 }
 
 //                adlayout2.setVisibility(View.GONE);
@@ -416,6 +441,8 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
         List<View> clickableViews = new ArrayList<>();
 
         clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(nativeAdMedia);
+        clickableViews.add(nativeAdIcon);
 
 
         nativeAd.registerViewForInteraction(
@@ -444,8 +471,11 @@ public class HomeFragment extends Fragment implements PermissionCallback, Curren
                     nativeAd.destroy();
                 }
 
-                if(filesAdapter!=null){
-                    filesAdapter.setAd(unifiedNativeAd,null);
+                if (filesAdapter != null) {
+//                    filesAdapter = new AllFilesAdAdapter(getContext(), fileInfoModelArrayList);
+//                    filesAdapter.setCallback(HomeFragment.this);
+//                    filesRecyclerView.setAdapter(filesAdapter);
+                    filesAdapter.setAd(unifiedNativeAd, null);
                 }
 
 //                adlayout2.setVisibility(View.GONE);

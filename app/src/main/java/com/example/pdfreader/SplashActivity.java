@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -39,6 +40,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -67,6 +69,17 @@ public class SplashActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
+
+        FirebaseMessaging.getInstance()
+                .subscribeToTopic(getPackageName())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            // msg = getString(R.string.msg_subscribe_failed)
+                        }
+                    }
+                });
 
         admobNativeView = findViewById(R.id.admobNativeView);
         nativeAdContainer = findViewById(R.id.native_ad_container);
@@ -166,6 +179,8 @@ public class SplashActivity extends BaseActivity {
         }
 
 
+
+
     }
 
 
@@ -202,6 +217,7 @@ public class SplashActivity extends BaseActivity {
                     SharePrefData.getInstance().setIsAdmobMerge(remoteConfig.getString("isadmobmerge"));
                     SharePrefData.getInstance().setIsAdmobWord(remoteConfig.getString("isadmobword"));
                     SharePrefData.getInstance().setIsAdmobReduce(remoteConfig.getString("isadmobreduce"));
+                    SharePrefData.getInstance().setIsAdmobPermission(remoteConfig.getString("isadmobpermission"));
                     SharePrefData.getInstance().setIsAdmobCreateInter(remoteConfig.getString("isadmobcreateinter"));
                     SharePrefData.getInstance().setIsAdmobWordInter(remoteConfig.getString("isadmobwordinter"));
                     SharePrefData.getInstance().setIsAdmobImgpdfInter(remoteConfig.getString("isadmobimgpdfinter"));
@@ -223,6 +239,7 @@ public class SplashActivity extends BaseActivity {
                     SharePrefData.getInstance().setIsAdmobMerge("true");
                     SharePrefData.getInstance().setIsAdmobWord("true");
                     SharePrefData.getInstance().setIsAdmobReduce("true");
+                    SharePrefData.getInstance().setIsAdmobPermission("true");
                     SharePrefData.getInstance().setIsAdmobCreateInter("true");
                     SharePrefData.getInstance().setIsAdmobWordInter("true");
                     SharePrefData.getInstance().setIsAdmobImgpdfInter("true");
@@ -295,10 +312,20 @@ public class SplashActivity extends BaseActivity {
                 inflateAd(fbNativead);
 
 
-                progressBar.setVisibility(View.GONE);
-                checkBox.setVisibility(View.VISIBLE);
-                privacyText.setVisibility(View.VISIBLE);
-                continueBtn.setVisibility(View.VISIBLE);
+
+
+
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        checkBox.setVisibility(View.VISIBLE);
+                        privacyText.setVisibility(View.VISIBLE);
+                        continueBtn.setVisibility(View.VISIBLE);
+                    }
+                }, 2000);
+
             }
 
             @Override
@@ -355,6 +382,8 @@ public class SplashActivity extends BaseActivity {
         List<View> clickableViews = new ArrayList<>();
 
         clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(nativeAdMedia);
+        clickableViews.add(nativeAdIcon);
 
 
         nativeAd.registerViewForInteraction(
@@ -393,10 +422,17 @@ public class SplashActivity extends BaseActivity {
                 admobNativeView.addView(adView);
 
 
-                progressBar.setVisibility(View.GONE);
-                checkBox.setVisibility(View.VISIBLE);
-                privacyText.setVisibility(View.VISIBLE);
-                continueBtn.setVisibility(View.VISIBLE);
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        checkBox.setVisibility(View.VISIBLE);
+                        privacyText.setVisibility(View.VISIBLE);
+                        continueBtn.setVisibility(View.VISIBLE);
+                    }
+                }, 2000);
+
 
             }
 

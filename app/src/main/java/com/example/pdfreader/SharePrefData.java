@@ -20,7 +20,7 @@ public class SharePrefData {
             , FB_INTER="fbinter", FB_NATIVE_BANNER="fbnativebanner", IS_ADMOB_SPLASH="splash", IS_ADMOB_SPLASH_INTER="splashinter"
             , IS_ADMOB_HOME="home", IS_ADMOB_FILE="file", IS_ADMOB_FOLDER="folder", IS_ADMOB_TOOLS="tools"
             , IS_ADMOB_SHARE="share", IS_ADMOB_SECURE="secure", IS_ADMOB_MERGE="merge"
-            , IS_ADMOB_WORD="word", IS_ADMOB_REDUCE="reduce"
+            , IS_ADMOB_WORD="word", IS_ADMOB_REDUCE="reduce", IS_ADMOB_PERMISSION="permission"
             , IS_ADMOB_CREATE_INTER="createinter", IS_ADMOB_WORD_INTER="wordinter"
             , IS_ADMOB_IMGPDF_INTER="imgpdfinter", IS_ADMOB_MERGE_INTER="mergeinter"
             , IS_ADMOB_SCANPDF_INTER="scanpdfinter", IS_ADMOB_PDF_INTER="pdfinter";
@@ -176,6 +176,19 @@ public class SharePrefData {
         spEditor.apply();
         spEditor.commit();
     }
+
+
+    public String getIsAdmobPermission() {
+        return sp.getString(IS_ADMOB_PERMISSION, "true");
+    }
+
+    public void setIsAdmobPermission(String isadmob) {
+        spEditor = sp.edit();
+        spEditor.putString(IS_ADMOB_PERMISSION, isadmob);
+        spEditor.apply();
+        spEditor.commit();
+    }
+
 
     public String getIsAdmobMerge() {
         return sp.getString(IS_ADMOB_MERGE, "true");

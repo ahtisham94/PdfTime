@@ -53,14 +53,15 @@ import static com.example.pdfreader.utilis.Constants.textExtension;
 public class DirectoryUtils {
 
     private final Context mContext;
-    private final SharedPreferences mSharedPreferences;
+    private SharedPreferences mSharedPreferences;
     private ArrayList<String> mFilePaths;
     private ArrayList<File> fileArrayList = new ArrayList<>();
     private ArrayList<File> selectedFiles = new ArrayList<>();
 
     public DirectoryUtils(Context context) {
         mContext = context;
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (context != null)
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     /**
@@ -149,8 +150,11 @@ public class DirectoryUtils {
      * @return tru - if condition satisfies, else false
      */
     private boolean isPDFAndNotDirectory(File file) {
-        return !file.isDirectory() &&
-                file.getName().endsWith(mContext.getString(R.string.pdf_ext));
+        if (mContext != null)
+            return !file.isDirectory() &&
+                    file.getName().endsWith(mContext.getString(R.string.pdf_ext));
+        else
+            return false;
     }
 
     /**
@@ -421,7 +425,7 @@ public class DirectoryUtils {
 //            POIFSFileSystem myFileSystem = new POIFSFileSystem(stream);
 //            HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
             Workbook factory = WorkbookFactory.create(file);
-            Sheet mySheet =  factory.getSheetAt(0);
+            Sheet mySheet = factory.getSheetAt(0);
             Iterator<Row> rowIter = mySheet.rowIterator();
             OutputStream outputStream = new FileOutputStream(pdfFile);
             Document document = null;
@@ -443,7 +447,7 @@ public class DirectoryUtils {
             for (int i = 0; i < mySheet.getLastRowNum(); i++) {
                 if (mySheet.getRow(i) != null) {
 
-                    Row row =  mySheet.getRow(i);
+                    Row row = mySheet.getRow(i);
                     for (int j = 0; j < row.getLastCellNum(); j++) {
                         if (row.getCell(j) != null) {
                             Cell cell = row.getCell(j);
@@ -465,6 +469,9 @@ public class DirectoryUtils {
             document.close();
             return pdfFile;
 
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

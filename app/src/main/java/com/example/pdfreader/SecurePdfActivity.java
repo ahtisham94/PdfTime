@@ -279,6 +279,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
 
             }
         });
+        if(filesAdapter!=null)
         filesAdapter.notifyDataSetChanged();
     }
 
@@ -363,6 +364,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
         }
 
         //calling a method of the adapter class and passing the filtered list
+        if(filesAdapter!=null)
         filesAdapter.filterList(filterdNames);
     }
 
@@ -454,6 +456,7 @@ public class SecurePdfActivity extends BaseActivity implements GenericCallback, 
         List<View> clickableViews = new ArrayList<>();
 
         clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(nativeAdIcon);
 
 
         nativeAd.registerViewForInteraction(

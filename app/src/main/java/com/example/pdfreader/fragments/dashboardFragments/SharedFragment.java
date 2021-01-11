@@ -55,9 +55,10 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
     RelativeLayout noFileLayout;
     ArrayList<FileInfoModel> fileInfoModelArrayList;
     SingleSelectToggleGroup singleSelectToggleGroup;
-    TextView filterTv, emptyView,titleTv;
+    TextView filterTv, emptyView, titleTv;
     NativeAdLayout nativeAdContainer;
     View adlayout2;
+
     public SharedFragment() {
         // Required empty public constructor
     }
@@ -76,7 +77,7 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
     }
 
     private void initViews(View view) {
-        adlayout2=view.findViewById(R.id.adlayout2);
+        adlayout2 = view.findViewById(R.id.adlayout2);
         nativeAdContainer = view.findViewById(R.id.native_ad_container);
         mDirectoryUtils = new DirectoryUtils(getContext());
         baseActivity = (BaseActivity) requireActivity();
@@ -84,7 +85,7 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
         sharedFilesRecycler = view.findViewById(R.id.sharedFilesRecycler);
         sharedFilesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         noFileLayout = view.findViewById(R.id.noFileLayout);
-        titleTv=view.findViewById(R.id.titleTv);
+        titleTv = view.findViewById(R.id.titleTv);
         singleSelectToggleGroup = view.findViewById(R.id.singleSelectedToggleGroup);
         singleSelectToggleGroup.setOnCheckedChangeListener(this);
         mDirectoryUtils.createFolder("SharedByMe");
@@ -92,14 +93,14 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
         filterTv.setOnClickListener(this);
         emptyView = view.findViewById(R.id.empty_view);
 
-        RelativeLayout admobbanner=  (RelativeLayout)view.findViewById(R.id.admobBanner);
-        ConstraintLayout adlayout=(ConstraintLayout)view.findViewById(R.id.adlayout);
-        if(SharePrefData.getInstance().getIsAdmobShare().equals("true") && !SharePrefData.getInstance().getADS_PREFS()){
+        RelativeLayout admobbanner = (RelativeLayout) view.findViewById(R.id.admobBanner);
+        ConstraintLayout adlayout = (ConstraintLayout) view.findViewById(R.id.adlayout);
+        if (SharePrefData.getInstance().getIsAdmobShare().equals("true") && !SharePrefData.getInstance().getADS_PREFS()) {
             admobbanner.setVisibility(View.VISIBLE);
-            BannerAds.Companion.loadAdmob(getContext(),"large",admobbanner);
+            BannerAds.Companion.loadAdmob(getContext(), "large", admobbanner);
             adlayout2.setVisibility(View.GONE);
             adlayout.setBackground(null);
-        }else if (SharePrefData.getInstance().getIsAdmobShare().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
+        } else if (SharePrefData.getInstance().getIsAdmobShare().equals("false") && !SharePrefData.getInstance().getADS_PREFS()) {
             admobbanner.setVisibility(View.GONE);
             loadNativeAd();
         } else {
@@ -123,7 +124,7 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
         ArrayList<File> arrayList = mDirectoryUtils.getSelectedFiles(filee, Constants.pdfExtension + "," + Constants.pdfExtension);
         mDirectoryUtils.clearSelectedArray();
         if (arrayList != null && arrayList.size() > 0) {
-            titleTv.setText(arrayList.size()+" Files");
+            titleTv.setText(arrayList.size() + " Files");
             for (File file : arrayList) {
                 String[] fileInfo = file.getName().split("\\.");
                 if (fileInfo.length == 2)
@@ -145,11 +146,12 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
 
     @Override
     public void currentFrag() {
-        if (singleSelectToggleGroup.getCheckedId() == R.id.shareWithMe) {
-            getFiles(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
-        } else if (singleSelectToggleGroup.getCheckedId() == R.id.shareByme) {
-            getFiles(new File(Environment.getExternalStorageDirectory(), Constants.folderDirectory + "SharedByMe"));
-
+        if (singleSelectToggleGroup != null) {
+            if (singleSelectToggleGroup.getCheckedId() == R.id.shareWithMe) {
+                getFiles(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+            } else if (singleSelectToggleGroup.getCheckedId() == R.id.shareByme) {
+                getFiles(new File(Environment.getExternalStorageDirectory(), Constants.folderDirectory + "SharedByMe"));
+            }
         }
     }
 
@@ -266,7 +268,7 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
 
 
     private void inflateAd(NativeAd nativeAd) {
-        if(getView()!=null) {
+        if (getView() != null) {
             nativeAd.unregisterView();
             fbNativeAdlayout = getView().findViewById(R.id.native_ad_container);
             fbAdview =
@@ -304,6 +306,7 @@ public class SharedFragment extends Fragment implements SingleSelectToggleGroup.
             List<View> clickableViews = new ArrayList<>();
 
             clickableViews.add(nativeAdCallToAction);
+            clickableViews.add(nativeAdIcon);
 
 
             nativeAd.registerViewForInteraction(

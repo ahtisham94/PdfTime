@@ -227,8 +227,9 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
 
             }
         });
+        if(adapter!=null){
         adapter.notifyDataSetChanged();
-    }
+    }}
 
     private void startPdfCreating(String o) {
 
@@ -370,6 +371,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
 
     private void showCreateFileNameDialog() {
         filesCount++;
+        try {
         String fileName = FileUtils.getFileName(adapter.getFilesArrayList().get(filesCount).getFile().getAbsolutePath());
         new InputFeildDialog(TxtWordToPdfActivity.this, new GenericCallback() {
             @Override
@@ -377,6 +379,10 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
                 startPdfCreating((String) o);
             }
         }, fileName).show();
+        }
+        catch (IndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
 
 
     }
@@ -421,6 +427,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         }
 
         //calling a method of the adapter class and passing the filtered list
+        if(adapter!=null)
         adapter.filterList(filterdNames);
     }
 
@@ -512,6 +519,7 @@ public class TxtWordToPdfActivity extends BaseActivity implements View.OnClickLi
         List<View> clickableViews = new ArrayList<>();
 
         clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(nativeAdIcon);
 
 
         nativeAd.registerViewForInteraction(

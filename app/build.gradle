@@ -12,8 +12,8 @@ android {
         applicationId "com.pdfreader.pdfviewer.pdfeditor.pdfcreator.securepdf"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 3
-        versionName "3.0"
+        versionCode 6
+        versionName "6.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk{
@@ -121,4 +121,5 @@ dependencies {
 
     implementation 'com.github.castorflex.smoothprogressbar:library:1.1.0'
 
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
 }

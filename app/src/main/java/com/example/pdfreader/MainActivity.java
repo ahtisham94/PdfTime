@@ -101,6 +101,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         premiumImg.setOnClickListener(this);
         giftImg = findViewById(R.id.giftImg);
         giftImg.setOnClickListener(this);
+        giftImg.setVisibility(View.VISIBLE);
         mDrawerLayout = findViewById(R.id.mDrawerLayout);
         mDrawerLayout.addDrawerListener(this);
         hamburgerIv = findViewById(R.id.hamburgerIv);
@@ -290,7 +291,13 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         } else if (view.getId() == R.id.premiumImg) {
             startActivity(PremiumScreen.class, null);
         } else if (view.getId() == R.id.giftImg) {
-            openCloseDrawer();
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "com.document.scanner.fast.scan.pdf.create.pdf.editor")));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.document.scanner.fast.scan.pdf.create.pdf.editor")));
+            }
+//            openCloseDrawer();
+
         }
     }
 
@@ -366,22 +373,22 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         if (viewPager.getCurrentItem() == 0) {
             serachImg.setVisibility(View.VISIBLE);
             premiumImg.setVisibility(View.VISIBLE);
-//            giftImg.setVisibility(View.VISIBLE);
+            giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
         } else if (viewPager.getCurrentItem() == 1 || viewPager.getCurrentItem() == 4) {
             serachImg.setVisibility(View.VISIBLE);
             premiumImg.setVisibility(View.VISIBLE);
-//            giftImg.setVisibility(View.VISIBLE);
+            giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
         } else if (viewPager.getCurrentItem() == 2) {
             serachImg.setVisibility(View.GONE);
             premiumImg.setVisibility(View.VISIBLE);
-//            giftImg.setVisibility(View.VISIBLE);
+            giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
         } else if (viewPager.getCurrentItem() == 3) {
             serachImg.setVisibility(View.GONE);
             premiumImg.setVisibility(View.VISIBLE);
-//            giftImg.setVisibility(View.VISIBLE);
+            giftImg.setVisibility(View.VISIBLE);
             addFolderImg.setVisibility(View.GONE);
         }
     }

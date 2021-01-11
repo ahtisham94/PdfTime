@@ -546,6 +546,7 @@ public class FileFragment extends Fragment implements PermissionCallback, Single
         List<View> clickableViews = new ArrayList<>();
 
         clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(nativeAdIcon);
 
 
         nativeAd.registerViewForInteraction(

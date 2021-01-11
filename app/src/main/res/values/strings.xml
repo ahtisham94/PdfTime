@@ -103,6 +103,7 @@
     <string name="msg_save_image_to_share">Please save image to share</string>
     <string name="msg_share_image">Share Image</string>
     <string name="privact_text">This application utilizes External Storage Read and Write consent and camera to scan documents. We are not utilizing these consent to store information it\'s only for users to utilize application capacities</string>
-
+    <string name="ad" translatable="false">Ad</string>
+    <string name="default_notification_channel_id">com.pdfreader.pdfviewer.pdfeditor.pdfcreator.securepdf</string>
 
 </resources>
